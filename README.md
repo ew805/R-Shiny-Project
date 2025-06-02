@@ -10,4 +10,4 @@ The aim of this game and project is to see whether learners are successful at us
 ### Development
 This project follows an agile sprint style development approach. Weekly planning meetings give priorities and tasks for each component of the strategy game.
 
-### Tools Used
+
