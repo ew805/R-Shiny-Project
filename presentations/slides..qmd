@@ -1,0 +1,104 @@
+---
+title: "Transfer of Learning"
+author: "Eleanor Ward and Paul Hewson"
+format: revealjs
+editor: visual
+---
+
+## Transfer of learning: terminology
+ 
+ 
+1. **Positive Transfer**
+understanding statistical concepts helps in understanding and applying hypothesis tests <!--(like t-tests, chi-square tests, etc.).
+
+   * Example: A student who understands variability and sampling distributions is better equipped to grasp the logic of p-values and confidence intervals. -->
+
+2. **Negative Transfer**
+   When prior knowledge leads to misconceptions or errors.
+
+<!--   * Example: Misapplying the logic of deterministic math to probabilistic inference (e.g., thinking a p-value of 0.04 means there's a 96% chance the null hypothesis is false).-->
+
+
+
+3. **Near Transfer**
+   Applying knowledge from similar contexts.
+
+   <!-- * Example: Applying knowledge from a one-sample t-test to understand a two-sample t-test.-->
+
+4. **Far Transfer**
+   Applying statistical inference skills to unfamiliar domains.
+
+<!--   * Example: Using knowledge from a psychology experiment to interpret statistical results in a medical or economic study.-->
+
+
+## Cognitive Factors Influencing Transfer
+
+* **Understanding vs. Memorization**: Students who *understand* the logic of hypothesis testing (e.g., the role of the null, Type I/II errors) are more likely to transfer that knowledge successfully.
+* **Metacognition**: Learners who reflect on their reasoning process can detect inappropriate transfer or generalize appropriately.
+* **Schemas and Mental Models**: Conceptual frameworks (like the logic of “evidence against a null”) help apply the method across various tests (t-test, ANOVA, etc.).
+
+
+<!-- **Emphasize Conceptual Foundations**: Teaching effect size, variability, and sampling distributions helps with far transfer.
+[//]: # **Use Multiple Contexts**: Teach hypothesis testing across domains (biology, economics, social science) to encourage transfer.
+[//]: # **Address Misconceptions Directly**: Like the “p-value fallacy” or confusing statistical significance with practical significance.
+[//]: # **Scaffold Transfer**: Use gradually more complex scenarios to help learners see the general structure behind specific tests. -->
+
+
+## Example of Transfer in Practice
+
+A psychology student who learns to conduct a t-test in a lab class might later:
+
+* Correctly apply the same test in a thesis experiment (positive near transfer).
+* Incorrectly assume that a small p-value always means a large effect size (negative transfer).
+* Correctly explain the limitations of p-values in public policy reports (positive far transfer).
+
+## Examining transfer of learning
+
+- We are developing a simulation App which can (eventually) offer a variety of scenarios where user has to make decisions based on data
+- So we can ask why the user made those decisions
+
+
+## "Mechanical" questions
+
+1. What was the null and alternative hypothesis in this test?
+
+2. What was the p-value, and what does it tell you about the null hypothesis?
+
+3. What decision was made based on the test? Was it to reject or not reject the null?
+
+4. What assumptions are required for this test to be valid?
+
+5. What kind of test was used, and why was it appropriate for this context?
+
+6. What is a Type I vs. Type II error in this context?
+
+
+## More meta questions
+
+
+1. What part of this test or decision-making process was most confusing or uncertain for you?
+
+2. If you had to teach this concept to a peer, what would you emphasize as most important?
+
+3. Did you consider any alternative explanations for the result before drawing your conclusion?
+
+4. Do you think statistical significance always means the result is important? Why or why not?
+
+5. How would your interpretation change if the p-value had been just above .05?
+
+6. What strategies did you use to decide whether the test result was trustworthy?
+
+## Mental model questions
+
+1. Can you describe, in your own words, what a hypothesis test is doing?
+
+2. Why do we use a null hypothesis instead of just trying to prove what we believe?
+
+3. If someone misinterpreted a p-value as the probability the null is true, how would you correct them?
+
+4. What’s happening behind the scenes when a p-value is calculated?
+
+5. How is this test similar to or different from one you’ve seen before?
+
+6. If we repeated this test many times, what would you expect to happen in the long run?
+
