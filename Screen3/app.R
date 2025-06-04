@@ -19,12 +19,15 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
           textOutput("press"),
-          actionButton("resultsbutton", "Press here for results!")
+          actionButton("resultsbutton", "Press here for results!"),
+          textOutput("CI"),
+          actionButton("CIbutton", "Press here to see graphed confidence intervals")
         ),
 
        
         mainPanel(
-          textOutput("results")
+          textOutput("results"),
+          textOutput("CIgraphs")
            
         )
     )
@@ -37,9 +40,17 @@ server <- function(input, output) {
   output$results <- renderText({
     if(input$resultsbutton > 0){
       "Here are the results:"
+    } })
+    output$CI <- renderText({"If you would like to see a graph of the confidence
+    interval, press the button below."
+    })
+  output$CIgraphs <- renderText({
+    if(input$CIbutton > 0){
+      "Here is the confidence interval graph:"
     }
-    
   })
+    
+  
 
    
 }
