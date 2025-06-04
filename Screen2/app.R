@@ -22,10 +22,12 @@ ui <- fluidPage(
       radioButtons("dayquestion", "How many days would you like to run the test?",
                    choices =
                      c("1 day", "2 days", "3 days", "4 days")),
+      textInput("samplesize", "Please choose a sample size for your test")
+      )
       
     )
   )
-)
+
 server <- function(input, output) {
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
