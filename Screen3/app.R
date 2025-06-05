@@ -89,7 +89,8 @@ server <- function(input, output, session) {
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
   
-  output$resultdata <- renderTable({
+  output$resultdata <- renderTable({ 
+    if (load() == "loaded")
     resultdata
   })
   output$results <- renderUI({
