@@ -50,8 +50,12 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
           textOutput("press"),
+          br(),
           actionButton("resultsbutton", "Press here for results!"),
+          br(),
+          br(),
           textOutput("CI"),
+          br(),
           actionButton("CIbutton", "graphed confidence intervals")
         ),
 
@@ -103,7 +107,10 @@ server <- function(input, output, session) {
       )
     }
     else if (load() == "loaded"){
-      h3("These are the results of your test:")
+      tagList(
+      h3("These are the results of your test:"),
+      p("You chose to run the test for x days")
+      )
     }
     else{
       NULL
