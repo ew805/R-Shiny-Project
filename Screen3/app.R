@@ -11,13 +11,32 @@ library(shiny)
 library(later)
 
 #data for table
-resultsdata <- data.frame(
-  Scenario = c("Current", "New"),
-  Subscribers = c(352, 380),
-  Users = c(14000, 14000),
-  PValue = c("fill in", "fill in"),
-  PercentageUplift = c("fill in", "fill in"),
-  ConfidenceInterval = c("fill in", "fill in")
+number_subscribers_test <- 200
+number_users_test <- 10000
+number_subscribers_control <- 250
+number_users_control <- 10000
+
+
+  
+#test
+subscribers <- c(number_subscribers_test, number_subscribers_control)
+users <- c(number_users_test, number_users_control)
+rate <- round((subscribers/users)* 100, 2)
+  
+testresult <- prop.test(subscribers, users)
+p_val <- signif(testresult$p.value, 3)
+
+#results table
+
+resultdata <- data.frame(
+  Test = c("Subscribers", "Users", "Rate", "p-value"),
+    Test_Group=c(number_subscribers_test, number_users_test, 
+                 paste0(rate[1], "%"),"-"),
+  Control_Group = c(number_subscribers_control, number_users_control, 
+                    paste0(rate[2],"%"),"-"),
+  Difference = c(number_subscribers_test - number_subscribers_control, "-", 
+                 paste0(rate[1]-rate[2], "%"), "-"),
+  P_Value = c("-", "-", "-", p_val)
   
 )
 
@@ -39,7 +58,7 @@ ui <- fluidPage(
        
         mainPanel(
           uiOutput("results"),
-          tableOutput("resultstable"),
+          tableOutput("resultdata"),
           textOutput("CIgraphs")
            
         )
@@ -70,8 +89,8 @@ server <- function(input, output, session) {
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
   
-  output$resultstable <- renderTable({
-    resultsdata
+  output$resultdata <- renderTable({
+    resultdata
   })
   output$results <- renderUI({
     
