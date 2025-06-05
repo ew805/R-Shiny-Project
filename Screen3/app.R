@@ -10,6 +10,17 @@
 library(shiny)
 library(later)
 
+#data for table
+resultsdata <- data.frame(
+  Scenario = c("Current", "New"),
+  Subscribers = c(352, 380),
+  Users = c(14000, 14000),
+  PValue = c("fill in", "fill in"),
+  PercentageUplift = c("fill in", "fill in"),
+  ConfidenceInterval = c("fill in", "fill in")
+  
+)
+
 ui <- fluidPage(
 
     
@@ -28,6 +39,7 @@ ui <- fluidPage(
        
         mainPanel(
           uiOutput("results"),
+          tableOutput("resultstable"),
           textOutput("CIgraphs")
            
         )
@@ -58,6 +70,9 @@ server <- function(input, output, session) {
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
   
+  output$resultstable <- renderTable({
+    resultsdata
+  })
   output$results <- renderUI({
     
     
