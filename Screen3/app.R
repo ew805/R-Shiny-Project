@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(later)
 
 ui <- fluidPage(
 
@@ -21,12 +22,12 @@ ui <- fluidPage(
           textOutput("press"),
           actionButton("resultsbutton", "Press here for results!"),
           textOutput("CI"),
-          actionButton("CIbutton", "Press here to see graphed confidence intervals")
+          actionButton("CIbutton", "graphed confidence intervals")
         ),
 
        
         mainPanel(
-          textOutput("results"),
+          uiOutput("results"),
           textOutput("CIgraphs")
            
         )
@@ -34,13 +35,46 @@ ui <- fluidPage(
 )
 
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  load <- reactiveVal("before")
+  
+  
+  
+  observeEvent(input$resultsbutton, {
+    
+    
+    load("pressed")
+    
+  
+    
+  later(function() {
+    
+    load("loaded")
+    },
+    delay = 5)
+  })
+      
+  
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
-  output$results <- renderText({
-    if(input$resultsbutton > 0){
-      "Here are the results:"
-    } })
+  
+  output$results <- renderUI({
+    
+    
+    if(load()=="pressed") {
+      tagList(
+        h3("Loading results"),
+        tags$img(src = "loading.jpg", height = "70px")
+      )
+    }
+    else if (load() == "loaded"){
+      h3("These are the results of your test:")
+    }
+    else{
+      NULL
+    }
+    })
+  
     output$CI <- renderText({"If you would like to see a graph of the confidence
     interval, press the button below."
     })
