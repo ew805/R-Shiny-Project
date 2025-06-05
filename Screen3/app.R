@@ -25,6 +25,7 @@ rate <- round((subscribers/users)* 100, 2)
   
 testresult <- prop.test(subscribers, users)
 p_val <- signif(testresult$p.value, 3)
+ci <- signif(testresult$conf.int * 100, 3)
 
 #results table
 
@@ -56,7 +57,7 @@ ui <- fluidPage(
           br(),
           textOutput("CI"),
           br(),
-          actionButton("CIbutton", "graphed confidence intervals")
+          actionButton("CIbutton", "Confidence Interval")
         ),
 
        
@@ -117,12 +118,14 @@ server <- function(input, output, session) {
     }
     })
   
-    output$CI <- renderText({"If you would like to see a graph of the confidence
-    interval, press the button below."
+    output$CI <- renderText({"If you would like to see the confidence
+    intervals, press the button below."
     })
   output$CIgraphs <- renderText({
     if(input$CIbutton > 0){
-      "Here is the confidence interval graph:"
+     
+      paste0("The confidence interval for your test is", ci[1], ci[2] )
+       
     }
   })
     
