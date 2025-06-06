@@ -64,7 +64,7 @@ ui <- fluidPage(
         mainPanel(
           uiOutput("results"),
           tableOutput("resultdata"),
-          textOutput("CIgraphs")
+          uiOutput("CIgraphs")
            
         )
     )
@@ -121,11 +121,14 @@ server <- function(input, output, session) {
     output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
     })
-  output$CIgraphs <- renderText({
+  output$CIgraphs <- renderUI({
     if(input$CIbutton > 0){
-     
-      paste0("The confidence interval for your test is", ci[1], ci[2] )
-       
+     tagList(
+      "The confidence interval for the percentage difference in your test is:",
+             br(),
+      br(),
+             "[",ci[1], "%, ", ci[2], "%]" 
+     )
     }
   })
     
