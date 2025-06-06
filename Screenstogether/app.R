@@ -33,7 +33,11 @@ ui <- fluidPage("Project",
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4)),
-                               textInput("samplesize", "Please choose a sample size for your test")
+                               sliderInput("samplesize",
+                                           "Choose your sample size:",
+                                           min = 1000,
+                                           max = 50000,
+                                           value = 10000)
                              )
                              
                            ),
@@ -148,7 +152,8 @@ server <- function(input, output, session) {
     else if (load() == "loaded"){
       tagList(
         h3("These are the results of your test:"),
-        p(paste("You chose to run the test for", input$dayquestion, "day(s)"))
+        p(paste("You chose to run the test for", input$dayquestion, "day(s)")),
+        p(paste("You chose to run the test for a sample of", input$samplesize))
       )
     }
     else{
