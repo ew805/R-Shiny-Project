@@ -20,6 +20,7 @@ number_users_control <- 10000
 
 ui <- fluidPage("Project",
                 tabsetPanel(
+                  tabPanel("Overview"),
                   tabPanel("Feature 1",
                            
                            h3("Reducing hearts for free tier"),
@@ -157,8 +158,9 @@ server <- function(input, output, session) {
     else if (load() == "loaded"){
       tagList(
         h3("These are the results of your test:"),
-        p(paste("You chose to run the test for", input$dayquestion, "day(s)")),
-        p(paste("You chose to run the test for a sample of", input$samplesize))
+        p(paste("You chose to run the test for", input$dayquestion, "day(s) and with
+                a sample size of", input$samplesize))
+       
       )
     }
     else{
