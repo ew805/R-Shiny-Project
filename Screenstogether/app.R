@@ -73,7 +73,6 @@ ui <- fluidPage("Project",
 
 server <- function(input, output, session) {
   
-    
   
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
@@ -121,10 +120,10 @@ server <- function(input, output, session) {
     
     testresult <- prop.test(subscribers, users)
     p_val <- signif(testresult$p.value, 3)
-    ci <- signif(testresult$conf.int * 100, 3)
+    
     
     #results table
-    if (load() != "loaded") return(NULL)
+    if (load() == "loaded") 
     data.frame(
       Test = c("Subscribers", "Users", "Rate", "p-value"),
       Test_Group=c(number_subscribers_test * days, number_users_test * days, 
@@ -161,6 +160,17 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CIgraphs <- renderUI({
+    days <- as.numeric(input$dayquestion)
+    subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
+    users <- c(number_users_test * days, number_users_control * days)
+    rate <- round((subscribers/users)* 100, 2)
+    
+    testresult <- prop.test(subscribers, users)
+    p_val <- signif(testresult$p.value, 3)
+    
+    
+    
+    ci <- signif(testresult$conf.int * 100, 3)
     if(input$CIbutton > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is:",
@@ -177,3 +187,4 @@ server <- function(input, output, session) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
