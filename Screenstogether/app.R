@@ -74,7 +74,6 @@ ui <- fluidPage("Project",
 )
 
 
-
 server <- function(input, output, session) {
   
   
@@ -118,6 +117,12 @@ server <- function(input, output, session) {
     days <- as.numeric(input$dayquestion)
     
     #test
+    #data for table
+    number_subscribers_test <- 200
+    number_users_test <- as.numeric(input$samplesize)
+    number_subscribers_control <- 250
+    number_users_control <- as.numeric(input$samplesize)
+    
     subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
     users <- c(number_users_test * days, number_users_control * days)
     rate <- round((subscribers/users)* 100, 2)
@@ -165,6 +170,12 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CIgraphs <- renderUI({
+    #data for table
+    number_subscribers_test <- 200
+    number_users_test <- as.numeric(input$samplesize)
+    number_subscribers_control <- 250
+    number_users_control <- as.numeric(input$samplesize)
+    
     days <- as.numeric(input$dayquestion)
     subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
     users <- c(number_users_test * days, number_users_control * days)
