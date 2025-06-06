@@ -18,29 +18,6 @@ number_users_control <- 10000
 
 
 
-#test
-subscribers <- c(number_subscribers_test, number_subscribers_control)
-users <- c(number_users_test, number_users_control)
-rate <- round((subscribers/users)* 100, 2)
-
-testresult <- prop.test(subscribers, users)
-p_val <- signif(testresult$p.value, 3)
-ci <- signif(testresult$conf.int * 100, 3)
-
-#results table
-
-resultdata <- data.frame(
-  Test = c("Subscribers", "Users", "Rate", "p-value"),
-  Test_Group=c(number_subscribers_test, number_users_test, 
-               paste0(rate[1], "%"),"-"),
-  Control_Group = c(number_subscribers_control, number_users_control, 
-                    paste0(rate[2],"%"),"-"),
-  Difference = c(number_subscribers_test - number_subscribers_control, "-", 
-                 paste0(rate[1]-rate[2], "%"), "-"),
-  P_Value = c("-", "-", "-", p_val)
-  
-)
-
 ui <- fluidPage("Project",
                 tabsetPanel(
                   tabPanel("Feature 1",
@@ -55,7 +32,7 @@ ui <- fluidPage("Project",
                              mainPanel(
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
-                                              c("1 day", "2 days", "3 days", "4 days")),
+                                              c(1, 2, 3, 4)),
                                textInput("samplesize", "Please choose a sample size for your test")
                              )
                              
@@ -93,7 +70,11 @@ ui <- fluidPage("Project",
 )
 
 
+
 server <- function(input, output, session) {
+  
+    
+  
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
     This should force more users to upgrade."
@@ -130,8 +111,31 @@ server <- function(input, output, session) {
     of your test."})
   
   output$resultdata <- renderTable({ 
-    if (load() == "loaded")
-      resultdata
+    req(input$dayquestion)
+    days <- as.numeric(input$dayquestion)
+    
+    #test
+    subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
+    users <- c(number_users_test * days, number_users_control * days)
+    rate <- round((subscribers/users)* 100, 2)
+    
+    testresult <- prop.test(subscribers, users)
+    p_val <- signif(testresult$p.value, 3)
+    ci <- signif(testresult$conf.int * 100, 3)
+    
+    #results table
+    if (load() != "loaded") return(NULL)
+    data.frame(
+      Test = c("Subscribers", "Users", "Rate", "p-value"),
+      Test_Group=c(number_subscribers_test * days, number_users_test * days, 
+                   paste0(rate[1], "%"),"-"),
+      Control_Group = c(number_subscribers_control * days, number_users_control * days, 
+                        paste0(rate[2],"%"),"-"),
+      Difference = c(number_subscribers_test * days - number_subscribers_control * days,
+                     "-", 
+                     paste0(rate[1]-rate[2], "%"), "-"),
+      P_Value = c("-", "-", "-", p_val))
+    
   })
   output$results <- renderUI({
     
@@ -145,7 +149,7 @@ server <- function(input, output, session) {
     else if (load() == "loaded"){
       tagList(
         h3("These are the results of your test:"),
-        p("You chose to run the test for x days")
+        p(paste("You chose to run the test for", input$dayquestion, "day(s)"))
       )
     }
     else{
