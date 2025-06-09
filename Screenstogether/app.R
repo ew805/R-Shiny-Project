@@ -37,7 +37,8 @@ ui <- fluidPage("Project",
                              mainPanel(
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
-                                              c(1, 2, 3, 4)),
+                                              c(1, 2, 3, 4),
+                                          selected = character(0)),
                                
                                sliderInput("samplesize",
                                            "Choose your sample size:",
@@ -62,7 +63,14 @@ ui <- fluidPage("Project",
                                br(),
                                textOutput("CI"),
                                br(),
-                               actionButton("CIbutton", "Confidence Interval")
+                               actionButton("CIbutton", "Confidence Interval"),
+                               br(),
+                               br(),
+                               textOutput("decision1"),
+                               br(),
+                               radioButtons("decision1", "Introduce feature 1?",
+                                            choices = c("Yes", "No"), 
+                                            selected = character(0))
                              ),
                              
                              
@@ -289,6 +297,11 @@ server <- function(input, output, session) {
       
     }
     
+  })
+  
+  output$decision1 <- renderText({
+    "Now you've seen the results for this test you must decide if you want to introduce feature 1:
+    reducing the number of hearts on the free tier."
   })
   
   output$yearlater <- renderText({
