@@ -38,10 +38,10 @@ ui <- fluidPage("Project",
                                
                                sliderInput("samplesize",
                                            "Choose your sample size:",
-                                           min = 500,
-                                           max = 3000,
-                                           value = 1000,
-                                           step = 50),
+                                           min = 1000,
+                                           max = 10000,
+                                           value = 3000,
+                                           step = 100),
                                textOutput("power")
                              )
                              
@@ -105,8 +105,8 @@ server <- function(input, output, session) {
     daynumber <- as.numeric(input$dayquestion)
     sample <- input$samplesize * daynumber
     result <- power.prop.test(n = sample, 
-                              p1 = 0.05, 
-                              p2 = 0.08, 
+                              p1 = 0.02, 
+                              p2 = 0.025, 
                               sig.level = 0.05)
     paste0("The estimated power for your sample size is ",
            round(result$power * 100, 2), "%")
@@ -181,8 +181,8 @@ server <- function(input, output, session) {
       daynumber <- as.numeric(input$dayquestion)
       sample <- input$samplesize * daynumber
       result <- power.prop.test(n = sample, 
-                                p1 = 0.05, 
-                                p2 = 0.08, 
+                                p1 = 0.02, 
+                                p2 = 0.025, 
                                 sig.level = 0.05)
       resultpower <- round(result$power * 100, 2)
       tagList(
