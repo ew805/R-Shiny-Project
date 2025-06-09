@@ -226,7 +226,8 @@ server <- function(input, output, session) {
         "The 95% confidence interval for the percentage difference of rate in your test is:",
         br(),
         br(),
-        "[",ci[1], "%, ", ci[2], "%]" 
+        "[",ci[1], "%, ", ci[2], "%]" ,
+        br()
       )
     }
     
@@ -247,13 +248,13 @@ server <- function(input, output, session) {
       ci <- signif(testresult$conf.int * 100, 3)
       
       cidata <- data.frame(
-        x = "title",
+        x = "Difference",
         diff = rate[1]-rate[2],
         lower = ci[1],
         upper = ci[2]
       )
-      ylim_min <- min(-0.1, ci[1] - 0.05)
-      ylim_max <- max(0.1, ci[2] + 0.05)
+      ylim_min <- min(-0.5, ci[1] - 0.5)
+      ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
         geom_point(size = 5, color = "blue") +
         geom_errorbar(aes(ymin = lower, ymax = upper),
@@ -261,9 +262,9 @@ server <- function(input, output, session) {
         geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
         ylim(ylim_min, ylim_max) +
         labs(
-          title = "title",
-          y = "yaxis",
-          x = "xaxis") +
+          title = "Graph to show the Confidence Interval",
+          y = "Percentage Difference in Rate",
+          x = "") +
         theme_minimal()
       
     }
