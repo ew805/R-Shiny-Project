@@ -28,17 +28,21 @@ ui <- fluidPage("Project",
                              sidebarPanel(
                                textOutput("feature1description"),
                                textOutput("feature1description2"),
-                               textOutput("feature1description3")
+                               textOutput("feature1description3"),
+                              textOutput("feature1description4")
                              ),
                              mainPanel(
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4)),
+                               
                                sliderInput("samplesize",
                                            "Choose your sample size:",
-                                           min = 1000,
-                                           max = 50000,
-                                           value = 10000)
+                                           min = 500,
+                                           max = 3000,
+                                           value = 1000,
+                                           step = 50),
+                               textOutput("power")
                              )
                              
                            ),
@@ -90,6 +94,22 @@ server <- function(input, output, session) {
   
   output$feature1description3 <- renderText({"You are going to test the effectiveness
      of this feature. Choose the number of days you want to test this feature for."})
+  
+  output$feature1description4 <- renderText({"Use the power calculator to help you choose
+    the sample size for the test."})
+  
+  #power result
+  
+  
+  output$power <- renderText({
+    result <- power.prop.test(n = input$samplesize, 
+                              p1 = 0.05, 
+                              p2 = 0.08, 
+                              sig.level = 0.05)
+    paste0("The estimated power for your sample size is ",
+           round(result$power * 100, 2), "%")
+    
+  })
   
   load <- reactiveVal("before")
   
