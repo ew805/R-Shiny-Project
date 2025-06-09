@@ -21,7 +21,9 @@ number_users_control <- 10000
 
 ui <- fluidPage("Project",
                 tabsetPanel(
-                  tabPanel("Overview"),
+                  tabPanel("Overview", 
+                           h3("MonoBingo"),
+                           textOutput("overview")),
                   tabPanel("Feature 1",
                            
                            h3("Reducing hearts for free tier"),
@@ -72,7 +74,20 @@ ui <- fluidPage("Project",
                                
                              )
                            )
-                )
+                ),
+                 tabPanel("One Year Later",
+                          h3("Status of MonoBingo one year later"),
+                          sidebarLayout(
+                            sidebarPanel(
+                              textOutput("yearlater"),
+                              actionButton("yearbutton", "One Year Later")
+                            ),
+                            
+                            mainPanel(
+                              uiOutput("yearresults"),
+                              tableOutput("yeartable")
+                            )
+                          ))
 
     
 
@@ -83,6 +98,11 @@ ui <- fluidPage("Project",
 
 server <- function(input, output, session) {
   
+  output$overview <- renderText({
+    "You are a product manager for MonoBingo. Your task is to select, develop and 
+    release features which enhance the product. You can conduct A/B tests to help
+    you determine whether or not to release a feature."
+  })
   
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
@@ -176,7 +196,7 @@ server <- function(input, output, session) {
     if(load()=="pressed") {
       tagList(
         h3("Loading results"),
-        tags$img(src = "loading.jpg", height = "70px")
+        tags$img(src = "loading.jpg", height = "200px")
       )
     }
     else if (load() == "loaded"){
@@ -271,7 +291,46 @@ server <- function(input, output, session) {
     
   })
   
+  output$yearlater <- renderText({
+    "We now look at the status of MonoBingo a year after reducing the number of hearts 
+    for the free tier. To see the number of users and subscribers now, click the button below."
+  })  
+  load2 <- reactiveVal("before2")
+  
+  observeEvent(input$yearbutton, {
+    load2("pressed2")
+    later(function(){
+    load2("loaded2")
+    },
+    delay=5)
+    })
+  output$yeartable <-renderTable({
+    number_subscribers_test2 <- 600
+    number_users_test2 <- 20000
+    number_subscribers_control2 <- 500
+    number_users_control2 <- 22000
     
+    if (load2() == "loaded2")
+      data.frame( 
+        Yearlater = c("Subscribers", "Users"),
+        Test_Group = c(number_subscribers_test2, number_users_test2),
+        Control_Group = c(number_subscribers_control2, number_users_control2)
+        )
+    })
+  output$yearresults <- renderUI({
+    if(load2()=="pressed2"){
+      tagList(
+        h3("Loading"),
+        tags$img(src = "loading.jpg", height = "200px")
+      )
+    }
+    else if (load2() == "loaded2"){
+      p("Here are the number of subscribers and users one year later:")
+    }
+    else{
+      NULL
+    }
+  })
 }
 
 # Run the application 
