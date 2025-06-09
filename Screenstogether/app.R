@@ -9,11 +9,12 @@
 
 library(shiny)
 library(later)
+library(ggplot2)
 
 #data for table
-number_subscribers_test <- 200
+number_subscribers_test <- 250
 number_users_test <- 10000
-number_subscribers_control <- 250
+number_subscribers_control <- 200
 number_users_control <- 10000
 
 
@@ -66,7 +67,8 @@ ui <- fluidPage("Project",
                              mainPanel(
                                uiOutput("results"),
                                tableOutput("resultdata"),
-                               uiOutput("CIgraphs")
+                               uiOutput("CInumbers"),
+                               plotOutput("ciplot")
                                
                              )
                            )
@@ -105,8 +107,8 @@ server <- function(input, output, session) {
     daynumber <- as.numeric(input$dayquestion)
     sample <- input$samplesize * daynumber
     result <- power.prop.test(n = sample, 
-                              p1 = 0.02, 
-                              p2 = 0.025, 
+                              p1 = 0.025, 
+                              p2 = 0.02, 
                               sig.level = 0.05)
     paste0("The estimated power for your sample size is ",
            round(result$power * 100, 2), "%")
@@ -141,9 +143,9 @@ server <- function(input, output, session) {
     
     #test
     #data for table
-    number_subscribers_test <- 200
+    number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize)
-    number_subscribers_control <- 250
+    number_subscribers_control <- 200
     number_users_control <- as.numeric(input$samplesize)
     
     subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
@@ -181,8 +183,8 @@ server <- function(input, output, session) {
       daynumber <- as.numeric(input$dayquestion)
       sample <- input$samplesize * daynumber
       result <- power.prop.test(n = sample, 
-                                p1 = 0.02, 
-                                p2 = 0.025, 
+                                p1 = 0.025, 
+                                p2 = 0.02, 
                                 sig.level = 0.05)
       resultpower <- round(result$power * 100, 2)
       tagList(
@@ -201,11 +203,11 @@ server <- function(input, output, session) {
   output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
-  output$CIgraphs <- renderUI({
+  output$CInumbers <- renderUI({
     #data for table
-    number_subscribers_test <- 200
+    number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize)
-    number_subscribers_control <- 250
+    number_subscribers_control <- 200
     number_users_control <- as.numeric(input$samplesize)
     
     days <- as.numeric(input$dayquestion)
@@ -227,8 +229,46 @@ server <- function(input, output, session) {
         "[",ci[1], "%, ", ci[2], "%]" 
       )
     }
+    
   })
   
+  output$ciplot <- renderPlot({
+    if(input$CIbutton > 0){
+      number_subscribers_test <- 250
+      number_users_test <- as.numeric(input$samplesize)
+      number_subscribers_control <- 200
+      number_users_control <- as.numeric(input$samplesize)
+      
+      days <- as.numeric(input$dayquestion)
+      subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
+      users <- c(number_users_test * days, number_users_control * days)
+      rate <- round((subscribers/users)* 100, 2)
+      testresult <- prop.test(subscribers, users)
+      ci <- signif(testresult$conf.int * 100, 3)
+      
+      cidata <- data.frame(
+        x = "title",
+        diff = rate[1]-rate[2],
+        lower = ci[1],
+        upper = ci[2]
+      )
+      ylim_min <- min(-0.1, ci[1] - 0.05)
+      ylim_max <- max(0.1, ci[2] + 0.05)
+      ggplot(cidata, aes(x = x, y = diff)) +
+        geom_point(size = 5, color = "blue") +
+        geom_errorbar(aes(ymin = lower, ymax = upper),
+                      width = 0.1, color = "black") +
+        geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+        ylim(ylim_min, ylim_max) +
+        labs(
+          title = "title",
+          y = "yaxis",
+          x = "xaxis") +
+        theme_minimal()
+      
+    }
+    
+  })
   
     
 }
