@@ -178,10 +178,18 @@ server <- function(input, output, session) {
       )
     }
     else if (load() == "loaded"){
+      daynumber <- as.numeric(input$dayquestion)
+      sample <- input$samplesize * daynumber
+      result <- power.prop.test(n = sample, 
+                                p1 = 0.05, 
+                                p2 = 0.08, 
+                                sig.level = 0.05)
+      resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
         p(paste("You chose to run the test for", input$dayquestion, "day(s) and with
-                a sample size of", input$samplesize))
+                a sample size of", input$samplesize,". The power of your test is",
+                resultpower, "%."))
        
       )
     }
