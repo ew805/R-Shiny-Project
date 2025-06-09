@@ -102,7 +102,9 @@ server <- function(input, output, session) {
   
   
   output$power <- renderText({
-    result <- power.prop.test(n = input$samplesize, 
+    daynumber <- as.numeric(input$dayquestion)
+    sample <- input$samplesize * daynumber
+    result <- power.prop.test(n = sample, 
                               p1 = 0.05, 
                               p2 = 0.08, 
                               sig.level = 0.05)
