@@ -86,20 +86,6 @@ ui <- fluidPage("Project",
                              )
                            )
                 ),
-                 tabPanel("One Year Later",
-                          h3("Status of MonoBingo one year later"),
-                          sidebarLayout(
-                            sidebarPanel(
-                              textOutput("yearlater"),
-                              actionButton("yearbutton", "One Year Later")
-                            ),
-                            
-                            mainPanel(
-                              uiOutput("yearresults"),
-                              tableOutput("yeartable"),
-                              uiOutput("yeartext")
-                            )
-                          )),
                 tabPanel("Feature 2",
                          h3("Reducing wait time"),
                          sidebarLayout(
@@ -125,11 +111,26 @@ ui <- fluidPage("Project",
                              textOutput("power2")
                            )
                          )
-
-    
-
-    
-),
+                         
+                         
+                         
+                         
+                ),
+                 tabPanel("One Year Later",
+                          h3("Status of MonoBingo one year later"),
+                          sidebarLayout(
+                            sidebarPanel(
+                              textOutput("yearlater"),
+                              actionButton("yearbutton", "One Year Later")
+                            ),
+                            
+                            mainPanel(
+                              uiOutput("yearresults"),
+                              tableOutput("yeartable"),
+                              uiOutput("yeartext")
+                            )
+                          )),
+                
 ),
 )
 
