@@ -116,6 +116,37 @@ ui <- fluidPage("Project",
                          
                          
                 ),
+                tabPanel("Feature 2 results",
+                         h3("Reducing wait time"),
+                         sidebarLayout(
+                           sidebarPanel(
+                             textOutput("press2"),
+                             br(),
+                             actionButton("resultsbutton2", "Press here for results!"),
+                             br(),
+                             br(),
+                             textOutput("CI2"),
+                             br(),
+                             actionButton("CIbutton2", "Confidence Interval"),
+                             br(),
+                             br(),
+                             textOutput("decision2"),
+                             br(),
+                             radioButtons("decision2", "Introduce feature 2?",
+                                          choices = c("Yes", "No"), 
+                                          selected = character(0))
+                           ),
+                           
+                           
+                           mainPanel(
+                             uiOutput("results2"),
+                             tableOutput("resultdata2"),
+                             uiOutput("CInumbers2"),
+                             plotOutput("ciplot2")
+                             
+                           )
+                         )
+                ),
                  tabPanel("One Year Later",
                           h3("Status of MonoBingo one year later"),
                           sidebarLayout(
@@ -441,6 +472,175 @@ server <- function(input, output, session) {
                             sig.level = 0.05)
   paste0("The estimated power for your sample size is ",
          round(result2$power * 100, 2), "%")
+  })
+  
+  #screen 5 feature 2 results
+  
+  loadfeature2 <- reactiveVal("beforefeature2")
+  
+  
+  
+  observeEvent(input$resultsbutton2, {
+    
+    
+    loadfeature2("pressedfeature2")
+    
+    
+    
+    later(function() {
+      
+      loadfeature2("loadedfeature2")
+    },
+    delay = 5)
+  })
+  
+  
+  output$press2 <- renderText ({"Press the button below to reveal the results
+    of your test."})
+  
+  output$resultdata2 <- renderTable({ 
+    req(input$dayquestion2)
+    days2 <- as.numeric(input$dayquestion2)
+    
+    #test
+    #data for table
+    number_subscribers_test <- 250
+    number_users_test <- as.numeric(input$samplesize2)
+    number_subscribers_control <- 200
+    number_users_control <- as.numeric(input$samplesize2)
+    
+    subscribers2 <- c(number_subscribers_test * days2 , number_subscribers_control * days2)
+    users2 <- c(number_users_test * days2, number_users_control * days2)
+    rate2 <- round((subscribers2/users2)* 100, 2)
+    
+    testresult2 <- prop.test(subscribers2, users2)
+    p_val2 <- signif(testresult2$p.value, 3)
+    
+    
+    #results table
+    if (loadfeature2() == "loadedfeature2") 
+      data.frame(
+        Test = c("Subscribers", "Users", "Rate", "p-value"),
+        Test_Group=c(number_subscribers_test * days2, number_users_test * days2, 
+                     paste0(rate2[1], "%"),"-"),
+        Control_Group = c(number_subscribers_control * days2, number_users_control * days2, 
+                          paste0(rate2[2],"%"),"-"),
+        Difference = c(number_subscribers_test * days2 - number_subscribers_control * days2,
+                       "-", 
+                       paste0(rate2[1]-rate2[2], "%"), "-"),
+        P_Value = c("-", "-", "-", p_val2))
+    
+  })
+  #screen 3 loading/text
+  
+  output$results2 <- renderUI({
+    
+    
+    if(loadfeature2()=="pressedfeature2") {
+      tagList(
+        h3("Loading results"),
+        tags$img(src = "loading.jpg", height = "200px")
+      )
+    }
+    else if (loadfeature2() == "loadedfeature2"){
+      daynumber2 <- as.numeric(input$dayquestion2)
+      sample2 <- input$samplesize2 * daynumber2
+      result2 <- power.prop.test(n = sample2, 
+                                p1 = 0.02, 
+                                p2 = 0.024, 
+                                sig.level = 0.05)
+      resultpower2 <- round(result2$power * 100, 2)
+      tagList(
+        h3("These are the results of your test:"),
+        p(paste("You chose to run the test for", input$dayquestion2, "day(s) and with
+                a sample size of", input$samplesize2,". The power of your test is",
+                resultpower2, "%."))
+        
+      )
+    }
+    else{
+      NULL
+    }
+  })
+  
+  #screen 3 CI
+  
+  output$CI2 <- renderText({"If you would like to see the confidence
+    intervals, press the button below."
+  })
+  output$CInumbers2 <- renderUI({
+    #data for table
+    number_subscribers_test <- 250
+    number_users_test <- as.numeric(input$samplesize2)
+    number_subscribers_control <- 200
+    number_users_control <- as.numeric(input$samplesize2)
+    
+    days2 <- as.numeric(input$dayquestion2)
+    subscribers2 <- c(number_subscribers_test * days2 , number_subscribers_control * days2)
+    users2 <- c(number_users_test * days2, number_users_control * days2)
+    rate2 <- round((subscribers2/users2)* 100, 2)
+    
+    testresult2 <- prop.test(subscribers2, users2)
+    p_val2 <- signif(testresult2$p.value, 3)
+    
+    
+    
+    ci2 <- signif(testresult2$conf.int * 100, 3)
+    if(input$CIbutton2 > 0){
+      tagList(
+        "The 95% confidence interval for the percentage difference of rate in your test is:",
+        br(),
+        br(),
+        "[",ci2[1], "%, ", ci2[2], "%]" ,
+        br()
+      )
+    }
+    
+  })
+  #Screen 3 CI graph
+  
+  output$ciplot2 <- renderPlot({
+    if(input$CIbutton2 > 0){
+      number_subscribers_test <- 250
+      number_users_test <- as.numeric(input$samplesize)
+      number_subscribers_control <- 200
+      number_users_control <- as.numeric(input$samplesize)
+      
+      days2 <- as.numeric(input$dayquestion2)
+      subscribers2 <- c(number_subscribers_test * days2 , number_subscribers_control * days2)
+      users2 <- c(number_users_test * days2, number_users_control * days2)
+      rate2 <- round((subscribers2/users2)* 100, 2)
+      testresult2 <- prop.test(subscribers2, users2)
+      ci2 <- signif(testresult2$conf.int * 100, 3)
+      
+      cidata2 <- data.frame(
+        x = "Difference",
+        diff2 = rate2[1]-rate2[2],
+        lower2 = ci2[1],
+        upper2 = ci2[2]
+      )
+      ylim_min2 <- min(-0.5, ci2[1] - 0.5)
+      ylim_max2 <- max(1, ci2[2] + 0.5)
+      ggplot(cidata2, aes(x = x, y = diff2)) +
+        geom_point(size = 5, color = "blue") +
+        geom_errorbar(aes(ymin = lower2, ymax = upper2),
+                      width = 0.1, color = "black") +
+        geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+        ylim(ylim_min2, ylim_max2) +
+        labs(
+          title = "Graph to show the Confidence Interval",
+          y = "Percentage Difference in Rate",
+          x = "") +
+        theme_minimal()
+      
+    }
+    
+  })
+  #screen 3 decision
+  
+  output$decision2 <- renderText({
+    "Now you've seen the results for this test you must decide if you want to introduce feature 2:
+    reducing the wait time for subscription."
   })
 }
 
