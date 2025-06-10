@@ -30,8 +30,11 @@ ui <- fluidPage("Project",
                            sidebarLayout(
                              sidebarPanel(
                                textOutput("feature1description"),
+                               br(),
                                textOutput("feature1description2"),
+                               br(),
                                textOutput("feature1description3"),
+                               br(),
                               textOutput("feature1description4")
                              ),
                              mainPanel(
@@ -96,11 +99,37 @@ ui <- fluidPage("Project",
                               tableOutput("yeartable"),
                               uiOutput("yeartext")
                             )
-                          ))
+                          )),
+                tabPanel("Feature 2",
+                         h3("Reducing wait time"),
+                         sidebarLayout(
+                           sidebarPanel(
+                             textOutput("feature2des1"),
+                             br(),
+                             textOutput("feature2des2"),
+                             br(),
+                             textOutput("feature2des3")
+                           ),
+                           mainPanel(
+                             radioButtons("dayquestion2", "How many days would you like to run the test?",
+                                          choices =
+                                            c(1, 2, 3, 4),
+                                          selected = character(0)),
+                             
+                             sliderInput("samplesize2",
+                                         "Choose your sample size:",
+                                         min = 1000,
+                                         max = 10000,
+                                         value = 3000,
+                                         step = 100),
+                             textOutput("power2")
+                           )
+                         )
 
     
 
     
+),
 ),
 )
 
@@ -139,8 +168,8 @@ server <- function(input, output, session) {
     daynumber <- as.numeric(input$dayquestion)
     sample <- input$samplesize * daynumber
     result <- power.prop.test(n = sample, 
-                              p1 = 0.025, 
-                              p2 = 0.02, 
+                              p1 = 0.02, 
+                              p2 = 0.0266, 
                               sig.level = 0.05)
     paste0("The estimated power for your sample size is ",
            round(result$power * 100, 2), "%")
@@ -366,6 +395,31 @@ server <- function(input, output, session) {
     else{
       NULL
     }
+  })
+  
+  #screen 5 feature 2
+  
+  output$feature2des1 <- renderText(
+    "The second feature that can be installed is reducing the wait time for
+    those who subscribe. Currently, the free tier requires 3 minutes wait between
+    each round. This feature would mean those who subscribe only wait 30 seconds."
+  )
+  output$feature2des2 <- renderText(
+    "It is thought this feature will increase subscriptions by 20%."
+  )
+  output$feature2des3 <- renderText(
+    "You are going to test the effectiveness of this feature. Please choose the test 
+    length and sample size by using the power calculator."
+  )
+  output$power2 <- renderText({
+  daynumber2 <- as.numeric(input$dayquestion2)
+  sample2 <- input$samplesize2 * daynumber2
+  result2 <- power.prop.test(n = sample2, 
+                            p1 = 0.02, 
+                            p2 = 0.024, 
+                            sig.level = 0.05)
+  paste0("The estimated power for your sample size is ",
+         round(result2$power * 100, 2), "%")
   })
 }
 
