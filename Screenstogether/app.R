@@ -87,7 +87,7 @@ ui <- fluidPage("Project",
                            )
                 ),
                 tabPanel("Feature 2",
-                         h3("Reducing wait time"),
+                         h3("Reducing wait time for subscribers"),
                          sidebarLayout(
                            sidebarPanel(width = 5,
                              textOutput("feature2des1"),
@@ -117,7 +117,7 @@ ui <- fluidPage("Project",
                          
                 ),
                 tabPanel("Feature 2 results",
-                         h3("Reducing wait time"),
+                         h3("Reducing wait time for subscribers"),
                          sidebarLayout(
                            sidebarPanel(
                              textOutput("press2"),
@@ -147,6 +147,19 @@ ui <- fluidPage("Project",
                            )
                          )
                 ),
+                tabPanel("Feature 3",
+                         h3("Increasing adverts for free tier"),
+                         sidebarLayout(
+                           sidebarPanel(width = 5,
+                                        textOutput("feature3des1"),
+                                        br(),
+                                        textOutput("feature3des2"),
+                                        br(),
+                                        textOutput("feature3des3")
+                                        ),
+                           mainPanel()
+                         )
+                         ),
                  tabPanel("One Year Later",
                           h3("Status of MonoBingo one year later"),
                           sidebarLayout(
@@ -171,6 +184,7 @@ ui <- fluidPage("Project",
                 
 ),
 )
+
 
 
 server <- function(input, output, session) {
@@ -579,7 +593,19 @@ server <- function(input, output, session) {
     reducing the wait time for subscription."
   })
   
+  #screen 6 feature 3
   
+  output$feature3des1 <- renderText({
+    "This potential feature is increasing the advert frequency for free tier users. Currently,
+    there is an advert every 5 rounds. For free tier it will change to every 3 rounds."
+  })
+  output$feature3des2 <- renderText({
+    "It is thought that increasing adverts for free tier will cause 25% more subscribers."
+  })
+  output$feature3des3 <- renderText({
+    "Test the effectiveness of this feature before you decide whether to introduce it. Choose length
+    of test and the sample size by using the power calculator."
+  })
   #final screen , a year later
   
   output$yearlater <- renderText({
