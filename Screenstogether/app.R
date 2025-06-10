@@ -348,8 +348,9 @@ server <- function(input, output, session) {
   #screen 4 , a year later
   
   output$yearlater <- renderText({
-    "We now look at the status of MonoBingo a year after reducing the number of hearts 
-    for the free tier. To see the number of users and subscribers now, click the button below."
+    "We now look at the status of MonoBingo a year after deciding
+    whether to reduce the number of hearts for the free tier. 
+    To see the number of users and subscribers now, a year later, click the button below."
   })  
   load2 <- reactiveVal("before2")
   
@@ -360,19 +361,31 @@ server <- function(input, output, session) {
     },
     delay=5)
     })
-  output$yeartable <-renderTable({
+  output$yeartable <-renderTable({ 
+    
     number_subscribers_test2 <- 600
     number_users_test2 <- 20000
     number_subscribers_control2 <- 500
-    number_users_control2 <- 22000
+    number_users_control2 <- 22000 
     
-    if (load2() == "loaded2")
+    
+    if (load2() == "loaded2" && input$decision1 == "Yes"){
+      
       data.frame( 
         Yearlater = c("Subscribers", "Users"),
         Test_Group = c(number_subscribers_test2, number_users_test2),
         Control_Group = c(number_subscribers_control2, number_users_control2)
         )
-    })
+    }
+    else if (load2() == "loaded2" && input$decision1 == "No") {
+      data.frame(
+        Yearlater = c("Subscribers", "Users"),
+        Number = c(number_subscribers_control2, number_users_control2)
+      )
+    }
+    
+    else {NULL}
+  })
   output$yearresults <- renderUI({
     if(load2()=="pressed2"){
       tagList(
@@ -381,7 +394,12 @@ server <- function(input, output, session) {
       )
     }
     else if (load2() == "loaded2"){
-      p("Here are the number of subscribers and users one year later:")
+      if (input$decision1 == "Yes") {
+      p(" You chose to introduce the feature.
+        Here are the number of subscribers and users one year later:") }
+      else {
+        p(" You chose not to introduce this feature.")
+      }
     }
     else{
       NULL
@@ -389,8 +407,10 @@ server <- function(input, output, session) {
   })
   output$yeartext <- renderUI({
     if (load2() == "loaded2"){
+      if(input$decision1 == "Yes"){
       p("While reducing the number of hearts for the free tier increased subscriber
-        numbers, it also caused a descrease in the number of users.")
+        numbers, it also caused a descrease in the number of users.")}
+      else { NULL}
     }
     else{
       NULL
