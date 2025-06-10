@@ -28,7 +28,7 @@ ui <- fluidPage("Project",
                            
                            h3("Reducing hearts for free tier"),
                            sidebarLayout(
-                             sidebarPanel(
+                             sidebarPanel(width = 5,
                                textOutput("feature1description"),
                                br(),
                                textOutput("feature1description2"),
@@ -37,7 +37,7 @@ ui <- fluidPage("Project",
                                br(),
                               textOutput("feature1description4")
                              ),
-                             mainPanel(
+                             mainPanel(width = 7,
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4),
@@ -89,14 +89,14 @@ ui <- fluidPage("Project",
                 tabPanel("Feature 2",
                          h3("Reducing wait time"),
                          sidebarLayout(
-                           sidebarPanel(
+                           sidebarPanel(width = 5,
                              textOutput("feature2des1"),
                              br(),
                              textOutput("feature2des2"),
                              br(),
                              textOutput("feature2des3")
                            ),
-                           mainPanel(
+                           mainPanel(width = 7,
                              radioButtons("dayquestion2", "How many days would you like to run the test?",
                                           choices =
                                             c(1, 2, 3, 4),
@@ -150,12 +150,19 @@ ui <- fluidPage("Project",
                  tabPanel("One Year Later",
                           h3("Status of MonoBingo one year later"),
                           sidebarLayout(
-                            sidebarPanel(
+                            sidebarPanel(width = 5,
                               textOutput("yearlater"),
-                              actionButton("yearbutton", "One Year Later")
+                              br(),
+                              actionButton("yearbutton", "One Year Later"),
+                              br(),
+                              br(),
+                              uiOutput("featureschosen"),
+                              br(),
+                              uiOutput("chosenfeature1"),
+                              uiOutput("chosenfeature2")
                             ),
                             
-                            mainPanel(
+                            mainPanel(width = 5,
                               uiOutput("yearresults"),
                               tableOutput("yeartable"),
                               uiOutput("yeartext")
@@ -580,6 +587,27 @@ server <- function(input, output, session) {
     which features to introduce. 
     To see the number of users and subscribers now, a year later, click the button below."
   })  
+  
+  output$featureschosen <- renderUI({
+    tagList(
+    h4("Below is the list of features you chose to introduce to MonoBingo: ")
+    )
+  })
+  
+  output$chosenfeature1 <- renderUI({
+    if (input$decision1 == "Yes"){
+      "Reducing number of hearts for free tier"
+    }
+    else {NULL}
+    })
+    output$chosenfeature2 <- renderUI({
+    if (input$decision2 == "Yes"){
+      "Reducing wait time for subscription"
+    }
+      else {NULL}
+      })
+    
+  
   load2 <- reactiveVal("before2")
   
   observeEvent(input$yearbutton, {
