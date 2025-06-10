@@ -349,7 +349,7 @@ server <- function(input, output, session) {
   
   output$yearlater <- renderText({
     "We now look at the status of MonoBingo a year after deciding
-    whether to reduce the number of hearts for the free tier. 
+    which features to introduce. 
     To see the number of users and subscribers now, a year later, click the button below."
   })  
   load2 <- reactiveVal("before2")
