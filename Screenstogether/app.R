@@ -93,7 +93,8 @@ ui <- fluidPage("Project",
                             
                             mainPanel(
                               uiOutput("yearresults"),
-                              tableOutput("yeartable")
+                              tableOutput("yeartable"),
+                              uiOutput("yeartext")
                             )
                           ))
 
@@ -211,8 +212,8 @@ server <- function(input, output, session) {
       daynumber <- as.numeric(input$dayquestion)
       sample <- input$samplesize * daynumber
       result <- power.prop.test(n = sample, 
-                                p1 = 0.025, 
-                                p2 = 0.02, 
+                                p1 = 0.02, 
+                                p2 = 0.0266, 
                                 sig.level = 0.05)
       resultpower <- round(result$power * 100, 2)
       tagList(
@@ -339,6 +340,15 @@ server <- function(input, output, session) {
     }
     else if (load2() == "loaded2"){
       p("Here are the number of subscribers and users one year later:")
+    }
+    else{
+      NULL
+    }
+  })
+  output$yeartext <- renderUI({
+    if (load2() == "loaded2"){
+      p("While reducing the number of hearts for the free tier increased subscriber
+        numbers, it also caused a descrease in the number of users.")
     }
     else{
       NULL
