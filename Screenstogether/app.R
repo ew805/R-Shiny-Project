@@ -376,78 +376,7 @@ server <- function(input, output, session) {
     "Now you've seen the results for this test you must decide if you want to introduce feature 1:
     reducing the number of hearts on the free tier."
   })
-  
-  #screen 4 , a year later
-  
-  output$yearlater <- renderText({
-    "We now look at the status of MonoBingo a year after deciding
-    which features to introduce. 
-    To see the number of users and subscribers now, a year later, click the button below."
-  })  
-  load2 <- reactiveVal("before2")
-  
-  observeEvent(input$yearbutton, {
-    load2("pressed2")
-    later(function(){
-    load2("loaded2")
-    },
-    delay=5)
-    })
-  output$yeartable <-renderTable({ 
-    
-    number_subscribers_test2 <- 600
-    number_users_test2 <- 20000
-    number_subscribers_control2 <- 500
-    number_users_control2 <- 22000 
-    
-    
-    if (load2() == "loaded2" && input$decision1 == "Yes"){
-      
-      data.frame( 
-        Yearlater = c("Subscribers", "Users"),
-        Test_Group = c(number_subscribers_test2, number_users_test2),
-        Control_Group = c(number_subscribers_control2, number_users_control2)
-        )
-    }
-    else if (load2() == "loaded2" && input$decision1 == "No") {
-      data.frame(
-        Yearlater = c("Subscribers", "Users"),
-        Number = c(number_subscribers_control2, number_users_control2)
-      )
-    }
-    
-    else {NULL}
-  })
-  output$yearresults <- renderUI({
-    if(load2()=="pressed2"){
-      tagList(
-        h3("Loading"),
-        tags$img(src = "loading.jpg", height = "200px")
-      )
-    }
-    else if (load2() == "loaded2"){
-      if (input$decision1 == "Yes") {
-      p(" You chose to introduce the feature.
-        Here are the number of subscribers and users one year later:") }
-      else {
-        p(" You chose not to introduce this feature.")
-      }
-    }
-    else{
-      NULL
-    }
-  })
-  output$yeartext <- renderUI({
-    if (load2() == "loaded2"){
-      if(input$decision1 == "Yes"){
-      p("While reducing the number of hearts for the free tier increased subscriber
-        numbers, it also caused a descrease in the number of users.")}
-      else { NULL}
-    }
-    else{
-      NULL
-    }
-  })
+
   
   #screen 5 feature 2
   
@@ -531,7 +460,7 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val2))
     
   })
-  #screen 3 loading/text
+  #screen 5 loading/text
   
   output$results2 <- renderUI({
     
@@ -563,7 +492,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 3 CI
+  #screen 5 CI
   
   output$CI2 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -597,7 +526,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 3 CI graph
+  #Screen 5 CI graph
   
   output$ciplot2 <- renderPlot({
     if(input$CIbutton2 > 0){
@@ -636,11 +565,84 @@ server <- function(input, output, session) {
     }
     
   })
-  #screen 3 decision
+  #screen 5 feature 2 decision
   
   output$decision2 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 2:
     reducing the wait time for subscription."
+  })
+  
+  
+  #final screen , a year later
+  
+  output$yearlater <- renderText({
+    "We now look at the status of MonoBingo a year after deciding
+    which features to introduce. 
+    To see the number of users and subscribers now, a year later, click the button below."
+  })  
+  load2 <- reactiveVal("before2")
+  
+  observeEvent(input$yearbutton, {
+    load2("pressed2")
+    later(function(){
+      load2("loaded2")
+    },
+    delay=5)
+  })
+  output$yeartable <-renderTable({ 
+    
+    number_subscribers_test2 <- 600
+    number_users_test2 <- 20000
+    number_subscribers_control2 <- 500
+    number_users_control2 <- 22000 
+    
+    
+    if (load2() == "loaded2" && input$decision1 == "Yes"){
+      
+      data.frame( 
+        Yearlater = c("Subscribers", "Users"),
+        Test_Group = c(number_subscribers_test2, number_users_test2),
+        Control_Group = c(number_subscribers_control2, number_users_control2)
+      )
+    }
+    else if (load2() == "loaded2" && input$decision1 == "No") {
+      data.frame(
+        Yearlater = c("Subscribers", "Users"),
+        Number = c(number_subscribers_control2, number_users_control2)
+      )
+    }
+    
+    else {NULL}
+  })
+  output$yearresults <- renderUI({
+    if(load2()=="pressed2"){
+      tagList(
+        h3("Loading"),
+        tags$img(src = "loading.jpg", height = "200px")
+      )
+    }
+    else if (load2() == "loaded2"){
+      if (input$decision1 == "Yes") {
+        p(" You chose to introduce the feature.
+        Here are the number of subscribers and users one year later:") }
+      else {
+        p(" You chose not to introduce this feature.")
+      }
+    }
+    else{
+      NULL
+    }
+  })
+  output$yeartext <- renderUI({
+    if (load2() == "loaded2"){
+      if(input$decision1 == "Yes"){
+        p("While reducing the number of hearts for the free tier increased subscriber
+        numbers, it also caused a descrease in the number of users.")}
+      else { NULL}
+    }
+    else{
+      NULL
+    }
   })
 }
 
