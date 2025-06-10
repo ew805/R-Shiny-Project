@@ -106,12 +106,15 @@ ui <- fluidPage("Project",
 
 
 server <- function(input, output, session) {
+  #screen 1 text
   
   output$overview <- renderText({
     "You are a product manager for MonoBingo. Your task is to select, develop and 
     release features which enhance the product. You can conduct A/B tests to help
     you determine whether or not to release a feature."
   })
+  
+  #screen 2 text
   
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
@@ -143,6 +146,8 @@ server <- function(input, output, session) {
            round(result$power * 100, 2), "%")
     
   })
+  
+  #screen 3 
   
   load <- reactiveVal("before")
   
@@ -199,6 +204,8 @@ server <- function(input, output, session) {
       P_Value = c("-", "-", "-", p_val))
     
   })
+  #screen 3 loading/text
+  
   output$results <- renderUI({
     
     
@@ -228,6 +235,8 @@ server <- function(input, output, session) {
       NULL
     }
   })
+  
+  #screen 3 CI
   
   output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -261,6 +270,7 @@ server <- function(input, output, session) {
     }
     
   })
+  #Screen 3 CI graph
   
   output$ciplot <- renderPlot({
     if(input$CIbutton > 0){
@@ -299,11 +309,14 @@ server <- function(input, output, session) {
     }
     
   })
+  #screen 3 decision
   
   output$decision1 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 1:
     reducing the number of hearts on the free tier."
   })
+  
+  #screen 4 , a year later
   
   output$yearlater <- renderText({
     "We now look at the status of MonoBingo a year after reducing the number of hearts 
