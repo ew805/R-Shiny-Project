@@ -20,7 +20,7 @@ number_users_control <- 10000
 
 
 ui <- fluidPage("Project",
-                tabsetPanel(
+                (tabsetPanel(
                   tabPanel("Overview", 
                            h3("MonoBingo"),
                            textOutput("overview")),
@@ -192,6 +192,7 @@ ui <- fluidPage("Project",
                           )),
                 
                 
+)
 ),
 )
 
