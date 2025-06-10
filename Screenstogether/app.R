@@ -160,6 +160,15 @@ ui <- fluidPage("Project",
                            mainPanel()
                          )
                          ),
+                tabPanel("Feature 3 Results",
+                         h3("Increasing adverts for free tier"),
+                         sidebarLayout(
+                           sidebarPanel(
+                             textOutput("press3")
+                           ),
+                           mainPanel()
+                         )),
+                
                  tabPanel("One Year Later",
                           h3("Status of MonoBingo one year later"),
                           sidebarLayout(
@@ -181,6 +190,7 @@ ui <- fluidPage("Project",
                               uiOutput("yeartext")
                             )
                           )),
+                
                 
 ),
 )
@@ -606,6 +616,13 @@ server <- function(input, output, session) {
     "Test the effectiveness of this feature before you decide whether to introduce it. Choose length
     of test and the sample size by using the power calculator."
   })
+  
+  #screen 7 feature 3 results
+  
+  output$press3 <- renderText({
+    "Press button below to view the results of your test"
+  })
+  
   #final screen , a year later
   
   output$yearlater <- renderText({
