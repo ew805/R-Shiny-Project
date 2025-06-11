@@ -20,6 +20,26 @@ number_users_control <- 10000
 
 
 ui <- fluidPage("Project",
+                
+                ##scrollable tabs
+                tags$head(
+                  tags$style(HTML("
+                                  .tabbable > .nav-tabs {
+                                  overflow-x: auto;
+                                  overflow-y: hidden;
+                                  white-space: nowrap;
+                                  display: flex;
+                                  flex-wrap: nowrap;
+                                  }
+                                  .tabbable > .navtabs > li {
+                                  float: none;
+                                  flex: 0 0 auto;
+                                  }
+                                  
+                                  "))
+                ),
+                
+                
                 (tabsetPanel(
                   tabPanel("Overview", 
                            h3("MonoBingo"),
@@ -168,6 +188,8 @@ ui <- fluidPage("Project",
                            ),
                            mainPanel()
                          )),
+                tabPanel("Feature 4"),
+                tabPanel("Feature 4 results"),
                 
                  tabPanel("One Year Later",
                           h3("Status of MonoBingo one year later"),
