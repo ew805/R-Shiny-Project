@@ -10,6 +10,7 @@
 library(shiny)
 library(later)
 library(ggplot2)
+library(shinydashboard)
 
 #data for table
 number_subscribers_test <- 250
@@ -42,8 +43,27 @@ ui <- fluidPage("Project",
                 
                 (tabsetPanel(
                   tabPanel("Overview", 
-                           h3("MonoBingo"),
-                           textOutput("overview")),
+                           h1("MonoBingo"),
+                           fluidRow(
+                             box(
+                               title = "Summary",
+                               width = 12,
+                               textOutput("overview")
+                             )
+                           ),
+                           br(),
+                           br(),
+                           fluidRow(
+                             column(6,
+                                    h4("Instructions"),
+                                    uiOutput("instructions")
+                                    ),
+                          
+                             column(6,
+                                    h4("Purpose"),
+                                    textOutput("purpose"))
+                           )
+                          ),
                   tabPanel("Feature 1",
                            
                            h3("Reducing hearts for free tier"),
@@ -309,6 +329,18 @@ server <- function(input, output, session) {
     "You are a product manager for MonoBingo. Your task is to select, develop and 
     release features which enhance the product. You can conduct A/B tests to help
     you determine whether or not to release a feature."
+  })
+  output$instructions <- renderUI({
+    tags$ul(
+      tags$li("Work through the features in order."),
+      tags$li("Choose your test conditions and then look at the results tab for each."),
+      tags$li("On each results tab decide if you want to introduce the feature."),
+      tags$li("After testing each feature look at the status of MonoBingo one year later.")
+    
+    )
+  })
+  output$purpose <- renderText({
+    "This is a simulation app being used to study the transfer of learning."
   })
   
   #screen 2 text
@@ -1183,9 +1215,6 @@ server <- function(input, output, session) {
     else if (load2() == "loaded2"){
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
-      
-      
-        
         p("Here are the number of subscribers and users one year later:") 
       )
     }
