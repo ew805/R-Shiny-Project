@@ -20,7 +20,25 @@ number_users_control <- 10000
 
 
 
-ui <- fluidPage("Project",
+ui <- dashboardPage(
+  dashboardHeader(title = "Project"),
+                  
+                  dashboardSidebar(
+                    sidebarMenu(
+                      menuItem("Overview", tabName = "Overview"),
+                      menuItem("Feature 1", tabName = "Feature1"),
+                      menuItem("Feature 1 results", tabName = "Feature1results"),
+                      menuItem("Feature 2", tabName = "Feature2"),
+                      menuItem("Feature 2 results", tabName = "Feature2results"),
+                      menuItem("Feature 3", tabName = "Feature3"),
+                      menuItem("Feature 3 results", tabName = "Feature3Results"),
+                      menuItem("Feature 4", tabName = "Feature4"),
+                      menuItem("Feature 4 results", tabName = "Feature4results"),
+                      menuItem("One Year Later", tabName = "OneYearLater")
+                    )
+                  ),
+                  
+  dashboardBody(
                 
                 ##scrollable tabs
                 tags$head(
@@ -40,9 +58,9 @@ ui <- fluidPage("Project",
                                   "))
                 ),
                 
+                tabItems(
                 
-                (tabsetPanel(
-                  tabPanel("Overview", 
+                  tabItem(tabName = "Overview", 
                            h1("MonoBingo"),
                            fluidRow(
                              box(
@@ -64,11 +82,14 @@ ui <- fluidPage("Project",
                                     textOutput("purpose"))
                            )
                           ),
-                  tabPanel("Feature 1",
+                  tabItem(tabName = "Feature1",
                            
                            h3("Reducing hearts for free tier"),
-                           sidebarLayout(
-                             sidebarPanel(width = 5,
+                           fluidRow(
+                             box(width = 5,
+                                 title = "title",
+                                 status = "info",
+                                 solidHeader = TRUE,
                                textOutput("feature1description"),
                                br(),
                                textOutput("feature1description2"),
@@ -77,7 +98,10 @@ ui <- fluidPage("Project",
                                br(),
                               textOutput("feature1description4")
                              ),
-                             mainPanel(width = 7,
+                             box(width = 7,
+                                 title = "title",
+                                 status = "primary",
+                                 solidHeader = TRUE,
                                radioButtons("dayquestion", "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4),
@@ -95,10 +119,14 @@ ui <- fluidPage("Project",
                            ),
                   ),
                   
-                  tabPanel("Feature 1 results",
+                  tabItem(tabName = "Feature1results",
                            h3("Reducing hearts for free tier"),
-                           sidebarLayout(
-                             sidebarPanel(
+                           fluidRow(
+                             box(
+                               width = 4,
+                               title = "title",
+                               status = "info",
+                               solidHeader = TRUE,
                                textOutput("press"),
                                br(),
                                actionButton("resultsbutton", "Press here for results!"),
@@ -117,7 +145,10 @@ ui <- fluidPage("Project",
                              ),
                              
                              
-                             mainPanel(
+                             box(
+                               width = 8,
+                               status = "primary",
+                               solidHeader = TRUE,
                                uiOutput("results"),
                                tableOutput("resultdata"),
                                uiOutput("CInumbers"),
@@ -126,17 +157,23 @@ ui <- fluidPage("Project",
                              )
                            )
                 ),
-                tabPanel("Feature 2",
+                tabItem(tabName = "Feature2",
                          h3("Reducing wait time for subscribers"),
-                         sidebarLayout(
-                           sidebarPanel(width = 5,
+                         fluidRow(
+                           box(width = 5,
+                               
+                               title = "title",
+                               status = "info",
                              textOutput("feature2des1"),
                              br(),
                              textOutput("feature2des2"),
                              br(),
                              textOutput("feature2des3")
                            ),
-                           mainPanel(width = 7,
+                           box(width = 7,
+                               
+                               title = "title",
+                               status = "info",
                              radioButtons("dayquestion2", "How many days would you like to run the test?",
                                           choices =
                                             c(1, 2, 3, 4),
@@ -156,10 +193,12 @@ ui <- fluidPage("Project",
                          
                          
                 ),
-                tabPanel("Feature 2 results",
+                tabItem(tabName = "Feature2results",
                          h3("Reducing wait time for subscribers"),
-                         sidebarLayout(
-                           sidebarPanel(
+                         fluidRow(
+                           box(width = 4,
+                               title = "title",
+                               status = "info",
                              textOutput("press2"),
                              br(),
                              actionButton("resultsbutton2", "Press here for results!"),
@@ -178,7 +217,9 @@ ui <- fluidPage("Project",
                            ),
                            
                            
-                           mainPanel(
+                           box(width = 8,
+                               title = "title",
+                               status = "info",
                              uiOutput("results2"),
                              tableOutput("resultdata2"),
                              uiOutput("CInumbers2"),
@@ -187,17 +228,23 @@ ui <- fluidPage("Project",
                            )
                          )
                 ),
-                tabPanel("Feature 3",
+                tabItem(tabName = "Feature3",
                          h3("Increasing adverts for free tier"),
-                         sidebarLayout(
-                           sidebarPanel(width = 5,
+                         fluidRow(
+                           box(width = 5,
+                               
+                               title = "title",
+                               status = "info",
                                         textOutput("feature3des1"),
                                         br(),
                                         textOutput("feature3des2"),
                                         br(),
                                         textOutput("feature3des3")
                                         ),
-                           mainPanel(width = 7,
+                           box(width = 7,
+                               
+                               title = "title",
+                               status = "info",
                              radioButtons("dayquestion3", "How many days would you like to run the test?",
                                                   choices =
                                                     c(1, 2, 3, 4),
@@ -212,10 +259,12 @@ ui <- fluidPage("Project",
                                      textOutput("power3"))
                          )
                          ),
-                tabPanel("Feature 3 Results",
+                tabItem(tabName = "Feature3Results",
                          h3("Increasing adverts for free tier"),
-                         sidebarLayout(
-                           sidebarPanel(
+                         fluidRow(
+                           box(width = 5,
+                               title = "title",
+                               status = "info",
                              textOutput("press3"),
                              br(),
                              actionButton("resultsbutton3", "Press here for results!"),
@@ -232,24 +281,32 @@ ui <- fluidPage("Project",
                                           choices = c("Yes", "No"), 
                                           selected = character(0))
                            ),
-                           mainPanel(
+                           box(width = 7,
+                               title = "title",
+                               status = "info",
                              uiOutput("results3"),
                              tableOutput("resultdata3"),
                              uiOutput("CInumbers3"),
                              plotOutput("ciplot3")
                            )
                          )),
-                tabPanel("Feature 4",
+                tabItem(tabName = "Feature4",
                          h3("Introducing streaks for subscription users"),
-                         sidebarLayout(
-                           sidebarPanel(width = 5,
+                         fluidRow(
+                           box(width = 5,
+                               
+                               title = "title",
+                               status = "info",
                                         textOutput("feature4des1"),
                                         br(),
                                         textOutput("feature4des2"),
                                         br(),
                                         textOutput("feature4des3")
                            ),
-                           mainPanel(width = 7,
+                           box(width = 7,
+                               
+                               title = "title",
+                               status = "info",
                                      radioButtons("dayquestion4", "How many days would you like to run the test?",
                                                   choices =
                                                     c(1, 2, 3, 4),
@@ -263,10 +320,12 @@ ui <- fluidPage("Project",
                                                  step = 100),
                                      textOutput("power4"))
                          )),
-                tabPanel("Feature 4 results",
+                tabItem(tabName = "Feature4results",
                          h3("Introducing streaks for subscription users"),
-                         sidebarLayout(
-                           sidebarPanel(
+                         fluidRow(
+                           box(width = 5,
+                               title = "title",
+                               status = "info",
                              textOutput("press4"),
                              br(),
                              actionButton("resultsbutton4", "Press here for results!"),
@@ -283,7 +342,9 @@ ui <- fluidPage("Project",
                                           choices = c("Yes", "No"), 
                                           selected = character(0))
                            ),
-                           mainPanel(
+                           box(width = 7,
+                               title = "title",
+                               status = "info",
                              uiOutput("results4"),
                              tableOutput("resultdata4"),
                              uiOutput("CInumbers4"),
@@ -291,10 +352,13 @@ ui <- fluidPage("Project",
                            )
                          )),
                 
-                 tabPanel("One Year Later",
+                 tabItem(tabName = "OneYearLater",
                           h3("Status of MonoBingo one year later"),
-                          sidebarLayout(
-                            sidebarPanel(width = 5,
+                          fluidRow(
+                            box(width = 5,
+                               
+                                title = "title",
+                                status = "info",
                               textOutput("yearlater"),
                               br(),
                               actionButton("yearbutton", "One Year Later"),
@@ -308,16 +372,20 @@ ui <- fluidPage("Project",
                               uiOutput("chosenfeature4")
                             ),
                             
-                            mainPanel(width = 5,
+                            box(width = 5,
+                                
+                                title = "title",
+                                status = "info",
                               uiOutput("yearresults"),
                               tableOutput("yeartable"),
                               uiOutput("yeartext")
                             )
-                          )),
+                          ))
                 
                 
 )
 ),
+
 )
 
 
