@@ -1169,6 +1169,11 @@ server <- function(input, output, session) {
     else {NULL}
   })
   output$yearresults <- renderUI({
+    
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
+    yesanswers <- sum(answers == "Yes", na.rm = TRUE)
+    
+    
     if(load2()=="pressed2"){
       tagList(
         h3("Loading"),
@@ -1176,17 +1181,18 @@ server <- function(input, output, session) {
       )
     }
     else if (load2() == "loaded2"){
-      if (input$decision1 == "Yes") {
-        p(" You chose to introduce the feature.
-        Here are the number of subscribers and users one year later:") }
-      else {
-        p(" You chose not to introduce this feature.")
-      }
+      tagList(
+        p(" You chose to introduce", yesanswers, "features."),
+      
+      
+        
+        p("Here are the number of subscribers and users one year later:") 
+      )
     }
     else{
       NULL
     }
-  })
+   })
   output$yeartext <- renderUI({
     if (load2() == "loaded2"){
       if(input$decision1 == "Yes"){
@@ -1198,8 +1204,8 @@ server <- function(input, output, session) {
       NULL
     }
   })
-}
 
+}
 # Run the application 
 shinyApp(ui = ui, server = server)
 
