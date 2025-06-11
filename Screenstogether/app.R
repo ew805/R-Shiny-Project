@@ -39,25 +39,6 @@ ui <- dashboardPage(
                   ),
                   
   dashboardBody(
-                
-                ##scrollable tabs
-                tags$head(
-                  tags$style(HTML("
-                                  .tabbable > .nav-tabs {
-                                  overflow-x: auto;
-                                  overflow-y: hidden;
-                                  white-space: nowrap;
-                                  display: flex;
-                                  flex-wrap: nowrap;
-                                  }
-                                  .tabbable > .navtabs > li {
-                                  float: none;
-                                  flex: 0 0 auto;
-                                  }
-                                  
-                                  "))
-                ),
-                
                 tabItems(
                 
                   tabItem(tabName = "Overview", 
