@@ -20,7 +20,7 @@ number_users_control <- 10000
 
 
 
-ui <- dashboardPage(
+ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
                   
                   dashboardSidebar(
@@ -47,6 +47,8 @@ ui <- dashboardPage(
                              box(
                                title = "Summary",
                                width = 12,
+                               solidHeader = TRUE,
+                               status = "primary",
                                textOutput("overview")
                              )
                            ),
@@ -68,8 +70,8 @@ ui <- dashboardPage(
                            h3("Reducing hearts for free tier"),
                            fluidRow(
                              box(width = 5,
-                                 title = "title",
-                                 status = "info",
+                                 title = "Information",
+                                 status = "primary",
                                  solidHeader = TRUE,
                                textOutput("feature1description"),
                                br(),
@@ -80,7 +82,7 @@ ui <- dashboardPage(
                               textOutput("feature1description4")
                              ),
                              box(width = 7,
-                                 title = "title",
+                                 title = "Choices",
                                  status = "primary",
                                  solidHeader = TRUE,
                                radioButtons("dayquestion", "How many days would you like to run the test?",
@@ -105,8 +107,8 @@ ui <- dashboardPage(
                            fluidRow(
                              box(
                                width = 4,
-                               title = "title",
-                               status = "info",
+                               
+                               status = "primary",
                                solidHeader = TRUE,
                                textOutput("press"),
                                br(),
@@ -128,6 +130,7 @@ ui <- dashboardPage(
                              
                              box(
                                width = 8,
+                               title = "Results",
                                status = "primary",
                                solidHeader = TRUE,
                                uiOutput("results"),
@@ -143,8 +146,9 @@ ui <- dashboardPage(
                          fluidRow(
                            box(width = 5,
                                
-                               title = "title",
-                               status = "info",
+                               title = "Information",
+                               status = "primary",
+                               solidHeader = TRUE,
                              textOutput("feature2des1"),
                              br(),
                              textOutput("feature2des2"),
@@ -153,8 +157,9 @@ ui <- dashboardPage(
                            ),
                            box(width = 7,
                                
-                               title = "title",
-                               status = "info",
+                               title = "Choices",
+                               status = "primary",
+                               solidHeader = TRUE,
                              radioButtons("dayquestion2", "How many days would you like to run the test?",
                                           choices =
                                             c(1, 2, 3, 4),
@@ -178,8 +183,9 @@ ui <- dashboardPage(
                          h3("Reducing wait time for subscribers"),
                          fluidRow(
                            box(width = 4,
-                               title = "title",
-                               status = "info",
+                               
+                               status = "primary",
+                               solidHeader = TRUE,
                              textOutput("press2"),
                              br(),
                              actionButton("resultsbutton2", "Press here for results!"),
@@ -199,8 +205,9 @@ ui <- dashboardPage(
                            
                            
                            box(width = 8,
-                               title = "title",
-                               status = "info",
+                               title = "Results",
+                               status = "primary",
+                               solidHeader = TRUE,
                              uiOutput("results2"),
                              tableOutput("resultdata2"),
                              uiOutput("CInumbers2"),
@@ -213,9 +220,9 @@ ui <- dashboardPage(
                          h3("Increasing adverts for free tier"),
                          fluidRow(
                            box(width = 5,
-                               
-                               title = "title",
-                               status = "info",
+                               title = "Information",
+                               solidHeader = TRUE,
+                               status = "primary",
                                         textOutput("feature3des1"),
                                         br(),
                                         textOutput("feature3des2"),
@@ -224,8 +231,9 @@ ui <- dashboardPage(
                                         ),
                            box(width = 7,
                                
-                               title = "title",
-                               status = "info",
+                               title = "Choices",
+                               status = "primary",
+                               solidHeader = TRUE,
                              radioButtons("dayquestion3", "How many days would you like to run the test?",
                                                   choices =
                                                     c(1, 2, 3, 4),
@@ -243,9 +251,10 @@ ui <- dashboardPage(
                 tabItem(tabName = "Feature3Results",
                          h3("Increasing adverts for free tier"),
                          fluidRow(
-                           box(width = 5,
-                               title = "title",
-                               status = "info",
+                           box(width = 4,
+                               
+                               status = "primary",
+                               solidHeader = TRUE,
                              textOutput("press3"),
                              br(),
                              actionButton("resultsbutton3", "Press here for results!"),
@@ -262,9 +271,10 @@ ui <- dashboardPage(
                                           choices = c("Yes", "No"), 
                                           selected = character(0))
                            ),
-                           box(width = 7,
-                               title = "title",
-                               status = "info",
+                           box(width = 8,
+                               title = "Results",
+                               status = "primary",
+                               solidHeader = TRUE,
                              uiOutput("results3"),
                              tableOutput("resultdata3"),
                              uiOutput("CInumbers3"),
@@ -276,8 +286,9 @@ ui <- dashboardPage(
                          fluidRow(
                            box(width = 5,
                                
-                               title = "title",
-                               status = "info",
+                               title = "Information",
+                               status = "primary",
+                               solidHeader = TRUE,
                                         textOutput("feature4des1"),
                                         br(),
                                         textOutput("feature4des2"),
@@ -286,8 +297,9 @@ ui <- dashboardPage(
                            ),
                            box(width = 7,
                                
-                               title = "title",
-                               status = "info",
+                               title = "Choices",
+                               status = "primary",
+                               solidHeader = TRUE,
                                      radioButtons("dayquestion4", "How many days would you like to run the test?",
                                                   choices =
                                                     c(1, 2, 3, 4),
@@ -304,9 +316,10 @@ ui <- dashboardPage(
                 tabItem(tabName = "Feature4results",
                          h3("Introducing streaks for subscription users"),
                          fluidRow(
-                           box(width = 5,
-                               title = "title",
-                               status = "info",
+                           box(width = 4,
+                               
+                               status = "primary",
+                               solidHeader = TRUE,
                              textOutput("press4"),
                              br(),
                              actionButton("resultsbutton4", "Press here for results!"),
@@ -323,9 +336,10 @@ ui <- dashboardPage(
                                           choices = c("Yes", "No"), 
                                           selected = character(0))
                            ),
-                           box(width = 7,
-                               title = "title",
-                               status = "info",
+                           box(width = 8,
+                               title = "Results",
+                               status = "primary",
+                               solidHeader = TRUE,
                              uiOutput("results4"),
                              tableOutput("resultdata4"),
                              uiOutput("CInumbers4"),
@@ -338,8 +352,9 @@ ui <- dashboardPage(
                           fluidRow(
                             box(width = 5,
                                
-                                title = "title",
-                                status = "info",
+                                title = "Information",
+                                status = "primary",
+                                solidHeader = TRUE,
                               textOutput("yearlater"),
                               br(),
                               actionButton("yearbutton", "One Year Later"),
@@ -355,8 +370,9 @@ ui <- dashboardPage(
                             
                             box(width = 5,
                                 
-                                title = "title",
-                                status = "info",
+                                title = "Results",
+                                status = "primary",
+                                solidHeader = TRUE,
                               uiOutput("yearresults"),
                               tableOutput("yeartable"),
                               uiOutput("yeartext")
