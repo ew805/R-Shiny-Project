@@ -517,7 +517,9 @@ server <- function(input, output, session) {
   #screen 3 loading/text
   
   output$results <- renderUI({
-    
+    validate(
+      need(input$daynumber != "", "")
+    )
     
     if(load()=="pressed") {
       tagList(
@@ -552,6 +554,9 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CInumbers <- renderUI({
+    validate(
+      need(input$dayquestion != "", "")
+    )
     #data for table
     number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize)
@@ -583,6 +588,9 @@ server <- function(input, output, session) {
   #Screen 3 CI graph
   
   output$ciplot <- renderPlot({
+    validate(
+      need(input$dayquestion != "", "")
+    )
     if(input$CIbutton > 0){
       number_subscribers_test <- 250
       number_users_test <- as.numeric(input$samplesize)
@@ -715,6 +723,9 @@ server <- function(input, output, session) {
   #screen 5 loading/text
   
   output$results2 <- renderUI({
+    validate(
+      need(input$dayquestion2 != "", "")
+    )
     
     
     if(loadfeature2()=="pressedfeature2") {
@@ -750,6 +761,9 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CInumbers2 <- renderUI({
+    validate(
+      need(input$dayquestion2 != "", "")
+    )
     #data for table
     number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize2)
@@ -781,6 +795,9 @@ server <- function(input, output, session) {
   #Screen 5 CI graph
   
   output$ciplot2 <- renderPlot({
+    validate(
+      need(input$dayquestion2 != "", "")
+    )
     if(input$CIbutton2 > 0){
       number_subscribers_test <- 250
       number_users_test <- as.numeric(input$samplesize2)
@@ -912,6 +929,9 @@ server <- function(input, output, session) {
   #screen 7 loading/text
   
   output$results3 <- renderUI({
+    validate(
+      need(input$dayquestion3 != "", "")
+    )
     
     
     if(loadfeature3()=="pressedfeature3") {
@@ -947,6 +967,9 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CInumbers3 <- renderUI({
+    validate(
+      need(input$dayquestion3 != "", "")
+    )
     #data for table
     number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize3)
@@ -978,6 +1001,9 @@ server <- function(input, output, session) {
   #Screen 7 CI graph
   
   output$ciplot3 <- renderPlot({
+    validate(
+      need(input$dayquestion3 != "", "")
+    )
     if(input$CIbutton3 > 0){
       number_subscribers_test <- 250
       number_users_test <- as.numeric(input$samplesize3)
@@ -1110,6 +1136,9 @@ server <- function(input, output, session) {
   #screen 7 loading/text
   
   output$results4 <- renderUI({
+    validate(
+      need(input$dayquestion4 != "", "")
+    )
     
     
     if(loadfeature4()=="pressedfeature4") {
@@ -1145,6 +1174,9 @@ server <- function(input, output, session) {
     intervals, press the button below."
   })
   output$CInumbers4 <- renderUI({
+    validate(
+      need(input$dayquestion4 != "", "")
+    )
     #data for table
     number_subscribers_test <- 250
     number_users_test <- as.numeric(input$samplesize4)
@@ -1176,6 +1208,9 @@ server <- function(input, output, session) {
   #Screen 9 CI graph
   
   output$ciplot4 <- renderPlot({
+    validate(
+      need(input$dayquestion4 != "", "")
+    )
     if(input$CIbutton4 > 0){
       number_subscribers_test <- 250
       number_users_test <- as.numeric(input$samplesize4)
