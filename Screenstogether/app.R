@@ -368,7 +368,7 @@ ui <- dashboardPage(skin = "blue",
                               uiOutput("chosenfeature4")
                             ),
                             
-                            box(width = 5,
+                            box(width = 7,
                                 
                                 title = "Results",
                                 status = "primary",
