@@ -56,18 +56,27 @@ ui <- dashboardPage(skin = "blue",
                            br(),
                            fluidRow(
                              column(6,
-                                    h4("Instructions"),
-                                    uiOutput("instructions")
+                                    box(width = 6,
+                                    title = "Instructions",
+                                    uiOutput("instructions"),
+                                    status = "primary",
+                                    solidHeader = TRUE,
+                                    )
                                     ),
                           
                              column(6,
-                                    h4("Purpose"),
-                                    textOutput("purpose"))
+                                    box(width = 6,
+                                    title = "Purpose",
+                                    textOutput("purpose"),
+                                    status = "primary",
+                                    solidHeader = TRUE,
+                                    )
                            )
+                          )
                           ),
                   tabItem(tabName = "Feature1",
                            
-                           h3("Reducing hearts for free tier"),
+                           h1("Reducing hearts for free tier"),
                            fluidRow(
                              box(width = 5,
                                  title = "Information",
@@ -103,7 +112,7 @@ ui <- dashboardPage(skin = "blue",
                   ),
                   
                   tabItem(tabName = "Feature1results",
-                           h3("Reducing hearts for free tier"),
+                           h1("Reducing hearts for free tier"),
                            fluidRow(
                              box(
                                width = 4,
@@ -142,7 +151,7 @@ ui <- dashboardPage(skin = "blue",
                            )
                 ),
                 tabItem(tabName = "Feature2",
-                         h3("Reducing wait time for subscribers"),
+                         h1("Reducing wait time for subscribers"),
                          fluidRow(
                            box(width = 5,
                                
@@ -180,7 +189,7 @@ ui <- dashboardPage(skin = "blue",
                          
                 ),
                 tabItem(tabName = "Feature2results",
-                         h3("Reducing wait time for subscribers"),
+                         h1("Reducing wait time for subscribers"),
                          fluidRow(
                            box(width = 4,
                                
@@ -217,7 +226,7 @@ ui <- dashboardPage(skin = "blue",
                          )
                 ),
                 tabItem(tabName = "Feature3",
-                         h3("Increasing adverts for free tier"),
+                         h1("Increasing adverts for free tier"),
                          fluidRow(
                            box(width = 5,
                                title = "Information",
@@ -249,7 +258,7 @@ ui <- dashboardPage(skin = "blue",
                          )
                          ),
                 tabItem(tabName = "Feature3Results",
-                         h3("Increasing adverts for free tier"),
+                         h1("Increasing adverts for free tier"),
                          fluidRow(
                            box(width = 4,
                                
@@ -282,7 +291,7 @@ ui <- dashboardPage(skin = "blue",
                            )
                          )),
                 tabItem(tabName = "Feature4",
-                         h3("Introducing streaks for subscription users"),
+                         h1("Introducing streaks for subscription users"),
                          fluidRow(
                            box(width = 5,
                                
@@ -314,7 +323,7 @@ ui <- dashboardPage(skin = "blue",
                                      textOutput("power4"))
                          )),
                 tabItem(tabName = "Feature4results",
-                         h3("Introducing streaks for subscription users"),
+                         h1("Introducing streaks for subscription users"),
                          fluidRow(
                            box(width = 4,
                                
@@ -348,7 +357,7 @@ ui <- dashboardPage(skin = "blue",
                          )),
                 
                  tabItem(tabName = "OneYearLater",
-                          h3("Status of MonoBingo one year later"),
+                          h1("Status of MonoBingo one year later"),
                           fluidRow(
                             box(width = 5,
                                
@@ -613,18 +622,18 @@ server <- function(input, output, session) {
   
   #screen 5 feature 2
   
-  output$feature2des1 <- renderText(
+  output$feature2des1 <- renderText({
     "The second feature that can be installed is reducing the wait time for
     those who subscribe. Currently, the free tier requires 3 minutes wait between
     each round. This feature would mean those who subscribe only wait 30 seconds."
-  )
-  output$feature2des2 <- renderText(
+  })
+  output$feature2des2 <- renderText({
     "It is thought this feature will increase subscriptions by 20%."
-  )
-  output$feature2des3 <- renderText(
+  })
+  output$feature2des3 <- renderText({
     "You are going to test the effectiveness of this feature. Please choose the test 
     length and sample size by using the power calculator."
-  )
+  })
   output$power2 <- renderText({
   daynumber2 <- as.numeric(input$dayquestion2)
   sample2 <- input$samplesize2 * daynumber2
