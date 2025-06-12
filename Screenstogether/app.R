@@ -1233,23 +1233,35 @@ server <- function(input, output, session) {
   })
   
   output$chosenfeature1 <- renderUI({
+    validate(
+      need(input$decision1 != "", "Please answer the questions on the previous pages.")
+    )
     if (input$decision1 == "Yes"){
       "Reducing number of hearts for free tier"
     }
     else {NULL}
     })
     output$chosenfeature2 <- renderUI({
+      validate(
+        need(input$decision2 != "", "Please answer the questions on the previous pages.")
+      )
     if (input$decision2 == "Yes"){
       "Reducing wait time for subscription"
     }
       else {NULL}
       })
     output$chosenfeature3 <- renderUI({
+      validate(
+        need(input$decision3 != "", "Please answer the questions on the previous pages.")
+      )
       if (input$decision3 == "Yes") {
         "Increasing adverts for free tier"
       }
     })
     output$chosenfeature4 <- renderUI({
+      validate(
+        need(input$decision4 != "", "Please answer the questions on the previous pages.")
+      )
       if (input$decision4 == "Yes"){
         "Introducing streaks for subscribers"
       }
