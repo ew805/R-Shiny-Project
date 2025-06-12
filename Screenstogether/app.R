@@ -34,6 +34,7 @@ ui <- dashboardPage(skin = "blue",
                       menuItem("Feature 3 results", tabName = "Feature3Results"),
                       menuItem("Feature 4", tabName = "Feature4"),
                       menuItem("Feature 4 results", tabName = "Feature4results"),
+                      menuItem("Order the features", tabName = "orderfeatures"),
                       menuItem("One Year Later", tabName = "OneYearLater")
                     )
                   ),
@@ -133,7 +134,9 @@ ui <- dashboardPage(skin = "blue",
                                br(),
                                radioButtons("decision1", "Introduce feature 1?",
                                             choices = c("Yes", "No"), 
-                                            selected = character(0))
+                                            selected = character(0)),
+                               textInput("surveyquestion1", "Why did you make that decision?"),
+                               
                              ),
                              
                              
@@ -355,6 +358,19 @@ ui <- dashboardPage(skin = "blue",
                              plotOutput("ciplot4")
                            )
                          )),
+                
+                tabItem(tabName = "orderfeatures",
+                        h1("Order your chosen features"),
+                        fluidRow(
+                          box(width = 5,
+                              title = "Instructions",
+                              status = "primary",
+                              solidHeader = TRUE,
+                              textOutput("orderinfo"),
+                              br(),
+              
+                              )
+                        )),
                 
                  tabItem(tabName = "OneYearLater",
                           h1("Status of MonoBingo one year later"),
@@ -1252,6 +1268,13 @@ server <- function(input, output, session) {
   output$decision4 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 4:
     streaks for subscribers."
+  })
+  
+  ##penultimate screen, order choices
+  
+  output$orderinfo <- renderText({
+    "Please order the features you chose to introduce in the order you would like
+    them added to the product."
   })
   #final screen , a year later
   
