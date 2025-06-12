@@ -56,7 +56,7 @@ ui <- dashboardPage(skin = "blue",
                            br(),
                            fluidRow(
                              column(6,
-                                    box(width = 6,
+                                    box(width = 12,
                                     title = "Instructions",
                                     uiOutput("instructions"),
                                     status = "primary",
@@ -65,7 +65,7 @@ ui <- dashboardPage(skin = "blue",
                                     ),
                           
                              column(6,
-                                    box(width = 6,
+                                    box(width = 12,
                                     title = "Purpose",
                                     textOutput("purpose"),
                                     status = "primary",
@@ -1269,7 +1269,7 @@ server <- function(input, output, session) {
   
   output$chosenfeature1 <- renderUI({
     validate(
-      need(input$decision1 != "", "Please answer the questions on the previous pages.")
+      need(input$decision1 != "", "Please decide whether to add feature 1.")
     )
     if (input$decision1 == "Yes"){
       "Reducing number of hearts for free tier"
@@ -1278,7 +1278,7 @@ server <- function(input, output, session) {
     })
     output$chosenfeature2 <- renderUI({
       validate(
-        need(input$decision2 != "", "Please answer the questions on the previous pages.")
+        need(input$decision2 != "", "Please decide whether to add feature 2.")
       )
     if (input$decision2 == "Yes"){
       "Reducing wait time for subscription"
@@ -1287,7 +1287,7 @@ server <- function(input, output, session) {
       })
     output$chosenfeature3 <- renderUI({
       validate(
-        need(input$decision3 != "", "Please answer the questions on the previous pages.")
+        need(input$decision3 != "", "Please decide whether to add feature 3.")
       )
       if (input$decision3 == "Yes") {
         "Increasing adverts for free tier"
@@ -1295,7 +1295,7 @@ server <- function(input, output, session) {
     })
     output$chosenfeature4 <- renderUI({
       validate(
-        need(input$decision4 != "", "Please answer the questions on the previous pages.")
+        need(input$decision4 != "", "Please decide whether to add feature 4.")
       )
       if (input$decision4 == "Yes"){
         "Introducing streaks for subscribers"
