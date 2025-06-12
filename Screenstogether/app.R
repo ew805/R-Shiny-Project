@@ -1233,11 +1233,11 @@ server <- function(input, output, session) {
         "Increasing adverts for free tier"
       }
     })
-    output$chosenfeature4 <- renderUI(
+    output$chosenfeature4 <- renderUI({
       if (input$decision4 == "Yes"){
         "Introducing streaks for subscribers"
       }
-    )
+    })
     
   
   load2 <- reactiveVal("before2")
@@ -1255,9 +1255,11 @@ server <- function(input, output, session) {
     number_users_test2 <- 20000
     number_subscribers_control2 <- 500
     number_users_control2 <- 22000 
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
+    yesanswers <- sum(answers == "Yes", na.rm = TRUE)
     
     
-    if (load2() == "loaded2" && input$decision1 == "Yes"){
+    if (load2() == "loaded2" && yesanswers >= 1){
       
       data.frame( 
         Yearlater = c("Subscribers", "Users"),
@@ -1265,7 +1267,7 @@ server <- function(input, output, session) {
         Control_Group = c(number_subscribers_control2, number_users_control2)
       )
     }
-    else if (load2() == "loaded2" && input$decision1 == "No") {
+    else if (load2() == "loaded2" && yesanswers == 0) {
       data.frame(
         Yearlater = c("Subscribers", "Users"),
         Number = c(number_subscribers_control2, number_users_control2)
