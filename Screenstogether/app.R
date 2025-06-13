@@ -220,7 +220,9 @@ ui <- dashboardPage(skin = "blue",
                              br(),
                              radioButtons("decision2", "Introduce feature 2?",
                                           choices = c("Yes", "No"), 
-                                          selected = character(0))
+                                          selected = character(0)),
+                             textInput("surveyquestion2", "question?", 
+                                       value = ""),
                            ),
                            
                            
@@ -289,7 +291,9 @@ ui <- dashboardPage(skin = "blue",
                              br(),
                              radioButtons("decision3", "Introduce feature 3?",
                                           choices = c("Yes", "No"), 
-                                          selected = character(0))
+                                          selected = character(0)),
+                             textInput("surveyquestion3", "question?", 
+                                       value = ""),
                            ),
                            box(width = 8,
                                title = "Results",
@@ -354,7 +358,9 @@ ui <- dashboardPage(skin = "blue",
                              br(),
                              radioButtons("decision4", "Introduce feature 4?",
                                           choices = c("Yes", "No"), 
-                                          selected = character(0))
+                                          selected = character(0)),
+                             textInput("surveyquestion4", "question?", 
+                                       value = ""),
                            ),
                            box(width = 8,
                                title = "Results",
@@ -1329,11 +1335,17 @@ server <- function(input, output, session) {
     
     responses <- list(
       Q1 = input$surveyquestion1,
+      Q2 = input$surveyquestion2,
+      Q3 = input$surveyquestion3,
+      Q4 = input$surveyquestion4,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
     )
     surveyresponses <- data.frame(
       Q1 = input$surveyquestion1,
+      Q2 = input$surveyquestion2,
+      Q3 = input$surveyquestion3,
+      Q4 = input$surveyquestion4,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
       stringsAsFactors = FALSE
