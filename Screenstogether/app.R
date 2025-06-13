@@ -379,18 +379,11 @@ ui <- dashboardPage(skin = "blue",
                             title = "Order",
                             status = "primary",
                             solidHeader = TRUE,
-                            bucket_list(
-                              header = "Drag to reorder",
-                              group_name = "ordering",
-                              orientation = "vertical",
-                              add_rank_list(
-                                text = "Selected Items",
-                                labels = NULL,
-                                input_id = "ordered_items"
+                            uiOutput("orderedlist")
                               )
                             ),
-                          )
-                        )),
+                          ),
+                        
                 
                  tabItem(tabName = "OneYearLater",
                           h1("Status of MonoBingo one year later"),
@@ -407,10 +400,7 @@ ui <- dashboardPage(skin = "blue",
                               br(),
                               uiOutput("featureschosen"),
                               br(),
-                              uiOutput("chosenfeature1"),
-                              uiOutput("chosenfeature2"),
-                              uiOutput("chosenfeature3"),
-                              uiOutput("chosenfeature4")
+                              uiOutput("order_list")
                             ),
                             
                             box(width = 7,
@@ -1297,18 +1287,22 @@ server <- function(input, output, session) {
     them added to the product."
   })
   
-  observe({
-    req(input$menu)
+  output$orderedlist <- renderUI({
+    selected <- labelsrank[unlist(lapply(inputrank, function(id) {
+      val <- input[[id]]
+      !is.null(val) && val == "Yes"
+    }))]
     
-    if (input$menu == "orderfeatures") {
-      
-      selected <- labelsrank[unlist(lapply(inputrank, function(id) {
-        val <- input[[id]]
-        !is.null(val) && val == "Yes"
-      }))]
-      
-      update_rank_list("ordered_items", labelsrank = selected)
-    }
+    bucket_list(
+      header = "Drag to reorder",
+      group_name = "ordering",
+      orientation = "vertical",
+      add_rank_list(
+        text = "Features adding to MonoBingo",
+        labels = selected,
+        input_id = "ordered_items"
+      )
+    )
   })
   #final screen , a year later
   
@@ -1320,46 +1314,22 @@ server <- function(input, output, session) {
   
   output$featureschosen <- renderUI({
     tagList(
-    h4("Below is the list of features you chose to introduce to MonoBingo: ")
+    h4("Below is the list of features you chose to introduce to MonoBingo and the order
+    you chose to introduce them:"
+    )
     )
   })
-  
-  output$chosenfeature1 <- renderUI({
-    validate(
-      need(input$decision1 != "", "Please decide whether to add feature 1.")
-    )
-    if (input$decision1 == "Yes"){
-      "Reducing number of hearts for free tier"
-    }
-    else {NULL}
-    })
-    output$chosenfeature2 <- renderUI({
-      validate(
-        need(input$decision2 != "", "Please decide whether to add feature 2.")
-      )
-    if (input$decision2 == "Yes"){
-      "Reducing wait time for subscription"
-    }
-      else {NULL}
-      })
-    output$chosenfeature3 <- renderUI({
-      validate(
-        need(input$decision3 != "", "Please decide whether to add feature 3.")
-      )
-      if (input$decision3 == "Yes") {
-        "Increasing adverts for free tier"
-      }
-    })
-    output$chosenfeature4 <- renderUI({
-      validate(
-        need(input$decision4 != "", "Please decide whether to add feature 4.")
-      )
-      if (input$decision4 == "Yes"){
-        "Introducing streaks for subscribers"
-      }
-    })
+
     
-  
+    output$order_list <- renderUI({
+      req(input$ordered_items)
+      
+      tags$ul(
+        lapply(input$ordered_items, function(item) {
+          tags$li(item)
+        })
+      )
+    })
   load2 <- reactiveVal("before2")
   
   observeEvent(input$yearbutton, {
