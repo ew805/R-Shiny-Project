@@ -34,6 +34,7 @@ ui <- dashboardPage(skin = "blue",
                     sidebarMenu(
                       id = "menu",
                       menuItem("Overview", tabName = "Overview"),
+                      menuItem("Company Metrics", tabName = "companymetrics"),
                       menuItem("Feature 1", tabName = "Feature1"),
                       menuItem("Feature 1 results", tabName = "Feature1results"),
                       menuItem("Feature 2", tabName = "Feature2"),
@@ -83,6 +84,11 @@ ui <- dashboardPage(skin = "blue",
                            )
                           )
                           ),
+                  tabItem(tabName = "companymetrics",
+                          h1("MonoBingo Company Metrics")
+                          ),
+                  
+                  
                   tabItem(tabName = "Feature1",
                            
                            h1("Reducing hearts for free tier"),
