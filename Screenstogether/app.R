@@ -138,7 +138,8 @@ ui <- dashboardPage(skin = "blue",
                                radioButtons("decision1", "Introduce feature 1?",
                                             choices = c("Yes", "No"), 
                                             selected = character(0)),
-                               textInput("surveyquestion1", "Why did you make that decision?"),
+                               textInput("surveyquestion1", "Why did you make that decision?", 
+                                         value = ""),
                                
                              ),
                              
@@ -366,21 +367,36 @@ ui <- dashboardPage(skin = "blue",
                 tabItem(tabName = "orderfeatures",
                         h1("Order your chosen features"),
                         fluidRow(
-                          box(width = 5,
+                          column(
+                            width =5,
+                            box(
+                            width = 12,
                               title = "Instructions",
                               status = "primary",
                               solidHeader = TRUE,
                               textOutput("orderinfo"),
                               br(),
-              
+                            )
                               ),
-                          box(
+                          column(
                             width = 7,
+                            box(
+                              width = 12,
+                            
                             title = "Order",
                             status = "primary",
                             solidHeader = TRUE,
-                            uiOutput("orderedlist")
-                              )
+                            uiOutput("orderedlist"),
+                            textInput("surveyquestionfinal", "Why did you choose that order?",
+                                      value = "")
+                              ),
+                            box(
+                              status ="primary",
+                              solidHeader = TRUE,
+                              width = 12,
+                              actionButton("submitbutton", "Submit all"),
+                              textOutput("submitted")
+                          ) )
                             ),
                           ),
                         
@@ -1304,6 +1320,30 @@ server <- function(input, output, session) {
       )
     )
   })
+  
+  observeEvent(input$submitbutton, {
+    
+    responses <- list(
+      Q1 = input$surveyquestion1,
+      Qfinal = input$surveyquestionfinal,
+      Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    
+    response_df <- as.data.frame(responses, stringsAsFactors = FALSE)
+    
+    file <- "responses.csv"
+    
+    if (!file.exists(file)) {
+      
+      write.csv(response_df, file, row.names = FALSE)
+    } else {
+      
+      write.table(response_df, file, sep = ",", row.names = FALSE,
+                  col.names = FALSE, append = TRUE)
+    }
+    
+    output$submitted <- renderText("Your responses have been saved. Thank you!")
+  })
   #final screen , a year later
   
   output$yearlater <- renderText({
@@ -1369,7 +1409,9 @@ server <- function(input, output, session) {
     else {NULL}
   })
   output$yearresults <- renderUI({
-    
+    validate(
+      need(input$decision1, "Please answer the questions on the previous pages")
+    )
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
     yesanswers <- sum(answers == "Yes", na.rm = TRUE)
     
