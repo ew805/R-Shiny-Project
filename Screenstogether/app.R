@@ -11,6 +11,7 @@ library(shiny)
 library(later)
 library(ggplot2)
 library(shinydashboard)
+library(sortable)
 
 #data for table
 number_subscribers_test <- 250
@@ -18,13 +19,15 @@ number_users_test <- 10000
 number_subscribers_control <- 200
 number_users_control <- 10000
 
-
+inputrank <- c("decision1", "decision2", "decision3", "decision4")
+labelsrank <- c("Feature 1", "Feature 2", "Feature 3", "Feature 4")
 
 ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
                   
                   dashboardSidebar(
                     sidebarMenu(
+                      id = "menu",
                       menuItem("Overview", tabName = "Overview"),
                       menuItem("Feature 1", tabName = "Feature1"),
                       menuItem("Feature 1 results", tabName = "Feature1results"),
@@ -357,6 +360,7 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers4"),
                              plotOutput("ciplot4")
                            )
+                      
                          )),
                 
                 tabItem(tabName = "orderfeatures",
@@ -369,7 +373,23 @@ ui <- dashboardPage(skin = "blue",
                               textOutput("orderinfo"),
                               br(),
               
+                              ),
+                          box(
+                            width = 7,
+                            title = "Order",
+                            status = "primary",
+                            solidHeader = TRUE,
+                            bucket_list(
+                              header = "Drag to reorder",
+                              group_name = "ordering",
+                              orientation = "vertical",
+                              add_rank_list(
+                                text = "Selected Items",
+                                labels = NULL,
+                                input_id = "ordered_items"
                               )
+                            ),
+                          )
                         )),
                 
                  tabItem(tabName = "OneYearLater",
@@ -1275,6 +1295,20 @@ server <- function(input, output, session) {
   output$orderinfo <- renderText({
     "Please order the features you chose to introduce in the order you would like
     them added to the product."
+  })
+  
+  observe({
+    req(input$menu)
+    
+    if (input$menu == "orderfeatures") {
+      
+      selected <- labelsrank[unlist(lapply(inputrank, function(id) {
+        val <- input[[id]]
+        !is.null(val) && val == "Yes"
+      }))]
+      
+      update_rank_list("ordered_items", labelsrank = selected)
+    }
   })
   #final screen , a year later
   
