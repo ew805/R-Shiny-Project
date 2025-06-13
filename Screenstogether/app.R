@@ -12,6 +12,10 @@ library(later)
 library(ggplot2)
 library(shinydashboard)
 library(sortable)
+library(googlesheets4)
+
+gs4_auth(path = "rshinyproject-462813-5ff788b1a509.json")
+sheet_id <- "1NKqU0eYYXZPLW8OMQOzfXsmMUe39A95HOU2hAZM8bLo"
 
 #data for table
 number_subscribers_test <- 250
@@ -1302,7 +1306,7 @@ server <- function(input, output, session) {
     "Please order the features you chose to introduce in the order you would like
     them added to the product."
   })
-  
+  ##ordering features
   output$orderedlist <- renderUI({
     selected <- labelsrank[unlist(lapply(inputrank, function(id) {
       val <- input[[id]]
@@ -1320,7 +1324,7 @@ server <- function(input, output, session) {
       )
     )
   })
-  
+  ##saving survey responses after pressing submit
   observeEvent(input$submitbutton, {
     
     responses <- list(
@@ -1328,7 +1332,12 @@ server <- function(input, output, session) {
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
     )
-    
+    surveyresponses <- data.frame(
+      Q1 = input$surveyquestion1,
+      Qfinal = input$surveyquestionfinal,
+      Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+      stringsAsFactors = FALSE
+    )
     response_df <- as.data.frame(responses, stringsAsFactors = FALSE)
     
     file <- "responses.csv"
@@ -1341,7 +1350,7 @@ server <- function(input, output, session) {
       write.table(response_df, file, sep = ",", row.names = FALSE,
                   col.names = FALSE, append = TRUE)
     }
-    
+    sheet_append(ss = sheet_id, data = surveyresponses)
     output$submitted <- renderText("Your responses have been saved. Thank you!")
   })
   #final screen , a year later
