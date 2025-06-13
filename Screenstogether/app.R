@@ -24,7 +24,8 @@ number_subscribers_control <- 200
 number_users_control <- 10000
 
 inputrank <- c("decision1", "decision2", "decision3", "decision4")
-labelsrank <- c("Feature 1", "Feature 2", "Feature 3", "Feature 4")
+labelsrank <- c("Feature 1: reducing hearts", "Feature 2: reducing wait time",
+                "Feature 3: increasing adverts", "Feature 4: introducing streaks")
 
 ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
@@ -458,9 +459,12 @@ server <- function(input, output, session) {
   })
   output$instructions <- renderUI({
     tags$ul(
+      tags$li("Read the company metrics on the next page"),
       tags$li("Work through the features in order."),
       tags$li("Choose your test conditions and then look at the results tab for each."),
       tags$li("On each results tab decide if you want to introduce the feature."),
+      tags$li("Answer the text questions as you go along"),
+      tags$li("Choose the order you wish to introduce the features"),
       tags$li("After testing each feature look at the status of MonoBingo one year later.")
     
     )
@@ -1401,6 +1405,14 @@ server <- function(input, output, session) {
     delay=5)
   })
   output$yeartable <-renderTable({ 
+    validate(
+      need(input$decision1, "Please decide whether to add each feature 1"),
+      need(input$decision2, "Please decide whether to add each feature 2"),
+      need(input$decision3, "Please decide whether to add each feature 3"),
+      need(input$decision4, "Please decide whether to add each feature 4")
+      
+    )
+    
     
     number_subscribers_test2 <- 600
     number_users_test2 <- 20000
@@ -1431,7 +1443,7 @@ server <- function(input, output, session) {
   })
   output$yearresults <- renderUI({
     validate(
-      need(input$decision1, "Please answer the questions on the previous pages")
+      need(input$decision1, "")
     )
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
     yesanswers <- sum(answers == "Yes", na.rm = TRUE)
@@ -1454,6 +1466,9 @@ server <- function(input, output, session) {
     }
    })
   output$yeartext <- renderUI({
+    validate(
+    need(input$decision1, "")
+  )
     if (load2() == "loaded2"){
       if(input$decision1 == "Yes"){
         p("While reducing the number of hearts for the free tier increased subscriber
