@@ -667,7 +667,7 @@ server <- function(input, output, session) {
   
   output$results <- renderUI({
     validate(
-      need(input$daynumber != "", "")
+      need(input$dayquestion != "", "")
     )
     
     if(load()=="pressed") {
