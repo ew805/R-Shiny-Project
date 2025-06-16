@@ -14,6 +14,9 @@ library(shinydashboard)
 library(sortable)
 library(googlesheets4)
 
+conn <- dbConnect(SQLite(), "sims.sqlite")
+dbExecute(conn, "DROP TABLE IF EXISTS simulation")
+
 ##setting up google sheet to hold survey results
 gs4_auth(path = "rshinyproject-462813-5ff788b1a509.json")
 sheet_id <- "1NKqU0eYYXZPLW8OMQOzfXsmMUe39A95HOU2hAZM8bLo"
@@ -706,47 +709,64 @@ server <- function(input, output, session) {
   
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
-  
   output$resultdata <- renderTable({ 
-    validate(   # will not run if questions not answered
-      need(input$dayquestion != "", "Please answer the questions on the previous page.")
-      )
-    req(input$dayquestion)
-    days <- as.numeric(input$dayquestion)
-    
-    
-    #test
-    #data for table
-    number_subscribers_test <- 250
-    number_users_test <- as.numeric(input$samplesize)
-    number_subscribers_control <- 200
-    number_users_control <- as.numeric(input$samplesize)
-    
-    
-    subscribers <- c(number_subscribers_test * days , number_subscribers_control * days)
-    users <- c(number_users_test * days, number_users_control * days)
-    rate <- round((subscribers/users)* 100, 2)
-    
   
-    testresult <- prop.test(subscribers, users)
+    
+    validate(
+      need(input$dayquestion != "", "Please answer the questions on the previous page.")
+    )
+    req(input$dayquestion)
+    
+    days <- as.numeric(input$dayquestion)
+    samplesize <- as.numeric(input$samplesize)
+    usersnumber <- samplesize * days
+    users <- rep(usersnumber, 50)
+    
+    for (i in c(1:7 * 6)){
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", 
+                       create_subscription_decision(0.6))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    for (i in c(1:7 * 6)){
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", 
+                       create_subscription_decision(0.1))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    df <- dbReadTable(conn, "sim")
+    
+    subscribersdf <- aggregate(user_subscribes ~ grouping, data = df, sum)
+    usersdf <- aggregate(user_subscribes ~ grouping, data = df, length)
+    
+    subscribersn <- subscribersdf$subscribed
+    usersn <- usersdf$subscribed
+    
+    rate <- round((subscribersn/usersn)* 100, 2)
+    
+    
+    testresult <- prop.test(subscribersn, usersn)
     p_val <- signif(testresult$p.value, 3)
     
+    subscribersdiff <- subscribersn[2] - subscribersn[1]
+    ratediff <- round(rate[2]-rate[1], 2)
     
     #results table
     if (load() == "loaded") 
       
-    data.frame(
-      Test = c("Subscribers", "Users", "Rate", "p-value"),
-      Test_Group=c(number_subscribers_test * days, number_users_test * days, 
-                   paste0(rate[1], "%"),"-"),
-      Control_Group = c(number_subscribers_control * days, number_users_control * days, 
-                        paste0(rate[2],"%"),"-"),
-      Difference = c(number_subscribers_test * days - number_subscribers_control * days,
-                     "-", 
-                     paste0(rate[1]-rate[2], "%"), "-"),
-      P_Value = c("-", "-", "-", p_val))
+      data.frame(
+        Test = c("Subscribers", "Users", "Rate", "p-value"),
+        Test_Group=c(subscribersn[1], usersn[1], 
+                     paste0(rate[1], "%"),"-"),
+        Control_Group = c(subscribersn[2], usersn[2], 
+                          paste0(rate[2],"%"),"-"),
+        Difference = c(subscribersdiff,
+                       "-", 
+                       paste0(ratediff, "%"), "-"),
+        P_Value = c("-", "-", "-", p_val))
     
   })
+  
   #screen 3 feature 1 results 
   # loading image/text
   
