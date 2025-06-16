@@ -86,12 +86,16 @@ ui <- dashboardPage(skin = "blue",
                                     box(width = 3,
                                         status ="primary",
                                         solidHeader = TRUE,
-                                        actionButton("next1", "Next Page"))
+                                        actionButton("next0", "Next Page"))
                            )
                           )
                           ),
                   tabItem(tabName = "companymetrics",
-                          h1("MonoBingo Company Metrics")
+                          h1("MonoBingo Company Metrics"),
+                          fluidRow(box(width = 3,
+                              status ="primary",
+                              solidHeader = TRUE,
+                              actionButton("next1", "Next Page")))
                           ),
                   
                   
@@ -511,9 +515,12 @@ server <- function(input, output, session) {
   
   ##page changing
   
-  observeEvent(input$next1,
+  observeEvent(input$next0,
                {updateTabItems(session, "menu", "companymetrics")}
                )
+  observeEvent(input$next1,
+               {updateTabItems(session, "menu", "Feature1")}
+  )
   observeEvent(input$next2,
                {updateTabItems(session, "menu", "Feature1results")}
   )
