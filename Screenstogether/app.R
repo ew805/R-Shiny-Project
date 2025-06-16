@@ -115,9 +115,10 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Churn Rate",
                                      status ="primary",
                                      solidHeader = TRUE),
-                            box(width = 5,
+                            box(width = 12,
                               status ="primary",
                               solidHeader = TRUE,
+                              actionButton("previous1", "Previous Page"),
                               actionButton("next1", "Next Page")))
                           )),
                   
@@ -156,9 +157,10 @@ ui <- dashboardPage(skin = "blue",
                                            value = 3000,
                                            step = 100),
                                textOutput("power")),
-                               box(width = 3,
+                               box(width = 12,
                                    status ="primary",
                                    solidHeader = TRUE,
+                                   actionButton("previous2", "Previous Page"),
                                    actionButton("next2", "Next Page"))
                              )
                              
@@ -206,9 +208,10 @@ ui <- dashboardPage(skin = "blue",
                                plotOutput("ciplot")
                                
                              ),
-                             box(width = 3,
+                             box(width = 12,
                                  status ="primary",
                                  solidHeader = TRUE,
+                                 actionButton("previous3", "Previous Page"),
                                  actionButton("next3", "Next Page"))
                            ) )
                 ),
@@ -246,9 +249,10 @@ ui <- dashboardPage(skin = "blue",
                                          step = 100),
                              textOutput("power2")
                            ),
-                           box(width = 3,
+                           box(width = 12,
                                status ="primary",
                                solidHeader = TRUE,
+                               actionButton("previous4", "Previous Page"),
                                actionButton("next4", "Next Page"))
                          ))
                          
@@ -295,9 +299,10 @@ ui <- dashboardPage(skin = "blue",
                              plotOutput("ciplot2")
                              
                            ),
-                           box(width = 3,
+                           box(width = 12,
                                status ="primary",
                                solidHeader = TRUE,
+                               actionButton("previous5", "Previous Page"),
                                actionButton("next5", "Next Page"))
                          ) )
                 ),
@@ -332,9 +337,10 @@ ui <- dashboardPage(skin = "blue",
                                                  value = 3000,
                                                  step = 100),
                                      textOutput("power3")),
-                             box(width = 3,
+                             box(width = 12,
                                  status ="primary",
                                  solidHeader = TRUE,
+                                 actionButton("previous6", "Previous Page"),
                                  actionButton("next6", "Next Page"))
                          ))
                          ),
@@ -373,9 +379,10 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers3"),
                              plotOutput("ciplot3")
                            ),
-                           box(width = 3,
+                           box(width = 12,
                                status ="primary",
                                solidHeader = TRUE,
+                               actionButton("previous7", "Previous Page"),
                                actionButton("next7", "Next Page"))
                          )) ),
                 tabItem(tabName = "Feature4",
@@ -409,9 +416,10 @@ ui <- dashboardPage(skin = "blue",
                                                  value = 3000,
                                                  step = 100),
                                      textOutput("power4")),
-                               box(width = 3,
+                               box(width = 12,
                                    status ="primary",
                                    solidHeader = TRUE,
+                                   actionButton("previous8", "Previous Page"),
                                    actionButton("next8", "Next Page"))
                          ))),
                 tabItem(tabName = "Feature4results",
@@ -449,9 +457,10 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers4"),
                              plotOutput("ciplot4")
                            ),
-                           box(width = 3,
+                           box(width = 12,
                                status ="primary",
                                solidHeader = TRUE,
+                               actionButton("previous9", "Previous Page"),
                                actionButton("next9", "Next Page"))
                       
                          ))),
@@ -489,9 +498,10 @@ ui <- dashboardPage(skin = "blue",
                               actionButton("submitbutton", "Submit all"),
                               textOutput("submitted")
                           ),
-                          box(width = 3,
+                          box(width = 6,
                               status ="primary",
                               solidHeader = TRUE,
+                              actionButton("previous10", "Previous Page"),
                               actionButton("next10", "Next Page")))
                             ),
                           ),
@@ -500,8 +510,8 @@ ui <- dashboardPage(skin = "blue",
                  tabItem(tabName = "OneYearLater",
                           h1("Status of MonoBingo one year later"),
                           fluidRow(
-                            box(width = 5,
-                               
+                            column(width = 5,
+                               box(width = 12,
                                 title = "Information",
                                 status = "primary",
                                 solidHeader = TRUE,
@@ -513,18 +523,23 @@ ui <- dashboardPage(skin = "blue",
                               uiOutput("featureschosen"),
                               br(),
                               uiOutput("order_list")
-                            ),
+                            )),
                             
-                            box(width = 7,
-                                
+                            column(width = 7,
+                                box(width = 12,
                                 title = "Results",
                                 status = "primary",
                                 solidHeader = TRUE,
                               uiOutput("yearresults"),
                               tableOutput("yeartable"),
                               uiOutput("yeartext")
-                            )
-                          ))
+                            ),
+                            box(width = 4,
+                                status = "primary",
+                                solidHeader = TRUE,
+                                actionButton("previous11", "Previous Page")
+                                )
+                          )) )
                 
                 
 )
@@ -570,6 +585,40 @@ server <- function(input, output, session) {
   )
   observeEvent(input$next10,
                {updateTabItems(session, "menu", "OneYearLater")}
+  )
+  
+  observeEvent(input$previous1,
+               {updateTabItems(session, "menu", "Overview")}
+  )
+  observeEvent(input$previous2,
+               {updateTabItems(session, "menu", "companymetrics")}
+  )
+  observeEvent(input$previous3,
+               {updateTabItems(session, "menu", "Feature1")}
+  )
+  observeEvent(input$previous4,
+               {updateTabItems(session, "menu", "Feature1results")}
+  )
+  observeEvent(input$previous5,
+               {updateTabItems(session, "menu", "Feature2")}
+  )
+  observeEvent(input$previous6,
+               {updateTabItems(session, "menu", "Feature2results")}
+  )
+  observeEvent(input$previous7,
+               {updateTabItems(session, "menu", "Feature3")}
+  )
+  observeEvent(input$previous8,
+               {updateTabItems(session, "menu", "Feature3Results")}
+  )
+  observeEvent(input$previous9,
+               {updateTabItems(session, "menu", "Feature4")}
+  )
+  observeEvent(input$previous10,
+               {updateTabItems(session, "menu", "Feature4results")}
+  )
+  observeEvent(input$previous11,
+               {updateTabItems(session, "menu", "orderfeatures")}
   )
   ##screen 1 text overview
   
