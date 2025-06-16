@@ -82,7 +82,9 @@ ui <- dashboardPage(skin = "blue",
                                     textOutput("purpose"),
                                     status = "primary",
                                     solidHeader = TRUE,
-                                    )
+                                    ),
+                                    box(width = 12,
+                                        actionButton("next1", "Next Page"))
                            )
                           )
                           ),
@@ -95,7 +97,8 @@ ui <- dashboardPage(skin = "blue",
                            
                            h1("Reducing hearts for free tier"),
                            fluidRow(
-                             box(width = 5,
+                             column(width = 5, 
+                                    box(width=12,
                                  title = "Information",
                                  status = "primary",
                                  solidHeader = TRUE,
@@ -106,8 +109,9 @@ ui <- dashboardPage(skin = "blue",
                                textOutput("feature1description3"),
                                br(),
                               textOutput("feature1description4")
-                             ),
-                             box(width = 7,
+                             )),
+                             column(width = 7,
+                                    box( width = 12,
                                  title = "Choices",
                                  status = "primary",
                                  solidHeader = TRUE,
@@ -122,7 +126,9 @@ ui <- dashboardPage(skin = "blue",
                                            max = 10000,
                                            value = 3000,
                                            step = 100),
-                               textOutput("power")
+                               textOutput("power")),
+                               box(width = 12,
+                                   actionButton("next2", "Next Page"))
                              )
                              
                            ),
@@ -131,9 +137,9 @@ ui <- dashboardPage(skin = "blue",
                   tabItem(tabName = "Feature1results",
                            h1("Reducing hearts for free tier"),
                            fluidRow(
-                             box(
+                             column(
                                width = 4,
-                               
+                               box(width=12,
                                status = "primary",
                                solidHeader = TRUE,
                                textOutput("press"),
@@ -154,11 +160,12 @@ ui <- dashboardPage(skin = "blue",
                                textInput("surveyquestion1", "Why did you make that decision?", 
                                          value = ""),
                                
-                             ),
+                             ) ),
                              
                              
-                             box(
+                             column(
                                width = 8,
+                               box(width=12,
                                title = "Results",
                                status = "primary",
                                solidHeader = TRUE,
@@ -167,13 +174,16 @@ ui <- dashboardPage(skin = "blue",
                                uiOutput("CInumbers"),
                                plotOutput("ciplot")
                                
-                             )
-                           )
+                             ),
+                             box(width = 12,
+                                 actionButton("next3", "Next Page"))
+                           ) )
                 ),
                 tabItem(tabName = "Feature2",
                          h1("Reducing wait time for subscribers"),
                          fluidRow(
-                           box(width = 5,
+                           column(width = 5,
+                                  box(width=12,
                                
                                title = "Information",
                                status = "primary",
@@ -183,8 +193,9 @@ ui <- dashboardPage(skin = "blue",
                              textOutput("feature2des2"),
                              br(),
                              textOutput("feature2des3")
-                           ),
-                           box(width = 7,
+                           )),
+                           column(width = 7,
+                                  box(width=12,
                                
                                title = "Choices",
                                status = "primary",
@@ -201,8 +212,10 @@ ui <- dashboardPage(skin = "blue",
                                          value = 3000,
                                          step = 100),
                              textOutput("power2")
-                           )
-                         )
+                           ),
+                           box(width = 12,
+                               actionButton("next4", "Next Page"))
+                         ))
                          
                          
                          
@@ -211,7 +224,8 @@ ui <- dashboardPage(skin = "blue",
                 tabItem(tabName = "Feature2results",
                          h1("Reducing wait time for subscribers"),
                          fluidRow(
-                           box(width = 4,
+                           column(width = 4,
+                                  box(width=12,
                                
                                status = "primary",
                                solidHeader = TRUE,
@@ -232,10 +246,11 @@ ui <- dashboardPage(skin = "blue",
                                           selected = character(0)),
                              textInput("surveyquestion2", "question?", 
                                        value = ""),
-                           ),
+                           )),
                            
                            
-                           box(width = 8,
+                           column(width = 8,
+                                  box(width=12,
                                title = "Results",
                                status = "primary",
                                solidHeader = TRUE,
@@ -244,13 +259,16 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers2"),
                              plotOutput("ciplot2")
                              
-                           )
-                         )
+                           ),
+                           box(width = 12,
+                               actionButton("next5", "Next Page"))
+                         ) )
                 ),
                 tabItem(tabName = "Feature3",
                          h1("Increasing adverts for free tier"),
                          fluidRow(
-                           box(width = 5,
+                           column(width = 5,
+                                  box(width=12,
                                title = "Information",
                                solidHeader = TRUE,
                                status = "primary",
@@ -259,9 +277,9 @@ ui <- dashboardPage(skin = "blue",
                                         textOutput("feature3des2"),
                                         br(),
                                         textOutput("feature3des3")
-                                        ),
-                           box(width = 7,
-                               
+                                        )),
+                           column(width = 7,
+                               box(width=12,
                                title = "Choices",
                                status = "primary",
                                solidHeader = TRUE,
@@ -276,14 +294,16 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power3"))
-                         )
+                                     textOutput("power3")),
+                             box(width = 12,
+                                 actionButton("next6", "Next Page"))
+                         ))
                          ),
                 tabItem(tabName = "Feature3Results",
                          h1("Increasing adverts for free tier"),
                          fluidRow(
-                           box(width = 4,
-                               
+                           column(width = 4,
+                               box(width=12,
                                status = "primary",
                                solidHeader = TRUE,
                              textOutput("press3"),
@@ -303,8 +323,9 @@ ui <- dashboardPage(skin = "blue",
                                           selected = character(0)),
                              textInput("surveyquestion3", "question?", 
                                        value = ""),
-                           ),
-                           box(width = 8,
+                           )),
+                           column(width = 8,
+                                  box(width=12,
                                title = "Results",
                                status = "primary",
                                solidHeader = TRUE,
@@ -312,13 +333,15 @@ ui <- dashboardPage(skin = "blue",
                              tableOutput("resultdata3"),
                              uiOutput("CInumbers3"),
                              plotOutput("ciplot3")
-                           )
-                         )),
+                           ),
+                           box(width = 12,
+                               actionButton("next7", "Next Page"))
+                         )) ),
                 tabItem(tabName = "Feature4",
                          h1("Introducing streaks for subscription users"),
                          fluidRow(
-                           box(width = 5,
-                               
+                           column(width = 5,
+                               box(width = 12,
                                title = "Information",
                                status = "primary",
                                solidHeader = TRUE,
@@ -327,9 +350,9 @@ ui <- dashboardPage(skin = "blue",
                                         textOutput("feature4des2"),
                                         br(),
                                         textOutput("feature4des3")
-                           ),
-                           box(width = 7,
-                               
+                           )),
+                           column(width = 7,
+                               box(width = 12,
                                title = "Choices",
                                status = "primary",
                                solidHeader = TRUE,
@@ -344,13 +367,15 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power4"))
-                         )),
+                                     textOutput("power4")),
+                               box(width = 12,
+                                   actionButton("next8", "Next Page"))
+                         ))),
                 tabItem(tabName = "Feature4results",
                          h1("Introducing streaks for subscription users"),
                          fluidRow(
-                           box(width = 4,
-                               
+                           column(width = 4,
+                               box(width=12,
                                status = "primary",
                                solidHeader = TRUE,
                              textOutput("press4"),
@@ -370,8 +395,9 @@ ui <- dashboardPage(skin = "blue",
                                           selected = character(0)),
                              textInput("surveyquestion4", "question?", 
                                        value = ""),
-                           ),
-                           box(width = 8,
+                           )),
+                           column(width = 8,
+                                  box(width=12,
                                title = "Results",
                                status = "primary",
                                solidHeader = TRUE,
@@ -379,9 +405,11 @@ ui <- dashboardPage(skin = "blue",
                              tableOutput("resultdata4"),
                              uiOutput("CInumbers4"),
                              plotOutput("ciplot4")
-                           )
+                           ),
+                           box(width = 12,
+                               actionButton("next9", "Next Page"))
                       
-                         )),
+                         ))),
                 
                 tabItem(tabName = "orderfeatures",
                         h1("Order your chosen features"),
@@ -415,7 +443,9 @@ ui <- dashboardPage(skin = "blue",
                               width = 12,
                               actionButton("submitbutton", "Submit all"),
                               textOutput("submitted")
-                          ) )
+                          ),
+                          box(width = 12,
+                              actionButton("next10", "Next Page")))
                             ),
                           ),
                         
@@ -459,6 +489,38 @@ ui <- dashboardPage(skin = "blue",
 
 server <- function(input, output, session) {
   
+  ##page changing
+  
+  observeEvent(input$next1,
+               {updateTabItems(session, "menu", "companymetrics")}
+               )
+  observeEvent(input$next2,
+               {updateTabItems(session, "menu", "Feature1results")}
+  )
+  observeEvent(input$next3,
+               {updateTabItems(session, "menu", "Feature2")}
+  )
+  observeEvent(input$next4,
+               {updateTabItems(session, "menu", "Feature2results")}
+  )
+  observeEvent(input$next5,
+               {updateTabItems(session, "menu", "Feature3")}
+  )
+  observeEvent(input$next6,
+               {updateTabItems(session, "menu", "Feature3Results")}
+  )
+  observeEvent(input$next7,
+               {updateTabItems(session, "menu", "Feature4")}
+  )
+  observeEvent(input$next8,
+               {updateTabItems(session, "menu", "Feature4results")}
+  )
+  observeEvent(input$next9,
+               {updateTabItems(session, "menu", "orderfeatures")}
+  )
+  observeEvent(input$next10,
+               {updateTabItems(session, "menu", "OneYearLater")}
+  )
   ##screen 1 text overview
   
   output$overview <- renderText({
