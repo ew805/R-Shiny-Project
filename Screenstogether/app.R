@@ -14,15 +14,17 @@ library(shinydashboard)
 library(sortable)
 library(googlesheets4)
 
+##setting up google sheet to hold survey results
 gs4_auth(path = "rshinyproject-462813-5ff788b1a509.json")
 sheet_id <- "1NKqU0eYYXZPLW8OMQOzfXsmMUe39A95HOU2hAZM8bLo"
 
-#data for table
+#data for tables
 number_subscribers_test <- 250
 number_users_test <- 10000
 number_subscribers_control <- 200
 number_users_control <- 10000
 
+#set up for ordering later on
 inputrank <- c("decision1", "decision2", "decision3", "decision4")
 labelsrank <- c("Feature 1: reducing hearts", "Feature 2: reducing wait time",
                 "Feature 3: increasing adverts", "Feature 4: introducing streaks")
@@ -456,7 +458,8 @@ ui <- dashboardPage(skin = "blue",
 
 
 server <- function(input, output, session) {
-  #screen 1 text
+  
+  ##screen 1 text overview
   
   output$overview <- renderText({
     "You are a product manager for MonoBingo. Your task is to select, develop and 
@@ -479,7 +482,7 @@ server <- function(input, output, session) {
     "This is a simulation app being used to study the transfer of learning."
   })
   
-  #screen 2 text
+  ##screen 2 text feature 1
   
   output$feature1description <- renderText({ 
     "You are going to reduce the number of hearts on the free tier from 5 to 3.
@@ -512,7 +515,8 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 3 
+  ## screen 3 feature 1 results
+  #setting up button to reveal results
   
   load <- reactiveVal("before")
   
@@ -537,7 +541,7 @@ server <- function(input, output, session) {
     of your test."})
   
   output$resultdata <- renderTable({ 
-    validate(
+    validate(   # will not run if questions not answered
       need(input$dayquestion != "", "Please answer the questions on the previous page.")
       )
     req(input$dayquestion)
@@ -576,7 +580,8 @@ server <- function(input, output, session) {
       P_Value = c("-", "-", "-", p_val))
     
   })
-  #screen 3 loading/text
+  #screen 3 feature 1 results 
+  # loading image/text
   
   output$results <- renderUI({
     validate(
@@ -610,7 +615,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 3 CI
+  #screen 3  feature 1 results CI
   
   output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -647,7 +652,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 3 CI graph
+  #Screen 3  feature 1 CI graph
   
   output$ciplot <- renderPlot({
     validate(
@@ -782,7 +787,7 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val2))
     
   })
-  #screen 5 loading/text
+  #screen 5 feature 2 loading/text
   
   output$results2 <- renderUI({
     validate(
@@ -817,7 +822,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 5 CI
+  #screen 5 feature 2 CI
   
   output$CI2 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -854,7 +859,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 5 CI graph
+  #Screen 5  feature 2 CI graph
   
   output$ciplot2 <- renderPlot({
     validate(
@@ -988,7 +993,7 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val3))
     
   })
-  #screen 7 loading/text
+  #screen 7 feature 3 loading/text
   
   output$results3 <- renderUI({
     validate(
@@ -1023,7 +1028,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 7 CI
+  #screen 7  feature 3 CI
   
   output$CI3 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -1060,7 +1065,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 7 CI graph
+  #Screen 7 feature 3 CI graph
   
   output$ciplot3 <- renderPlot({
     validate(
@@ -1195,7 +1200,7 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val4))
     
   })
-  #screen 7 loading/text
+  #screen 7 lfeature 4 oading/text
   
   output$results4 <- renderUI({
     validate(
@@ -1230,7 +1235,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 9 CI
+  #screen 9 feature 4 CI
   
   output$CI4 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -1267,7 +1272,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 9 CI graph
+  #Screen 9  feature 4 CI graph
   
   output$ciplot4 <- renderPlot({
     validate(
@@ -1343,6 +1348,7 @@ server <- function(input, output, session) {
   ##saving survey responses after pressing submit
   observeEvent(input$submitbutton, {
     
+    #responses in saveable format
     responses <- list(
       Q1 = input$surveyquestion1,
       Q2 = input$surveyquestion2,
@@ -1362,6 +1368,7 @@ server <- function(input, output, session) {
     )
     response_df <- as.data.frame(responses, stringsAsFactors = FALSE)
     
+    #save as csv
     file <- "responses.csv"
     
     if (!file.exists(file)) {
@@ -1372,6 +1379,8 @@ server <- function(input, output, session) {
       write.table(response_df, file, sep = ",", row.names = FALSE,
                   col.names = FALSE, append = TRUE)
     }
+    
+    #save as google sheet
     sheet_append(ss = sheet_id, data = surveyresponses)
     output$submitted <- renderText("Your responses have been saved. Thank you!")
   })
@@ -1401,6 +1410,8 @@ server <- function(input, output, session) {
         })
       )
     })
+    
+    #setting up loading button
   load2 <- reactiveVal("before2")
   
   observeEvent(input$yearbutton, {
@@ -1411,7 +1422,7 @@ server <- function(input, output, session) {
     delay=5)
   })
   output$yeartable <-renderTable({ 
-    validate(
+    validate( #checking all questions are answered
       need(input$decision1, "Please decide whether to add each feature 1"),
       need(input$decision2, "Please decide whether to add each feature 2"),
       need(input$decision3, "Please decide whether to add each feature 3"),
