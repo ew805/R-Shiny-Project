@@ -83,7 +83,9 @@ ui <- dashboardPage(skin = "blue",
                                     status = "primary",
                                     solidHeader = TRUE,
                                     ),
-                                    box(width = 12,
+                                    box(width = 3,
+                                        status ="primary",
+                                        solidHeader = TRUE,
                                         actionButton("next1", "Next Page"))
                            )
                           )
@@ -127,7 +129,9 @@ ui <- dashboardPage(skin = "blue",
                                            value = 3000,
                                            step = 100),
                                textOutput("power")),
-                               box(width = 12,
+                               box(width = 3,
+                                   status ="primary",
+                                   solidHeader = TRUE,
                                    actionButton("next2", "Next Page"))
                              )
                              
@@ -175,7 +179,9 @@ ui <- dashboardPage(skin = "blue",
                                plotOutput("ciplot")
                                
                              ),
-                             box(width = 12,
+                             box(width = 3,
+                                 status ="primary",
+                                 solidHeader = TRUE,
                                  actionButton("next3", "Next Page"))
                            ) )
                 ),
@@ -213,7 +219,9 @@ ui <- dashboardPage(skin = "blue",
                                          step = 100),
                              textOutput("power2")
                            ),
-                           box(width = 12,
+                           box(width = 3,
+                               status ="primary",
+                               solidHeader = TRUE,
                                actionButton("next4", "Next Page"))
                          ))
                          
@@ -260,7 +268,9 @@ ui <- dashboardPage(skin = "blue",
                              plotOutput("ciplot2")
                              
                            ),
-                           box(width = 12,
+                           box(width = 3,
+                               status ="primary",
+                               solidHeader = TRUE,
                                actionButton("next5", "Next Page"))
                          ) )
                 ),
@@ -295,7 +305,9 @@ ui <- dashboardPage(skin = "blue",
                                                  value = 3000,
                                                  step = 100),
                                      textOutput("power3")),
-                             box(width = 12,
+                             box(width = 3,
+                                 status ="primary",
+                                 solidHeader = TRUE,
                                  actionButton("next6", "Next Page"))
                          ))
                          ),
@@ -334,7 +346,9 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers3"),
                              plotOutput("ciplot3")
                            ),
-                           box(width = 12,
+                           box(width = 3,
+                               status ="primary",
+                               solidHeader = TRUE,
                                actionButton("next7", "Next Page"))
                          )) ),
                 tabItem(tabName = "Feature4",
@@ -368,7 +382,9 @@ ui <- dashboardPage(skin = "blue",
                                                  value = 3000,
                                                  step = 100),
                                      textOutput("power4")),
-                               box(width = 12,
+                               box(width = 3,
+                                   status ="primary",
+                                   solidHeader = TRUE,
                                    actionButton("next8", "Next Page"))
                          ))),
                 tabItem(tabName = "Feature4results",
@@ -406,7 +422,9 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers4"),
                              plotOutput("ciplot4")
                            ),
-                           box(width = 12,
+                           box(width = 3,
+                               status ="primary",
+                               solidHeader = TRUE,
                                actionButton("next9", "Next Page"))
                       
                          ))),
@@ -440,11 +458,13 @@ ui <- dashboardPage(skin = "blue",
                             box(
                               status ="primary",
                               solidHeader = TRUE,
-                              width = 12,
+                              width = 3,
                               actionButton("submitbutton", "Submit all"),
                               textOutput("submitted")
                           ),
-                          box(width = 12,
+                          box(width = 3,
+                              status ="primary",
+                              solidHeader = TRUE,
                               actionButton("next10", "Next Page")))
                             ),
                           ),
