@@ -92,11 +92,34 @@ ui <- dashboardPage(skin = "blue",
                           ),
                   tabItem(tabName = "companymetrics",
                           h1("MonoBingo Company Metrics"),
-                          fluidRow(box(width = 3,
+                          fluidRow(box(
+                            width = 12,
+                            status ="primary",
+                            solidHeader = TRUE,
+                            textOutput("companymetricssummary")
+                          ),
+                          column(width = 4,
+                                 box(width = 12,
+                                     title = "Users",
+                                     status ="primary",
+                                     solidHeader = TRUE)
+                                 ),
+                          column(width = 4,
+                                 box(width = 12,
+                                     title = "Subscribers",
+                                     status ="primary",
+                                     solidHeader = TRUE)
+                                 ),
+                          column(width = 4,
+                                 box(width = 12,
+                                     title = "Churn Rate",
+                                     status ="primary",
+                                     solidHeader = TRUE),
+                            box(width = 5,
                               status ="primary",
                               solidHeader = TRUE,
                               actionButton("next1", "Next Page")))
-                          ),
+                          )),
                   
                   
                   tabItem(tabName = "Feature1",
@@ -569,6 +592,12 @@ server <- function(input, output, session) {
   })
   output$purpose <- renderText({
     "This is a simulation app being used to study the transfer of learning."
+  })
+  
+  ##company metrics page
+  
+  output$companymetricssummary <- renderText({
+    "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
   
   ##screen 2 text feature 1
