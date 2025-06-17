@@ -969,7 +969,7 @@ server <- function(input, output, session) {
     users <- rep(usersnumber, 50)
     
     baserate <- 0.05
-    lift <- 0.33
+    lift <- 0.2
     testrate <- baserate * (1 + lift) 
     
     dbExecute(conn, "DELETE FROM sim")
@@ -1176,8 +1176,8 @@ server <- function(input, output, session) {
     daynumber3 <- as.numeric(input$dayquestion3)
     sample3 <- input$samplesize3 * daynumber3
     result3 <- power.prop.test(n = sample3, 
-                               p1 = 0.02, 
-                               p2 = 0.028, 
+                               p1 = 0.05, 
+                               p2 = 0.07, 
                                sig.level = 0.05)
     paste0("The estimated power for your sample size is ",
            round(result3$power * 100, 2), "%")
@@ -1208,49 +1208,81 @@ server <- function(input, output, session) {
   output$press3 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
-  output$resultdata3 <- renderTable({ 
+  test3data <- reactive({
     validate(
       need(input$dayquestion3 != "", "Please answer the questions on the previous page.")
     )
-    req(input$dayquestion3)
-    days3 <- as.numeric(input$dayquestion3)
-   
-    #test
-    #data for table
-    number_subscribers_test <- 250
-    number_users_test <- as.numeric(input$samplesize3)
-    number_subscribers_control <- 200
-    number_users_control <- as.numeric(input$samplesize3)
     
-    subscribers3 <- c(number_subscribers_test * days3 , number_subscribers_control * days3)
-    users3 <- c(number_users_test * days3, number_users_control * days3)
-    rate3 <- round((subscribers3/users3)* 100, 2)
+    days <- as.numeric(input$dayquestion3)
+    samplesize3 <- as.numeric(input$samplesize3)
+    usersnumber <- samplesize3 * days
+    users <- rep(usersnumber, 50)
     
-    testresult3 <- prop.test(subscribers3, users3)
-    p_val3 <- signif(testresult3$p.value, 3)
+    baserate <- 0.05
+    lift <- 0.4
+    testrate <- baserate * (1 + lift) 
     
+    dbExecute(conn, "DELETE FROM sim")
     
-    #results table
-    if (loadfeature3() == "loadedfeature3") 
-      data.frame(
-        Test = c("Subscribers", "Users", "Rate", "p-value"),
-        Test_Group=c(number_subscribers_test * days3, number_users_test * days3, 
-                     paste0(rate3[1], "%"),"-"),
-        Control_Group = c(number_subscribers_control * days3, number_users_control * days3, 
-                          paste0(rate3[2],"%"),"-"),
-        Difference = c(number_subscribers_test * days3 - number_subscribers_control * days3,
-                       "-", 
-                       paste0(rate3[1]-rate3[2], "%"), "-"),
-        P_Value = c("-", "-", "-", p_val3))
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    # Run your query to get weekly summary
+    query_days_given_weeks <- function(number_of_weeks) {
+      days_in_week <- 7
+      (number_of_weeks - 1) * days_in_week 
+    }
+    
+    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
     
   })
-  #screen 7 feature 3 loading/text
+  output$resultdata3 <- renderTable({
+    validate(
+      need(input$dayquestion3 != "", "")
+    )
+    result <- test3data()
+    
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    
+    rate_test <- round((x[1] / n[1]) * 100, 2)
+    rate_control <- round((x[2] / n[2]) * 100, 2)
+    rate_diff <- round(rate_test - rate_control, 2)
+    sub_diff <- x[1] - x[2]
+    p_val <- signif(test_result$p.value, 3)
+    
+    if (loadfeature3() == "loadedfeature3")
+      
+      data.frame(
+        Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
+        Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
+        Control_Group = c(x[2], n[2], paste0(rate_control, "%"), "-"),
+        Difference = c(sub_diff, "-", paste0(rate_diff, "%"), "-"),
+        P_Value = c("-", "-", "-", p_val)
+      )
+  })
+  #screen 7 feature 3 results 
+  # loading image/text
   
   output$results3 <- renderUI({
     validate(
       need(input$dayquestion3 != "", "")
     )
-    
     
     if(loadfeature3()=="pressedfeature3") {
       tagList(
@@ -1259,18 +1291,18 @@ server <- function(input, output, session) {
       )
     }
     else if (loadfeature3() == "loadedfeature3"){
-      daynumber3 <- as.numeric(input$dayquestion3)
-      sample3 <- input$samplesize3 * daynumber3
-      result3 <- power.prop.test(n = sample3, 
-                                 p1 = 0.02, 
-                                 p2 = 0.028, 
-                                 sig.level = 0.05)
-      resultpower3 <- round(result3$power * 100, 2)
+      daynumber <- as.numeric(input$dayquestion3)
+      sample <- input$samplesize3 * daynumber
+      result <- power.prop.test(n = sample, 
+                                p1 = 0.05, 
+                                p2 = 0.07, 
+                                sig.level = 0.05)
+      resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
         p(paste("You chose to run the test for", input$dayquestion3, "day(s) and with
                 a sample size of", input$samplesize3,". The power of your test is",
-                resultpower3, "%."))
+                resultpower, "%."))
         
       )
     }
@@ -1279,7 +1311,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 7  feature 3 CI
+  #screen 7  feature 3 results CI
   
   output$CI3 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -1289,66 +1321,77 @@ server <- function(input, output, session) {
       need(input$dayquestion3 != "", "")
     )
     #data for table
-    number_subscribers_test <- 250
-    number_users_test <- as.numeric(input$samplesize3)
-    number_subscribers_control <- 200
-    number_users_control <- as.numeric(input$samplesize3)
+    req(test3data())
     
-    days3 <- as.numeric(input$dayquestion3)
-    subscribers3 <- c(number_subscribers_test * days3 , number_subscribers_control * days3)
-    users3 <- c(number_users_test * days3, number_users_control * days3)
-    rate3 <- round((subscribers3/users3)* 100, 2)
+    result <- test3data()
     
-    testresult3 <- prop.test(subscribers3, users3)
-    p_val3 <- signif(testresult3$p.value, 3)
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    ci <- signif(test_result$conf.int * 100, 3)
     
     
     
-    ci3 <- signif(testresult3$conf.int * 100, 3)
+    ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton3 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is:",
         br(),
         br(),
-        "[",ci3[1], "%, ", ci3[2], "%]" ,
+        "[",ci[1], "%, ", ci[2], "%]" ,
         br()
       )
     }
     
   })
-  #Screen 7 feature 3 CI graph
+  #Screen 7  feature 3 CI graph
   
   output$ciplot3 <- renderPlot({
     validate(
       need(input$dayquestion3 != "", "")
     )
     if(input$CIbutton3 > 0){
-      number_subscribers_test <- 250
-      number_users_test <- as.numeric(input$samplesize3)
-      number_subscribers_control <- 200
-      number_users_control <- as.numeric(input$samplesize3)
+      req(test3data())
       
-      days3 <- as.numeric(input$dayquestion3)
-      subscribers3 <- c(number_subscribers_test * days3 , number_subscribers_control * days3)
-      users3 <- c(number_users_test * days3, number_users_control * days3)
-      rate3 <- round((subscribers3/users3)* 100, 2)
-      testresult3 <- prop.test(subscribers3, users3)
-      ci3 <- signif(testresult3$conf.int * 100, 3)
+      result <- test3data()
       
-      cidata3 <- data.frame(
+      w <- 2
+      week_data <- result[result$week_number == w + 52, ]
+      
+      test_row <- week_data[week_data$grouping == "test", ]
+      control_row <- week_data[week_data$grouping == "default", ]
+      
+      x <- c(test_row$subscribers, control_row$subscribers)
+      n <- c(test_row$active_users, control_row$active_users)
+      
+      test_result <- prop.test(x, n)
+      ci <- signif(test_result$conf.int * 100, 3)
+      rate_test <- round((x[1] / n[1]) * 100, 2)
+      rate_control <- round((x[2] / n[2]) * 100, 2)
+      rate_diff <- round(rate_test - rate_control, 2)
+      sub_diff <- x[1] - x[2]
+      
+      cidata <- data.frame(
         x = "Difference",
-        diff3 = rate3[1]-rate3[2],
-        lower3 = ci3[1],
-        upper3 = ci3[2]
+        diff = rate_diff,
+        lower = ci[1],
+        upper = ci[2]
       )
-      ylim_min3 <- min(-0.5, ci3[1] - 0.5)
-      ylim_max3 <- max(1, ci3[2] + 0.5)
-      ggplot(cidata3, aes(x = x, y = diff3)) +
+      ylim_min <- min(-0.5, ci[1] - 0.5)
+      ylim_max <- max(1, ci[2] + 0.5)
+      ggplot(cidata, aes(x = x, y = diff)) +
         geom_point(size = 5, color = "blue") +
-        geom_errorbar(aes(ymin = lower3, ymax = upper3),
+        geom_errorbar(aes(ymin = lower, ymax = upper),
                       width = 0.1, color = "black") +
         geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-        ylim(ylim_min3, ylim_max3) +
+        ylim(ylim_min, ylim_max) +
         labs(
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
@@ -1358,6 +1401,7 @@ server <- function(input, output, session) {
     }
     
   })
+  
   #screen 7 feature 3 decision
   
   output$decision3 <- renderText({
@@ -1383,8 +1427,8 @@ server <- function(input, output, session) {
     daynumber4 <- as.numeric(input$dayquestion4)
     sample4 <- input$samplesize4 * daynumber4
     result4 <- power.prop.test(n = sample4, 
-                               p1 = 0.02, 
-                               p2 = 0.025, 
+                               p1 = 0.05, 
+                               p2 = 0.0625, 
                                sig.level = 0.05)
     paste0("The estimated power for your sample size is ",
            round(result4$power * 100, 2), "%")
@@ -1415,49 +1459,81 @@ server <- function(input, output, session) {
   output$press4 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
-  output$resultdata4 <- renderTable({ 
+  test4data <- reactive({
     validate(
       need(input$dayquestion4 != "", "Please answer the questions on the previous page.")
     )
-    req(input$dayquestion4)
-    days4 <- as.numeric(input$dayquestion4)
     
-    #test
-    #data for table
-    number_subscribers_test <- 250
-    number_users_test <- as.numeric(input$samplesize4)
-    number_subscribers_control <- 200
-    number_users_control <- as.numeric(input$samplesize4)
+    days <- as.numeric(input$dayquestion4)
+    samplesize4 <- as.numeric(input$samplesize4)
+    usersnumber <- samplesize4 * days
+    users <- rep(usersnumber, 50)
     
-    subscribers4 <- c(number_subscribers_test * days4 , number_subscribers_control * days4)
-    users4 <- c(number_users_test * days4, number_users_control * days4)
-    rate4 <- round((subscribers4/users4)* 100, 2)
+    baserate <- 0.05
+    lift <- 0.25
+    testrate <- baserate * (1 + lift) 
     
-    testresult4 <- prop.test(subscribers4, users4)
-    p_val4 <- signif(testresult4$p.value, 3)
+    dbExecute(conn, "DELETE FROM sim")
     
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
     
-    #results table
-    if (loadfeature4() == "loadedfeature4") 
-      data.frame(
-        Test = c("Subscribers", "Users", "Rate", "p-value"),
-        Test_Group=c(number_subscribers_test * days4, number_users_test * days4, 
-                     paste0(rate4[1], "%"),"-"),
-        Control_Group = c(number_subscribers_control * days4, number_users_control * days4, 
-                          paste0(rate4[2],"%"),"-"),
-        Difference = c(number_subscribers_test * days4 - number_subscribers_control * days4,
-                       "-", 
-                       paste0(rate4[1]-rate4[2], "%"), "-"),
-        P_Value = c("-", "-", "-", p_val4))
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    # Run your query to get weekly summary
+    query_days_given_weeks <- function(number_of_weeks) {
+      days_in_week <- 7
+      (number_of_weeks - 1) * days_in_week 
+    }
+    
+    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
     
   })
-  #screen 7 lfeature 4 oading/text
+  output$resultdata4 <- renderTable({
+    validate(
+      need(input$dayquestion4 != "", "")
+    )
+    result <- test4data()
+    
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    
+    rate_test <- round((x[1] / n[1]) * 100, 2)
+    rate_control <- round((x[2] / n[2]) * 100, 2)
+    rate_diff <- round(rate_test - rate_control, 2)
+    sub_diff <- x[1] - x[2]
+    p_val <- signif(test_result$p.value, 3)
+    
+    if (loadfeature4() == "loadedfeature4")
+      
+      data.frame(
+        Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
+        Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
+        Control_Group = c(x[2], n[2], paste0(rate_control, "%"), "-"),
+        Difference = c(sub_diff, "-", paste0(rate_diff, "%"), "-"),
+        P_Value = c("-", "-", "-", p_val)
+      )
+  })
+  #screen 9 feature 4 results 
+  # loading image/text
   
   output$results4 <- renderUI({
     validate(
       need(input$dayquestion4 != "", "")
     )
-    
     
     if(loadfeature4()=="pressedfeature4") {
       tagList(
@@ -1466,18 +1542,18 @@ server <- function(input, output, session) {
       )
     }
     else if (loadfeature4() == "loadedfeature4"){
-      daynumber4 <- as.numeric(input$dayquestion4)
-      sample4 <- input$samplesize4 * daynumber4
-      result4 <- power.prop.test(n = sample4, 
-                                 p1 = 0.02, 
-                                 p2 = 0.025, 
-                                 sig.level = 0.05)
-      resultpower4 <- round(result4$power * 100, 2)
+      daynumber <- as.numeric(input$dayquestion3)
+      sample <- input$samplesize3 * daynumber
+      result <- power.prop.test(n = sample, 
+                                p1 = 0.05, 
+                                p2 = 0.0625, 
+                                sig.level = 0.05)
+      resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
         p(paste("You chose to run the test for", input$dayquestion4, "day(s) and with
                 a sample size of", input$samplesize4,". The power of your test is",
-                resultpower4, "%."))
+                resultpower, "%."))
         
       )
     }
@@ -1486,7 +1562,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 9 feature 4 CI
+  #screen 9  feature 4 results CI
   
   output$CI4 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -1496,28 +1572,31 @@ server <- function(input, output, session) {
       need(input$dayquestion4 != "", "")
     )
     #data for table
-    number_subscribers_test <- 250
-    number_users_test <- as.numeric(input$samplesize4)
-    number_subscribers_control <- 200
-    number_users_control <- as.numeric(input$samplesize4)
+    req(test4data())
     
-    days4 <- as.numeric(input$dayquestion4)
-    subscribers4 <- c(number_subscribers_test * days4 , number_subscribers_control * days4)
-    users4 <- c(number_users_test * days4, number_users_control * days4)
-    rate4 <- round((subscribers4/users4)* 100, 2)
+    result <- test4data()
     
-    testresult4 <- prop.test(subscribers4, users4)
-    p_val4 <- signif(testresult4$p.value, 3)
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    ci <- signif(test_result$conf.int * 100, 3)
     
     
     
-    ci4 <- signif(testresult4$conf.int * 100, 3)
+    ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton4 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is:",
         br(),
         br(),
-        "[",ci4[1], "%, ", ci4[2], "%]" ,
+        "[",ci[1], "%, ", ci[2], "%]" ,
         br()
       )
     }
@@ -1530,32 +1609,40 @@ server <- function(input, output, session) {
       need(input$dayquestion4 != "", "")
     )
     if(input$CIbutton4 > 0){
-      number_subscribers_test <- 250
-      number_users_test <- as.numeric(input$samplesize4)
-      number_subscribers_control <- 200
-      number_users_control <- as.numeric(input$samplesize4)
+      req(test4data())
       
-      days4 <- as.numeric(input$dayquestion4)
-      subscribers4 <- c(number_subscribers_test * days4 , number_subscribers_control * days4)
-      users4 <- c(number_users_test * days4, number_users_control * days4)
-      rate4 <- round((subscribers4/users4)* 100, 2)
-      testresult4 <- prop.test(subscribers4, users4)
-      ci4 <- signif(testresult4$conf.int * 100, 3)
+      result <- test4data()
       
-      cidata4 <- data.frame(
+      w <- 2
+      week_data <- result[result$week_number == w + 52, ]
+      
+      test_row <- week_data[week_data$grouping == "test", ]
+      control_row <- week_data[week_data$grouping == "default", ]
+      
+      x <- c(test_row$subscribers, control_row$subscribers)
+      n <- c(test_row$active_users, control_row$active_users)
+      
+      test_result <- prop.test(x, n)
+      ci <- signif(test_result$conf.int * 100, 3)
+      rate_test <- round((x[1] / n[1]) * 100, 2)
+      rate_control <- round((x[2] / n[2]) * 100, 2)
+      rate_diff <- round(rate_test - rate_control, 2)
+      sub_diff <- x[1] - x[2]
+      
+      cidata <- data.frame(
         x = "Difference",
-        diff4 = rate4[1]-rate4[2],
-        lower4 = ci4[1],
-        upper4 = ci4[2]
+        diff = rate_diff,
+        lower = ci[1],
+        upper = ci[2]
       )
-      ylim_min4 <- min(-0.5, ci4[1] - 0.5)
-      ylim_max4 <- max(1, ci4[2] + 0.5)
-      ggplot(cidata4, aes(x = x, y = diff4)) +
+      ylim_min <- min(-0.5, ci[1] - 0.5)
+      ylim_max <- max(1, ci[2] + 0.5)
+      ggplot(cidata, aes(x = x, y = diff)) +
         geom_point(size = 5, color = "blue") +
-        geom_errorbar(aes(ymin = lower4, ymax = upper4),
+        geom_errorbar(aes(ymin = lower, ymax = upper),
                       width = 0.1, color = "black") +
         geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-        ylim(ylim_min4, ylim_max4) +
+        ylim(ylim_min, ylim_max) +
         labs(
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
@@ -1565,6 +1652,7 @@ server <- function(input, output, session) {
     }
     
   })
+  
   #screen 9 feature 4 decision
   
   output$decision4 <- renderText({
