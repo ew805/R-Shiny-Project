@@ -13,6 +13,7 @@ library(ggplot2)
 library(shinydashboard)
 library(sortable)
 library(googlesheets4)
+source("Rutils.R")
 
 conn <- dbConnect(SQLite(), "sims.sqlite")
 dbExecute(conn, "DROP TABLE IF EXISTS simulation")
@@ -48,6 +49,8 @@ ui <- dashboardPage(skin = "blue",
                       menuItem("Feature 3 results", tabName = "Feature3Results"),
                       menuItem("Feature 4", tabName = "Feature4"),
                       menuItem("Feature 4 results", tabName = "Feature4results"),
+                      menuItem("Feature 5", tabName = "Feature5"),
+                      menuItem("Feature 5 results", tabName = "Feature5results"),
                       menuItem("Order the features", tabName = "orderfeatures"),
                       menuItem("One Year Later", tabName = "OneYearLater")
                     )
@@ -105,7 +108,8 @@ ui <- dashboardPage(skin = "blue",
                                  box(width = 12,
                                      title = "Users",
                                      status ="primary",
-                                     solidHeader = TRUE)
+                                     solidHeader = TRUE
+                                     )
                                  ),
                           column(width = 4,
                                  box(width = 12,
@@ -468,6 +472,86 @@ ui <- dashboardPage(skin = "blue",
                       
                          ))),
                 
+                tabItem(tabName = "Feature5",
+                        h1("Introducing subscription only levels"),
+                        fluidRow(
+                          column(width = 5,
+                                 box(width = 12,
+                                     title = "Information",
+                                     status = "primary",
+                                     solidHeader = TRUE,
+                                     textOutput("feature5des1"),
+                                     br(),
+                                     textOutput("feature5des2"),
+                                     br(),
+                                     textOutput("feature5des3")
+                                 )),
+                          column(width = 7,
+                                 box(width = 12,
+                                     title = "Choices",
+                                     status = "primary",
+                                     solidHeader = TRUE,
+                                     radioButtons("dayquestion5", "How many days would you like to run the test?",
+                                                  choices =
+                                                    c(1, 2, 3, 4),
+                                                  selected = character(0)),
+                                     
+                                     sliderInput("samplesize5",
+                                                 "Choose your sample size:",
+                                                 min = 1000,
+                                                 max = 10000,
+                                                 value = 3000,
+                                                 step = 100),
+                                     textOutput("power5")),
+                                 box(width = 12,
+                                     status ="primary",
+                                     solidHeader = TRUE,
+                                     actionButton("previous91", "Previous Page"),
+                                     actionButton("next91", "Next Page"))
+                          ))),
+                tabItem(tabName = "Feature5results",
+                        h1("Introducing subscription only levels"),
+                        fluidRow(
+                          column(width = 4,
+                                 box(width=12,
+                                     status = "primary",
+                                     solidHeader = TRUE,
+                                     textOutput("press5"),
+                                     br(),
+                                     actionButton("resultsbutton5", "Press here for results!"),
+                                     br(),
+                                     br(),
+                                     textOutput("CI5"),
+                                     br(),
+                                     actionButton("CIbutton5", "Confidence Interval"),
+                                     br(),
+                                     br(),
+                                     textOutput("decision5"),
+                                     br(),
+                                     radioButtons("decision5", "Introduce feature 5?",
+                                                  choices = c("Yes", "No"), 
+                                                  selected = character(0)),
+                                     textInput("surveyquestion5", "question?", 
+                                               value = ""),
+                                 )),
+                          column(width = 8,
+                                 box(width=12,
+                                     title = "Results",
+                                     status = "primary",
+                                     solidHeader = TRUE,
+                                     uiOutput("results5"),
+                                     tableOutput("resultdata5"),
+                                     uiOutput("CInumbers5"),
+                                     plotOutput("ciplot5")
+                                 ),
+                                 box(width = 12,
+                                     status ="primary",
+                                     solidHeader = TRUE,
+                                     actionButton("previous92", "Previous Page"),
+                                     actionButton("next92", "Next Page"))
+                                 
+                          ))),
+                
                 tabItem(tabName = "orderfeatures",
                         h1("Order your chosen features"),
                         fluidRow(
@@ -651,6 +735,8 @@ server <- function(input, output, session) {
   output$companymetricssummary <- renderText({
     "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
+  
+ 
   
   ##screen 2 text feature 1
   
@@ -1542,8 +1628,8 @@ server <- function(input, output, session) {
       )
     }
     else if (loadfeature4() == "loadedfeature4"){
-      daynumber <- as.numeric(input$dayquestion3)
-      sample <- input$samplesize3 * daynumber
+      daynumber <- as.numeric(input$dayquestion4)
+      sample <- input$samplesize4 * daynumber
       result <- power.prop.test(n = sample, 
                                 p1 = 0.05, 
                                 p2 = 0.0625, 
@@ -1658,6 +1744,258 @@ server <- function(input, output, session) {
   output$decision4 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 4:
     streaks for subscribers."
+  })
+  
+  #screen 10 feature 5
+  
+  output$feature5des1 <- renderText({
+    "This feature is introducing subscriber only levels. 
+    Currently, free tier and subscribers can access the same.
+    This will give more opportunities to subscribers "
+  })
+  output$feature5des2 <- renderText({
+    "It is thought that introducing this will cause 18% more subscribers."
+  })
+  output$feature5des3 <- renderText({
+    "Test the effectiveness of this feature before you decide whether to introduce it. Choose length
+    of test and the sample size by using the power calculator."
+  })
+  output$power5 <- renderText({
+    daynumber5 <- as.numeric(input$dayquestion5)
+    sample5 <- input$samplesize5 * daynumber5
+    result5 <- power.prop.test(n = sample5, 
+                               p1 = 0.05, 
+                               p2 = 0.059, 
+                               sig.level = 0.05)
+    paste0("The estimated power for your sample size is ",
+           round(result5$power * 100, 2), "%")
+  })
+  #screen 11 feature 5 results
+  
+  
+  
+  loadfeature5 <- reactiveVal("beforefeature5")
+  
+  
+  
+  observeEvent(input$resultsbutton5, {
+    
+    
+    loadfeature5("pressedfeature5")
+    
+    
+    
+    later(function() {
+      
+      loadfeature5("loadedfeature5")
+    },
+    delay = 5)
+  })
+  
+  
+  output$press5 <- renderText ({"Press the button below to reveal the results
+    of your test."})
+  
+  test5data <- reactive({
+    validate(
+      need(input$dayquestion5 != "", "Please answer the questions on the previous page.")
+    )
+    
+    days <- as.numeric(input$dayquestion5)
+    samplesize5 <- as.numeric(input$samplesize5)
+    usersnumber <- samplesize5 * days
+    users <- rep(usersnumber, 50)
+    
+    baserate <- 0.05
+    lift <- 0.18
+    testrate <- baserate * (1 + lift) 
+    
+    dbExecute(conn, "DELETE FROM sim")
+    
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    for (i in c(1:7 * 6)) {
+      dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    # Run your query to get weekly summary
+    query_days_given_weeks <- function(number_of_weeks) {
+      days_in_week <- 7
+      (number_of_weeks - 1) * days_in_week 
+    }
+    
+    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
+    
+  })
+  output$resultdata5 <- renderTable({
+    validate(
+      need(input$dayquestion5 != "", "")
+    )
+    result <- test5data()
+    
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    
+    rate_test <- round((x[1] / n[1]) * 100, 2)
+    rate_control <- round((x[2] / n[2]) * 100, 2)
+    rate_diff <- round(rate_test - rate_control, 2)
+    sub_diff <- x[1] - x[2]
+    p_val <- signif(test_result$p.value, 3)
+    
+    if (loadfeature5() == "loadedfeature5")
+      
+      data.frame(
+        Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
+        Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
+        Control_Group = c(x[2], n[2], paste0(rate_control, "%"), "-"),
+        Difference = c(sub_diff, "-", paste0(rate_diff, "%"), "-"),
+        P_Value = c("-", "-", "-", p_val)
+      )
+  })
+  #screen 11 feature 5 results 
+  # loading image/text
+  
+  output$results5 <- renderUI({
+    validate(
+      need(input$dayquestion5 != "", "")
+    )
+    
+    if(loadfeature5()=="pressedfeature5") {
+      tagList(
+        h3("Loading results"),
+        tags$img(src = "loading.jpg", height = "200px")
+      )
+    }
+    else if (loadfeature5() == "loadedfeature5"){
+      daynumber <- as.numeric(input$dayquestion5)
+      sample <- input$samplesize5 * daynumber
+      result <- power.prop.test(n = sample, 
+                                p1 = 0.05, 
+                                p2 = 0.059, 
+                                sig.level = 0.05)
+      resultpower <- round(result$power * 100, 2)
+      tagList(
+        h3("These are the results of your test:"),
+        p(paste("You chose to run the test for", input$dayquestion5, "day(s) and with
+                a sample size of", input$samplesize5,". The power of your test is",
+                resultpower, "%."))
+        
+      )
+    }
+    else{
+      NULL
+    }
+  })
+  
+  #screen 9  feature 4 results CI
+  
+  output$CI5 <- renderText({"If you would like to see the confidence
+    intervals, press the button below."
+  })
+  output$CInumbers5 <- renderUI({
+    validate(
+      need(input$dayquestion4 != "", "")
+    )
+    #data for table
+    req(test5data())
+    
+    result <- test5data()
+    
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
+    
+    test_row <- week_data[week_data$grouping == "test", ]
+    control_row <- week_data[week_data$grouping == "default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
+    
+    test_result <- prop.test(x, n)
+    ci <- signif(test_result$conf.int * 100, 3)
+    
+    
+    
+    ci <- signif(test_result$conf.int * 100, 3)
+    if(input$CIbutton5 > 0){
+      tagList(
+        "The 95% confidence interval for the percentage difference of rate in your test is:",
+        br(),
+        br(),
+        "[",ci[1], "%, ", ci[2], "%]" ,
+        br()
+      )
+    }
+    
+  })
+  #Screen 11  feature 5 CI graph
+  
+  output$ciplot5 <- renderPlot({
+    validate(
+      need(input$dayquestion5 != "", "")
+    )
+    if(input$CIbutton5 > 0){
+      req(test5data())
+      
+      result <- test5data()
+      
+      w <- 2
+      week_data <- result[result$week_number == w + 52, ]
+      
+      test_row <- week_data[week_data$grouping == "test", ]
+      control_row <- week_data[week_data$grouping == "default", ]
+      
+      x <- c(test_row$subscribers, control_row$subscribers)
+      n <- c(test_row$active_users, control_row$active_users)
+      
+      test_result <- prop.test(x, n)
+      ci <- signif(test_result$conf.int * 100, 3)
+      rate_test <- round((x[1] / n[1]) * 100, 2)
+      rate_control <- round((x[2] / n[2]) * 100, 2)
+      rate_diff <- round(rate_test - rate_control, 2)
+      sub_diff <- x[1] - x[2]
+      
+      cidata <- data.frame(
+        x = "Difference",
+        diff = rate_diff,
+        lower = ci[1],
+        upper = ci[2]
+      )
+      ylim_min <- min(-0.5, ci[1] - 0.5)
+      ylim_max <- max(1, ci[2] + 0.5)
+      ggplot(cidata, aes(x = x, y = diff)) +
+        geom_point(size = 5, color = "blue") +
+        geom_errorbar(aes(ymin = lower, ymax = upper),
+                      width = 0.1, color = "black") +
+        geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+        ylim(ylim_min, ylim_max) +
+        labs(
+          title = "Graph to show the Confidence Interval",
+          y = "Percentage Difference in Rate",
+          x = "") +
+        theme_minimal()
+      
+    }
+    
+  })
+  
+  #screen 11 feature 5 decision
+  
+  output$decision5 <- renderText({
+    "Now you've seen the results for this test you must decide if you want to 
+    introduce feature 5:
+    subscriber only levels."
   })
   
   ##penultimate screen, order choices
