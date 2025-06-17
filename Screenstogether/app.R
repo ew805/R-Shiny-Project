@@ -668,6 +668,12 @@ server <- function(input, output, session) {
                {updateTabItems(session, "menu", "Feature4results")}
   )
   observeEvent(input$next9,
+               {updateTabItems(session, "menu", "Feature5")}
+  )
+  observeEvent(input$next91,
+               {updateTabItems(session, "menu", "Feature5results")}
+  )
+  observeEvent(input$next92,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
   observeEvent(input$next10,
@@ -701,8 +707,14 @@ server <- function(input, output, session) {
   observeEvent(input$previous9,
                {updateTabItems(session, "menu", "Feature4")}
   )
-  observeEvent(input$previous10,
+  observeEvent(input$previous91,
                {updateTabItems(session, "menu", "Feature4results")}
+  )
+  observeEvent(input$previous92,
+               {updateTabItems(session, "menu", "Feature5")}
+  )
+  observeEvent(input$previous10,
+               {updateTabItems(session, "menu", "Feature5results")}
   )
   observeEvent(input$previous11,
                {updateTabItems(session, "menu", "orderfeatures")}
@@ -1906,7 +1918,7 @@ server <- function(input, output, session) {
   })
   output$CInumbers5 <- renderUI({
     validate(
-      need(input$dayquestion4 != "", "")
+      need(input$dayquestion5 != "", "")
     )
     #data for table
     req(test5data())
