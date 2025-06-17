@@ -109,20 +109,23 @@ ui <- dashboardPage(skin = "blue",
                                  box(width = 12,
                                      title = "Users",
                                      status ="primary",
-                                     solidHeader = TRUE
+                                     solidHeader = TRUE,
+                                     textOutput("cm_users")
                                      )
                                  ),
                           column(width = 4,
                                  box(width = 12,
                                      title = "Subscribers",
                                      status ="primary",
-                                     solidHeader = TRUE)
+                                     solidHeader = TRUE,
+                                     textOutput("cm_subscribers"))
                                  ),
                           column(width = 4,
                                  box(width = 12,
                                      title = "Churn Rate",
                                      status ="primary",
-                                     solidHeader = TRUE),
+                                     solidHeader = TRUE,
+                                     textOutput("cm_cr")),
                             box(width = 12,
                               status ="primary",
                               solidHeader = TRUE,
@@ -748,8 +751,15 @@ server <- function(input, output, session) {
   output$companymetricssummary <- renderText({
     "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
-  
- 
+  output$cm_users <- renderText({
+    "Currently there are x users per day..."
+  })
+  output$cm_subscribers <- renderText({
+    "MonoBingo gains x subscribers per day..."
+  })
+  output$cm_cr <- renderText({
+    "MonoBingo loses x number of users a day, giving a churn rate of x%"
+  })
   
   ##screen 2 text feature 1
   
@@ -1904,7 +1914,6 @@ server <- function(input, output, session) {
         p(paste("You chose to run the test for", input$dayquestion5, "day(s) and with
                 a sample size of", input$samplesize5,". The power of your test is",
                 resultpower, "%."))
-        
       )
     }
     else{
