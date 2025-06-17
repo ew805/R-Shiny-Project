@@ -29,9 +29,10 @@ number_subscribers_control <- 200
 number_users_control <- 10000
 
 #set up for ordering later on
-inputrank <- c("decision1", "decision2", "decision3", "decision4")
+inputrank <- c("decision1", "decision2", "decision3", "decision4", "decision5")
 labelsrank <- c("Feature 1: reducing hearts", "Feature 2: reducing wait time",
-                "Feature 3: increasing adverts", "Feature 4: introducing streaks")
+                "Feature 3: increasing adverts", "Feature 4: introducing streaks",
+                "Feature 5: subscriber only level")
 
 ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
@@ -844,7 +845,7 @@ server <- function(input, output, session) {
   })
   output$resultdata <- renderTable({
     validate(
-      need(input$dayquestion != "", "")
+      need(input$dayquestion != "", "Please answer the questions on the previous page.")
     )
     result <- test1data()
     
@@ -1093,7 +1094,7 @@ server <- function(input, output, session) {
   })
   output$resultdata2 <- renderTable({
     validate(
-      need(input$dayquestion2 != "", "")
+      need(input$dayquestion2 != "", "Please answer the questions on the previous page.")
     )
     result <- test2data()
     
@@ -1343,7 +1344,7 @@ server <- function(input, output, session) {
   })
   output$resultdata3 <- renderTable({
     validate(
-      need(input$dayquestion3 != "", "")
+      need(input$dayquestion3 != "", "Please answer the questions on the previous page.")
     )
     result <- test3data()
     
@@ -1594,7 +1595,7 @@ server <- function(input, output, session) {
   })
   output$resultdata4 <- renderTable({
     validate(
-      need(input$dayquestion4 != "", "")
+      need(input$dayquestion4 != "", "Please answer the questions on the previous page.")
     )
     result <- test4data()
     
@@ -1845,7 +1846,7 @@ server <- function(input, output, session) {
   })
   output$resultdata5 <- renderTable({
     validate(
-      need(input$dayquestion5 != "", "")
+      need(input$dayquestion5 != "", "Please answer the questions on the previous page.")
     )
     result <- test5data()
     
@@ -2043,6 +2044,7 @@ server <- function(input, output, session) {
       Q2 = input$surveyquestion2,
       Q3 = input$surveyquestion3,
       Q4 = input$surveyquestion4,
+      Q5 = input4surveyquestion5,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
     )
@@ -2051,6 +2053,7 @@ server <- function(input, output, session) {
       Q2 = input$surveyquestion2,
       Q3 = input$surveyquestion3,
       Q4 = input$surveyquestion4,
+      q5 = input$surveyquestion5,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
       stringsAsFactors = FALSE
@@ -2115,8 +2118,8 @@ server <- function(input, output, session) {
       need(input$decision1, "Please decide whether to add each feature 1"),
       need(input$decision2, "Please decide whether to add each feature 2"),
       need(input$decision3, "Please decide whether to add each feature 3"),
-      need(input$decision4, "Please decide whether to add each feature 4")
-      
+      need(input$decision4, "Please decide whether to add each feature 4"),
+      need(input$decision5, "Please decide whether to add each feature 5")
     )
     
     
@@ -2151,7 +2154,7 @@ server <- function(input, output, session) {
     validate(
       need(input$decision1, "")
     )
-    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
     yesanswers <- sum(answers == "Yes", na.rm = TRUE)
     
     
