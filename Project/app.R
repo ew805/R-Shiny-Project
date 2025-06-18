@@ -748,6 +748,12 @@ server <- function(input, output, session) {
   
   ##company metrics page
   
+  for (i in c(-364:0)){
+    dayta <- day_sim(users[i + 366], 60, 180, i, "pretrial", 
+                     create_subscription_decision(0.4))
+    dbWriteTable(conn, "sim", dayta, append = TRUE)
+  }
+  
   output$companymetricssummary <- renderText({
     "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
