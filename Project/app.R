@@ -110,7 +110,7 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Users",
                                      status ="primary",
                                      solidHeader = TRUE,
-                                     textOutput("cm_users")
+                                     uiOutput("cm_users")
                                      )
                                  ),
                           column(width = 4,
@@ -748,20 +748,32 @@ server <- function(input, output, session) {
   
   ##company metrics page
   
-  #for (i in c(-364:0)){
-    #dayta <- day_sim(users[i + 366], 60, 180, i, "pretrial", 
-                    # create_subscription_decision(0.4))
-   # dbWriteTable(conn, "sim", dayta, append = TRUE)
-  #}
+  pretrialusers <- rep(200, 366)
+  for (i in c(-364:0)){
+    dayta <- day_sim(pretrialusers[i + 366], 60, 180, i, "pretrial", 
+                     create_subscription_decision(0.1))
+    dbWriteTable(conn, "sim", dayta, append = TRUE)
+  }
+  
+  userlength <- mean(dayta$user_leaves - dayta$user_starts)
+  nonsubscriberuserlength <- mean(dayta$user_leaves[is.na(dayta$user_subscribes)] - 
+         dayta$user_starts[is.na(dayta$user_subscribes)])
+  
+  subscriptionrate <- mean(!is.na(dayta$user_subscribes))
   
   output$companymetricssummary <- renderText({
     "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
-  output$cm_users <- renderText({
-    "Currently there are x users per day..."
+  output$cm_users <- renderUI({ 
+    tagList(
+    p("Currently at MonoBingo someone stays an active user of this app for 
+    an average of", userlength, "days."),
+    p("Of those who never subscribed, they stayed as an active user for an average of",
+    nonsubscriberuserlength, "days.")
+    )
   })
   output$cm_subscribers <- renderText({
-    "MonoBingo gains x subscribers per day..."
+    paste("MonoBingo has a subscription rate of ", subscriptionrate, "%.")
   })
   output$cm_cr <- renderText({
     "MonoBingo loses x number of users a day, giving a churn rate of x%"
