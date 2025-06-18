@@ -118,14 +118,14 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Subscribers",
                                      status ="primary",
                                      solidHeader = TRUE,
-                                     textOutput("cm_subscribers"))
+                                     uiOutput("cm_subscribers"))
                                  ),
                           column(width = 4,
                                  box(width = 12,
                                      title = "Churn Rate",
                                      status ="primary",
                                      solidHeader = TRUE,
-                                     textOutput("cm_cr")),
+                                     uiOutput("cm_cr")),
                             box(width = 12,
                               status ="primary",
                               solidHeader = TRUE,
@@ -747,23 +747,57 @@ server <- function(input, output, session) {
   })
   
   ##company metrics page
-  
-  pretrialusers <- rep(200, 366)
+   #pretrial simulation 
+  pretrialusers <- rep(400, 366)
   for (i in c(-364:0)){
     dayta <- day_sim(pretrialusers[i + 366], 60, 180, i, "pretrial", 
                      create_subscription_decision(0.1))
     dbWriteTable(conn, "sim", dayta, append = TRUE)
   }
   
-  userlength <- mean(dayta$user_leaves - dayta$user_starts)
-  nonsubscriberuserlength <- mean(dayta$user_leaves[is.na(dayta$user_subscribes)] - 
-         dayta$user_starts[is.na(dayta$user_subscribes)])
+   #pretrial stats
+  userlength <- signif(mean(dayta$user_leaves - dayta$user_starts), 3)
+  nonsubscriberuserlength <- signif(mean(dayta$user_leaves[is.na(dayta$user_subscribes)] - 
+         dayta$user_starts[is.na(dayta$user_subscribes)]),3)
   
-  subscriptionrate <- mean(!is.na(dayta$user_subscribes))
+  subscriptionrate <- signif(mean(!is.na(dayta$user_subscribes)), 3)
+  
+  subscriptiondays <- signif(mean(dayta$user_subscribes - dayta$user_starts, na.rm = TRUE),3)
   
   output$companymetricssummary <- renderText({
     "Here is some summary information about MonoBingo and their subscribers and users currently."
   })
+  
+  #finding churn rate
+  
+  alldays <- seq(min(dayta$user_starts, na.rm = TRUE), max(dayta$user_leaves, na.rm = TRUE))
+  
+  dailychurn <- data.frame(
+    day = alldays,
+    activeusers = NA_integer_,
+    usersleft = NA_integer_,
+    churnrate = NA_real_
+  )
+
+  for (i in seq_along(alldays)) {
+    day <- alldays[i]
+
+    activeusers <- dayta$user_starts <= day & dayta$user_leaves > day
+    
+    leavers <- dayta$user_leaves == day
+    
+    dailychurn$activeusers[i] <- sum(activeusers)
+    dailychurn$usersleft[i]   <- sum(leavers)
+    
+    if (dailychurn$activeusers[i] > 0) {
+      dailychurn$churnrate[i] <- dailychurn$usersleft[i] / dailychurn$activeusers[i]
+    } else {
+      dailychurn$churnrate[i] <- NA
+    }
+  }
+  
+  avgchurn <- signif((mean(dailychurn$churnrate, na.rm = TRUE))*100,3)
+  
   output$cm_users <- renderUI({ 
     tagList(
     p("Currently at MonoBingo someone stays an active user of this app for 
@@ -772,11 +806,14 @@ server <- function(input, output, session) {
     nonsubscriberuserlength, "days.")
     )
   })
-  output$cm_subscribers <- renderText({
-    paste("MonoBingo has a subscription rate of ", subscriptionrate, "%.")
+  output$cm_subscribers <- renderUI({
+    p("MonoBingo has a subscription rate of ", subscriptionrate, "%.")
+    p("It currently takes an average of", subscriptiondays, " days for a user to subscribe,
+      if they do.")
   })
-  output$cm_cr <- renderText({
-    "MonoBingo loses x number of users a day, giving a churn rate of x%"
+  output$cm_cr <- renderUI({
+    p("MonoBingo currently has an average churn rate of", 
+    avgchurn, "%. This means, on average,", avgchurn, "% of active users leave each day.")
   })
   
   ##screen 2 text feature 1
