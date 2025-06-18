@@ -30,7 +30,7 @@ for (i in c(-364:0)){
   dbWriteTable(conn, "sim", dayta, append = TRUE)
 }
 
-
+df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
 
 #data for tables
 number_subscribers_test <- 250
@@ -113,8 +113,8 @@ ui <- dashboardPage(skin = "blue",
                             width = 12,
                             status ="primary",
                             solidHeader = TRUE,
-                            textOutput("companymetricssummary"),
-                            actionButton("viewplots", "View Plots")
+                            textOutput("companymetricssummary")
+                           
                            
                           ),
                           column(width = 4,
@@ -825,10 +825,7 @@ server <- function(input, output, session) {
   })
   
   ##company metrics plots
-  
- observeEvent(input$viewplots,{
-   df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
-   
+ 
    output$cmplot1 <- renderPlot({
      df_wide %>%
        pivot_longer(
@@ -861,10 +858,6 @@ server <- function(input, output, session) {
        scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
        theme_bw()
    })
- 
- })
-
- 
 
   ##screen 2 text feature 1
   
