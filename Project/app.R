@@ -22,6 +22,16 @@ dbExecute(conn, "DROP TABLE IF EXISTS simulation")
 gs4_auth(path = "rshinyproject-462813-5ff788b1a509.json")
 sheet_id <- "1NKqU0eYYXZPLW8OMQOzfXsmMUe39A95HOU2hAZM8bLo"
 
+#pretrial simulation 
+pretrialusers <- rep(400, 366)
+for (i in c(-364:0)){
+  dayta <- day_sim(pretrialusers[i + 366], 60, 180, i, "pretrial", 
+                   create_subscription_decision(0.1))
+  dbWriteTable(conn, "sim", dayta, append = TRUE)
+}
+
+
+
 #data for tables
 number_subscribers_test <- 250
 number_users_test <- 10000
@@ -103,22 +113,26 @@ ui <- dashboardPage(skin = "blue",
                             width = 12,
                             status ="primary",
                             solidHeader = TRUE,
-                            textOutput("companymetricssummary")
+                            textOutput("companymetricssummary"),
+                            actionButton("viewplots", "View Plots")
+                           
                           ),
                           column(width = 4,
                                  box(width = 12,
                                      title = "Users",
                                      status ="primary",
                                      solidHeader = TRUE,
-                                     uiOutput("cm_users")
+                                     uiOutput("cm_users"),
+                                     plotOutput("cmplot1")
                                      )
                                  ),
                           column(width = 4,
                                  box(width = 12,
                                      title = "Subscribers",
                                      status ="primary",
-                                     solidHeader = TRUE,
-                                     uiOutput("cm_subscribers"))
+                                    solidHeader = TRUE,
+                                     uiOutput("cm_subscribers"),
+                                     plotOutput("cmplot2"))
                                  ),
                           column(width = 4,
                                  box(width = 12,
@@ -747,13 +761,7 @@ server <- function(input, output, session) {
   })
   
   ##company metrics page
-   #pretrial simulation 
-  pretrialusers <- rep(400, 366)
-  for (i in c(-364:0)){
-    dayta <- day_sim(pretrialusers[i + 366], 60, 180, i, "pretrial", 
-                     create_subscription_decision(0.1))
-    dbWriteTable(conn, "sim", dayta, append = TRUE)
-  }
+ 
   
    #pretrial stats
   userlength <- signif(mean(dayta$user_leaves - dayta$user_starts), 3)
@@ -816,6 +824,48 @@ server <- function(input, output, session) {
     avgchurn, "%. This means, on average,", avgchurn, "% of active users leave each day.")
   })
   
+  ##company metrics plots
+  
+ observeEvent(input$viewplots,{
+   df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
+   
+   output$cmplot1 <- renderPlot({
+     df_wide %>%
+       pivot_longer(
+         cols = c(active_users, subscribers),
+         names_to = "metric",
+         values_to = "count"
+       ) %>%
+       mutate(count = coalesce(count, 0)) %>%
+       mutate(day = as.Date(Sys.Date() + day)) %>%
+       ggplot(aes(x = day, y = count, col = metric)) + 
+       geom_line() +
+       theme_bw() + 
+       labs(title = "Fictional company: Number of users and subscribers in previous year") +
+       xlab("Date") + 
+       ylab("Number") +
+       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+       theme_bw()
+   })
+   
+   output$cmplot2 <- renderPlot({
+     df_wide %>%
+       mutate(conversion = subscribers / active_users) %>%
+       mutate(day = as.Date(Sys.Date() + day)) %>%
+       ggplot(aes(x = day, y = conversion)) +
+       geom_line() +
+       theme_bw() + 
+       labs(title = "Fictional company: Conversion rate") +
+       xlab("Date") + 
+       ylab("Number") +
+       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+       theme_bw()
+   })
+ 
+ })
+
+ 
+
   ##screen 2 text feature 1
   
   output$feature1description <- renderText({ 
