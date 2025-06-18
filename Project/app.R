@@ -139,7 +139,9 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Churn Rate",
                                      status ="primary",
                                      solidHeader = TRUE,
-                                     uiOutput("cm_cr")),
+                                     uiOutput("cm_cr"),
+                                     plotOutput("cmplot3")),
+                                 
                             box(width = 12,
                               status ="primary",
                               solidHeader = TRUE,
@@ -858,6 +860,14 @@ server <- function(input, output, session) {
        scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
        theme_bw()
    })
+   
+   output$cmplot3 <- renderPlot({
+     ggplot(dailychurn, aes(x = day, y = churnrate)) +
+       geom_line() +
+       labs(title = "Daily Churn Rate Over Time", y = "Churn Rate", x = "Day") +
+       theme_bw()
+   }
+   )
 
   ##screen 2 text feature 1
   
