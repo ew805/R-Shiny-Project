@@ -2265,12 +2265,12 @@ server <- function(input, output, session) {
   
   yearlaterresults <- reactive({
     dbExecute(conn, "DELETE FROM sim")
-    finalusers <- rep(100,100)
+    finalusers <- rep(100000,50)
     
     basep <- calcBasep()
     
     for (i in c(1:7 * 6)){
-      dayta <- day_sim(finalusers[i], 60, 180, i, "finalresults", 
+      dayta <- day_sim(finalusers[i], 60, 400, i, "finalresults", 
                        create_subscription_decision(basep))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
@@ -2282,9 +2282,9 @@ server <- function(input, output, session) {
       (number_of_weeks - 1) * days_in_week 
     }
     
-    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
+    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(60)))
     
-    
+    result
   })
   output$yeartable <-renderTable({ 
     validate( #checking all questions are answered
@@ -2304,18 +2304,19 @@ server <- function(input, output, session) {
     w <- 2
     week_data <- result[result$week_number == w + 52, ]
     
-    row <- week_data[week_data$grouping == "finalresults", ]
-    
-    x <- c(row$subscribers)
-    n <- c(row$active_users)
-    
-    rate_final <- round((x[1] / n[1]) * 100, 2)
+    print("------ WEEK DATA BELOW ------")
+    print(week_data)
    
+   
+    x <- sum(as.numeric(week_data$subscribers), na.rm = TRUE)
+    n <- sum(as.numeric(week_data$active_users), na.rm = TRUE)
+    rate_final <- ifelse(n == 0, NA, round((x / n) * 100, 2))
+    
     
     if (load2() == "loaded2" ) {
       data.frame(
         Yearlater = c("Subscribers", "Users", "Rate"),
-        Number = c(x[1], n[1], rate_final)
+        Number = c(x, n, rate_final)
       )
     }
     
