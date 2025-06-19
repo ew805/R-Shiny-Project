@@ -2322,7 +2322,9 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
-    
+    if(input$decision1 == TRUE){
+      n[1] <- n[1]*0.9
+    }
     
     rate_test <- round((x[1] / n[1]) * 100, 2)
     rate_control <- round((x[2] / n[2]) * 100, 2)
