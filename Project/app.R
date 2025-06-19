@@ -747,18 +747,22 @@ server <- function(input, output, session) {
   observeEvent(input$decision4, { featuredecisions$D <- as.logical(input$decision4) })
   observeEvent(input$decision5, { featuredecisions$E <- as.logical(input$decision5) })
   
-  applyrate <- function(p, boost) {
-    1 - (1 - p) * (1 - boost)
+  applyrate <- function(baserate, ratelift) {
+    totallift <- prod(1 + ratelift)
+    finalrate <- baserate * totallift
+    return(finalrate)
   }
   
-  calcBasep <- reactive({
+  calcRate <- reactive({
     selected <- names(which(unlist(reactiveValuesToList(featuredecisions))))
+    ratelift <- featurerates[selected]
     
-    basep <- 0.1
-    for (f in selected) {
-      basep <- applyrate(basep, featurerates[f])
+    baserate <- 0.05
+    if (length(ratelift) == 0) {
+      return(baserate)
+    } else {
+      return(applyrate(baserate, ratelift))
     }
-    basep
   })
   
   
@@ -2263,18 +2267,25 @@ server <- function(input, output, session) {
     delay=5)
   })
   
-  yearlaterresults <- reactive({
-    dbExecute(conn, "DELETE FROM sim")
-    finalusers <- rep(100000,50)
+  yearlaterdata <- reactive({
     
-    basep <- calcBasep()
+    
+    users <- rep(100000, 50)
+    basep <- calcRate()
+    
+    dbExecute(conn, "DELETE FROM sim")
     
     for (i in c(1:7 * 6)){
-      dayta <- day_sim(finalusers[i], 60, 400, i, "finalresults", 
+      dayta <- day_sim(users[i], 60, 180, i, "implemented_test", 
                        create_subscription_decision(basep))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
+    for (i in c(1:7 * 6)){
+      dayta <- day_sim(users[i], 60, 180, i, "implemented_default", 
+                       create_subscription_decision(0.05))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
     
     # Run your query to get weekly summary
     query_days_given_weeks <- function(number_of_weeks) {
@@ -2282,9 +2293,16 @@ server <- function(input, output, session) {
       (number_of_weeks - 1) * days_in_week 
     }
     
-    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(60)))
-    
-    result
+    result <- dbGetQuery(conn, "
+  SELECT 
+    FLOOR(user_starts / 7) + 1 AS week_number,
+    grouping,
+    COUNT(*) AS active_users,
+    SUM(CASE WHEN user_subscribes IS NOT NULL THEN 1 ELSE 0 END) AS subscribers
+  FROM sim
+  GROUP BY week_number, grouping
+")
+
   })
   output$yeartable <-renderTable({ 
     validate( #checking all questions are answered
@@ -2294,34 +2312,38 @@ server <- function(input, output, session) {
       need(input$decision4, "Please decide whether to add each feature 4"),
       need(input$decision5, "Please decide whether to add each feature 5")
     )
-    result <- yearlaterresults()
-   
-    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
-    
-    
-    yesanswers <- sum(answers == "Yes", na.rm = TRUE)
+    result <- yearlaterdata()
     
     w <- 2
-    week_data <- result[result$week_number == w + 52, ]
+    week_data <- result[result$week_number == w, ]
     
-    print("------ WEEK DATA BELOW ------")
-    print(week_data)
-   
-   
-    x <- sum(as.numeric(week_data$subscribers), na.rm = TRUE)
-    n <- sum(as.numeric(week_data$active_users), na.rm = TRUE)
-    rate_final <- ifelse(n == 0, NA, round((x / n) * 100, 2))
+    test_row <- week_data[week_data$grouping == "implemented_test", ]
+    control_row <- week_data[week_data$grouping == "implemented_default", ]
+    
+    x <- c(test_row$subscribers, control_row$subscribers)
+    n <- c(test_row$active_users, control_row$active_users)
     
     
-    if (load2() == "loaded2" ) {
+    
+    rate_test <- round((x[1] / n[1]) * 100, 2)
+    rate_control <- round((x[2] / n[2]) * 100, 2)
+    rate_diff <- round(rate_test - rate_control, 2)
+    sub_diff <- x[1] - x[2]
+    
+    
+    if (load2() == "loaded2")
+      
       data.frame(
-        Yearlater = c("Subscribers", "Users", "Rate"),
-        Number = c(x, n, rate_final)
+        Test = c("Subscribers", "Users", "Subscription Rate"),
+        Test_Group = c(x[1], n[1], paste0(rate_test, "%")),
+        Control_Group = c(x[2], n[2], paste0(rate_control, "%")),
+        Difference = c(sub_diff, "-", paste0(rate_diff, "%"))
+        
       )
-    }
-    
-    else {NULL}
   })
+  
+  
+  
   output$yearresults <- renderUI({
     validate(
       need(input$decision1, "")
