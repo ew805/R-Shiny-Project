@@ -30,13 +30,11 @@ for (i in c(-364:0)){
   dbWriteTable(conn, "sim", dayta, append = TRUE)
 }
 
-df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
+#df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
 
-#data for tables
-number_subscribers_test <- 250
-number_users_test <- 10000
-number_subscribers_control <- 200
-number_users_control <- 10000
+#each feature rate
+featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18)
+
 
 #set up for ordering later on
 inputrank <- c("decision1", "decision2", "decision3", "decision4", "decision5")
@@ -215,7 +213,7 @@ ui <- dashboardPage(skin = "blue",
                                textOutput("decision1"),
                                br(),
                                radioButtons("decision1", "Introduce feature 1?",
-                                            choices = c("Yes", "No"), 
+                                            choices = c("Yes" = TRUE, "No" = FALSE), 
                                             selected = character(0)),
                                textInput("surveyquestion1", "Why did you make that decision?", 
                                          value = ""),
@@ -308,7 +306,7 @@ ui <- dashboardPage(skin = "blue",
                              textOutput("decision2"),
                              br(),
                              radioButtons("decision2", "Introduce feature 2?",
-                                          choices = c("Yes", "No"), 
+                                          choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion2", "question?", 
                                        value = ""),
@@ -391,7 +389,7 @@ ui <- dashboardPage(skin = "blue",
                              textOutput("decision3"),
                              br(),
                              radioButtons("decision3", "Introduce feature 3?",
-                                          choices = c("Yes", "No"), 
+                                          choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion3", "question?", 
                                        value = ""),
@@ -469,7 +467,7 @@ ui <- dashboardPage(skin = "blue",
                              textOutput("decision4"),
                              br(),
                              radioButtons("decision4", "Introduce feature 4?",
-                                          choices = c("Yes", "No"), 
+                                          choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion4", "question?", 
                                        value = ""),
@@ -549,7 +547,7 @@ ui <- dashboardPage(skin = "blue",
                                      textOutput("decision5"),
                                      br(),
                                      radioButtons("decision5", "Introduce feature 5?",
-                                                  choices = c("Yes", "No"), 
+                                                  choices = c("Yes" = TRUE, "No" = FALSE), 
                                                   selected = character(0)),
                                      textInput("surveyquestion5", "question?", 
                                                value = ""),
@@ -739,6 +737,31 @@ server <- function(input, output, session) {
   observeEvent(input$previous11,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
+  
+  #feature decision throughout
+  featuredecisions <- reactiveValues(A = FALSE, B = FALSE, C = FALSE, D = FALSE, E = FALSE)
+  
+  observeEvent(input$decision1, { featuredecisions$A <- as.logical(input$decision1) })
+  observeEvent(input$decision2, { featuredecisions$B <- as.logical(input$decision2) })
+  observeEvent(input$decision3, { featuredecisions$C <- as.logical(input$decision3) })
+  observeEvent(input$decision4, { featuredecisions$D <- as.logical(input$decision4) })
+  observeEvent(input$decision5, { featuredecisions$E <- as.logical(input$decision5) })
+  
+  applyrate <- function(p, boost) {
+    1 - (1 - p) * (1 - boost)
+  }
+  
+  calcBasep <- reactive({
+    selected <- names(which(unlist(reactiveValuesToList(featuredecisions))))
+    
+    basep <- 0.1
+    for (f in selected) {
+      basep <- applyrate(basep, featurerates[f])
+    }
+    basep
+  })
+  
+  
   ##screen 1 text overview
   
   output$overview <- renderText({
@@ -835,38 +858,38 @@ server <- function(input, output, session) {
   
   ##company metrics plots
  
-   output$cmplot1 <- renderPlot({
-     df_wide %>%
-       pivot_longer(
-         cols = c(active_users, subscribers),
-         names_to = "metric",
-         values_to = "count"
-       ) %>%
-       mutate(count = coalesce(count, 0)) %>%
-       mutate(day = as.Date(Sys.Date() + day)) %>%
-       ggplot(aes(x = day, y = count, col = metric)) + 
-       geom_line() +
-       theme_bw() + 
-       labs(title = "MonoBingo: users and subscribers in last month") +
-       xlab("Date") + 
-       ylab("Number") +
-       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
-       theme_bw()
-   })
+   #output$cmplot1 <- renderPlot({
+     #df_wide %>%
+      # pivot_longer(
+      #   cols = c(active_users, subscribers),
+      #   names_to = "metric",
+      #   values_to = "count"
+      # ) %>%
+      # mutate(count = coalesce(count, 0)) %>%
+      # mutate(day = as.Date(Sys.Date() + day)) %>%
+      # ggplot(aes(x = day, y = count, col = metric)) + 
+     #  geom_line() +
+     #  theme_bw() + 
+     #  labs(title = "MonoBingo: users and subscribers in last month") +
+      # xlab("Date") + 
+     #  ylab("Number") +
+     #  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+     #  theme_bw()
+  # })
    
-   output$cmplot2 <- renderPlot({
-     df_wide %>%
-       mutate(conversion = subscribers / active_users) %>%
-       mutate(day = as.Date(Sys.Date() + day)) %>%
-       ggplot(aes(x = day, y = conversion)) +
-       geom_line() +
-       theme_bw() + 
-       labs(title = "MonoBingo: Conversion rate") +
-       xlab("Date") + 
-       ylab("Number") +
-       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
-       theme_bw()
-   })
+  # output$cmplot2 <- renderPlot({
+   #  df_wide %>%
+    #   mutate(conversion = subscribers / active_users) %>%
+     #  mutate(day = as.Date(Sys.Date() + day)) %>%
+     #  ggplot(aes(x = day, y = conversion)) +
+      # geom_line() +
+      # theme_bw() + 
+      # labs(title = "MonoBingo: Conversion rate") +
+     #  xlab("Date") + 
+     #  ylab("Number") +
+     #  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+     #  theme_bw()
+  # })
    
    output$cmplot3 <- renderPlot({
      ggplot(dailychurn, aes(x = day, y = churnrate)) +
@@ -2227,6 +2250,8 @@ server <- function(input, output, session) {
       )
     })
     
+    value = 
+    
     #setting up loading button
   load2 <- reactiveVal("before2")
   
@@ -2237,6 +2262,30 @@ server <- function(input, output, session) {
     },
     delay=5)
   })
+  
+  yearlaterresults <- reactive({
+    dbExecute(conn, "DELETE FROM sim")
+    finalusers <- rep(100,100)
+    
+    basep <- calcBasep()
+    
+    for (i in c(1:7 * 6)){
+      dayta <- day_sim(finalusers[i], 60, 180, i, "finalresults", 
+                       create_subscription_decision(basep))
+      dbWriteTable(conn, "sim", dayta, append = TRUE)
+    }
+    
+    
+    # Run your query to get weekly summary
+    query_days_given_weeks <- function(number_of_weeks) {
+      days_in_week <- 7
+      (number_of_weeks - 1) * days_in_week 
+    }
+    
+    result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
+    
+    
+  })
   output$yeartable <-renderTable({ 
     validate( #checking all questions are answered
       need(input$decision1, "Please decide whether to add each feature 1"),
@@ -2245,30 +2294,28 @@ server <- function(input, output, session) {
       need(input$decision4, "Please decide whether to add each feature 4"),
       need(input$decision5, "Please decide whether to add each feature 5")
     )
-    
-    
-    number_subscribers_test2 <- 600
-    number_users_test2 <- 20000
-    number_subscribers_control2 <- 500
-    number_users_control2 <- 22000 
+    result <- yearlaterresults()
+   
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4)
     
     
     yesanswers <- sum(answers == "Yes", na.rm = TRUE)
     
+    w <- 2
+    week_data <- result[result$week_number == w + 52, ]
     
-    if (load2() == "loaded2" && yesanswers >= 1){
-      
-      data.frame( 
-        Yearlater = c("Subscribers", "Users"),
-        Test_Group = c(number_subscribers_test2, number_users_test2),
-        Control_Group = c(number_subscribers_control2, number_users_control2)
-      )
-    }
-    else if (load2() == "loaded2" && yesanswers == 0) {
+    row <- week_data[week_data$grouping == "finalresults", ]
+    
+    x <- c(row$subscribers)
+    n <- c(row$active_users)
+    
+    rate_final <- round((x[1] / n[1]) * 100, 2)
+   
+    
+    if (load2() == "loaded2" ) {
       data.frame(
-        Yearlater = c("Subscribers", "Users"),
-        Number = c(number_subscribers_control2, number_users_control2)
+        Yearlater = c("Subscribers", "Users", "Rate"),
+        Number = c(x[1], n[1], rate_final)
       )
     }
     
