@@ -813,18 +813,25 @@ server <- function(input, output, session) {
     p("Currently at MonoBingo someone stays an active user of this app for 
     an average of", userlength, "days."),
     p("Of those who never subscribed, they stayed as an active user for an average of",
-    nonsubscriberuserlength, "days.")
+    nonsubscriberuserlength, "days."),
+    p("The graph below shows the number of users and subscribers over the last month.")
     )
   })
   output$cm_subscribers <- renderUI({
-    p("MonoBingo has a subscription rate of ", subscriptionrate, "%.")
+    tagList(
+    p("MonoBingo has a subscription rate of ", subscriptionrate, "%."),
     p("It currently takes an average of", subscriptiondays, " days for a user to subscribe,
-      if they do.")
-  })
+      if they do."),
+    p("The graph below shows the conversion rate of users to subscribers over the last month. ")
+    )
+    })
   output$cm_cr <- renderUI({
+    tagList(
     p("MonoBingo currently has an average churn rate of", 
-    avgchurn, "%. This means, on average,", avgchurn, "% of active users leave each day.")
-  })
+    avgchurn, "%. This means, on average,", avgchurn, "% of active users leave each day."),
+    p("The graph below shows the churn rate over time.")
+    )
+    })
   
   ##company metrics plots
  
@@ -840,7 +847,7 @@ server <- function(input, output, session) {
        ggplot(aes(x = day, y = count, col = metric)) + 
        geom_line() +
        theme_bw() + 
-       labs(title = "Fictional company: Number of users and subscribers in previous year") +
+       labs(title = "MonoBingo: users and subscribers in last month") +
        xlab("Date") + 
        ylab("Number") +
        scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
@@ -854,7 +861,7 @@ server <- function(input, output, session) {
        ggplot(aes(x = day, y = conversion)) +
        geom_line() +
        theme_bw() + 
-       labs(title = "Fictional company: Conversion rate") +
+       labs(title = "MonoBingo: Conversion rate") +
        xlab("Date") + 
        ylab("Number") +
        scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
@@ -864,7 +871,7 @@ server <- function(input, output, session) {
    output$cmplot3 <- renderPlot({
      ggplot(dailychurn, aes(x = day, y = churnrate)) +
        geom_line() +
-       labs(title = "Daily Churn Rate Over Time", y = "Churn Rate", x = "Day") +
+       labs(title = "MonoBingo: Daily Churn Rate Over Time", y = "Churn Rate", x = "Day") +
        theme_bw()
    }
    )
