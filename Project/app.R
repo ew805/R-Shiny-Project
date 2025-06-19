@@ -2172,7 +2172,7 @@ server <- function(input, output, session) {
   output$orderedlist <- renderUI({
     selected <- labelsrank[unlist(lapply(inputrank, function(id) {
       val <- input[[id]]
-      !is.null(val) && val == "Yes"
+      !is.null(val) && val == TRUE
     }))]
     
     bucket_list(
@@ -2253,8 +2253,7 @@ server <- function(input, output, session) {
         })
       )
     })
-    
-    value = 
+
     
     #setting up loading button
   load2 <- reactiveVal("before2")
@@ -2349,7 +2348,7 @@ server <- function(input, output, session) {
       need(input$decision1, "")
     )
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
-    yesanswers <- sum(answers == "Yes", na.rm = TRUE)
+    yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
     
     if(load2()=="pressed2"){
@@ -2373,7 +2372,7 @@ server <- function(input, output, session) {
     need(input$decision1, "")
   )
     if (load2() == "loaded2"){
-      if(input$decision1 == "Yes"){
+      if(input$decision1 == TRUE){
         p("While reducing the number of hearts for the free tier increased subscriber
         numbers, it also caused a descrease in the number of users.")}
       else { NULL}
