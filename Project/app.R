@@ -2357,6 +2357,7 @@ server <- function(input, output, session) {
     rate_control <- round((x[2] / n[2]) * 100, 2)
     rate_diff <- round(rate_test - rate_control, 2)
     sub_diff <- x[1] - x[2]
+    user_diff <- n[1] - n[2]
     
     
     if (load2() == "loaded2")
@@ -2365,7 +2366,7 @@ server <- function(input, output, session) {
         Test = c("Subscribers", "Users", "Subscription Rate"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%")),
         Control_Group = c(x[2], n[2], paste0(rate_control, "%")),
-        Difference = c(sub_diff, "-", paste0(rate_diff, "%"))
+        Difference = c(sub_diff, user_diff, paste0(rate_diff, "%"))
         
       )
   })
