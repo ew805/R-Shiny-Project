@@ -2354,8 +2354,12 @@ server <- function(input, output, session) {
     if(input$decision1 == TRUE){
       n[1] <- n[1]*0.9
     }
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
+    yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
-    
+    if(yesanswers>= 4){
+      n[1] <- n[1] - 3000
+    }
     
     
     rate_test <- round((x[1] / n[1]) * 100, 2)
@@ -2414,6 +2418,8 @@ server <- function(input, output, session) {
     label_to_id <- setNames(inputrank, labelsrank)
     ordered_labels <- input$ordered_items 
     ordered_ids <- label_to_id[ordered_labels]
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
+    yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
     feedback <- list()
     if (load2() == "loaded2"){
@@ -2450,7 +2456,10 @@ server <- function(input, output, session) {
             the more effective order.")))
         }
       }
-          
+      if (yesanswers >= 4){
+        feedback <- append(feedback, list(p("You introduced lots of features. This 
+          caused a loss in users as the free version was no longer as good.")))
+      }    
       
       }
       
