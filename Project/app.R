@@ -2402,14 +2402,51 @@ server <- function(input, output, session) {
     validate(
     need(input$decision1, "")
   )
+    label_to_id <- setNames(inputrank, labelsrank)
+    ordered_labels <- input$ordered_items 
+    ordered_ids <- label_to_id[ordered_labels]
+    
+    feedback <- list()
     if (load2() == "loaded2"){
+ 
       if(input$decision1 == TRUE){
-        p("While reducing the number of hearts for the free tier increased subscriber
-        numbers, it also caused a descrease in the number of users.")}
-      else { NULL}
-    }
+        feedback <- append(feedback, list(p("While reducing the number of hearts for the free tier increased subscriber
+        numbers, it also caused a descrease in the number of users.")))}
+      if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
+        if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
+          feedback <- append(feedback, list(p("Choosing to reduce wait time before reducing hearts reduced the effectiveness.")
+       )) } }
+      if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids){
+        if (match("decision1", ordered_ids) < match("decision2", ordered_ids)) {
+          feedback <- append(feedback, list(p("Choosing to reduce hearts before reducing wait time was the more effective order.")
+        ))} }
+        
+        if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
+          feedback <- append(feedback, list(p("Increasing adverts as the first feature was most effective.")
+       )) }
+       
+      if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
+        if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
+          feedback <- append(feedback, list(p("Choosing to introduce a subscriber only level before introducing streaks reduced the
+          effectiveness.")))} }
+      if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
+        if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
+          feedback <- append(feedback, list(p("Choosing to introduce streaks before a subsciber only level was
+            the more effective order.")))
+        }
+      }
+          
+      
+      }
+      
     else{
       NULL
+    }
+    
+    if (length(feedback) > 0) {
+      return(tagList(feedback))
+    } else {
+      return(NULL)
     }
   })
 
