@@ -1150,7 +1150,7 @@ server <- function(input, output, session) {
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
           x = "") +
-        theme_minimal()
+        theme_bw()
       
     }
     
@@ -1399,7 +1399,7 @@ server <- function(input, output, session) {
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
           x = "") +
-        theme_minimal()
+        theme_bw()
       
     }
     
@@ -1649,7 +1649,7 @@ server <- function(input, output, session) {
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
           x = "") +
-        theme_minimal()
+        theme_bw()
       
     }
     
@@ -1900,7 +1900,7 @@ server <- function(input, output, session) {
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
           x = "") +
-        theme_minimal()
+        theme_bw()
       
     }
     
@@ -2150,7 +2150,7 @@ server <- function(input, output, session) {
           title = "Graph to show the Confidence Interval",
           y = "Percentage Difference in Rate",
           x = "") +
-        theme_minimal()
+        theme_bw()
       
     }
     
@@ -2450,7 +2450,9 @@ server <- function(input, output, session) {
     }
     
     if (length(feedback) > 0) {
-      return(tagList(feedback))
+      return(tagList(
+        tags$h3("Overview"),
+        feedback))
     } else {
       return(NULL)
     }
