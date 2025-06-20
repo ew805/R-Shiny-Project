@@ -2427,38 +2427,42 @@ server <- function(input, output, session) {
       if(input$decision1 == TRUE){
         feedback <- append(feedback, list(p("While reducing the number of hearts
         for the free tier increased subscribers, it also caused a descrease in 
-          the number of users.")))}
+          the number of users.", style = "color: red;")))}
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
         if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
           feedback <- append(feedback, list(p("Choosing to reduce wait time before
-                                              reducing hearts reduced the effectiveness.")
+                                              reducing hearts reduced the effectiveness.", 
+                                              style = "color: red;")
        )) } }
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids){
         if (match("decision1", ordered_ids) < match("decision2", ordered_ids)) {
           feedback <- append(feedback, list(p("Choosing to reduce hearts before 
-                                              reducing wait time was the more effective order.")
+                                              reducing wait time was the more effective order.",
+                                              style = "color: green;")
         ))} }
         
         if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
           feedback <- append(feedback, list(p("Increasing adverts as the first feature
-                                              was most effective feature to have first.")
+                                              was most effective feature to have first.",
+                                              style = "color: green;")
        )) }
        
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
           feedback <- append(feedback, list(p("Choosing to introduce subscriber 
           only levels before introducing streaks reduced the
-          effectiveness.")))} }
+          effectiveness.", style = "color: red;")))} }
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
           feedback <- append(feedback, list(p("Choosing to introduce streaks before 
           subsciber only levels was
-            the more effective order.")))
+            the more effective order.", style = "color: green;")))
         }
       }
       if (yesanswers >= 4){
         feedback <- append(feedback, list(p("You introduced lots of features. This 
-          caused a loss in users as the free version was no longer as good.")))
+          caused a loss in users as the free version was no longer as good.",
+                                            style = "color: red;")))
       }    
       
       }
