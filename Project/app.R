@@ -627,7 +627,8 @@ ui <- dashboardPage(skin = "blue",
                               br(),
                               uiOutput("featureschosen"),
                               br(),
-                              uiOutput("order_list")
+                              uiOutput("order_list"),
+                              uiOutput("yeartext")
                             )),
                             
                             column(width = 7,
@@ -637,7 +638,8 @@ ui <- dashboardPage(skin = "blue",
                                 solidHeader = TRUE,
                               uiOutput("yearresults"),
                               tableOutput("yeartable"),
-                              uiOutput("yeartext")
+                              plotOutput("yearbarchart")
+                              
                             ),
                             box(width = 4,
                                 status = "primary",
@@ -2400,7 +2402,11 @@ server <- function(input, output, session) {
    })
   output$yeartext <- renderUI({
     validate(
-    need(input$decision1, "")
+    need(input$decision1, ""),
+    need(input$decision2, ""),
+    need(input$decision3, ""),
+    need(input$decision4, ""),
+    need(input$decision5, "")
   )
     label_to_id <- setNames(inputrank, labelsrank)
     ordered_labels <- input$ordered_items 
@@ -2448,6 +2454,54 @@ server <- function(input, output, session) {
     } else {
       return(NULL)
     }
+  })
+  
+  output$yearbarchart <- renderPlot({
+    validate(
+      need(input$decision1, ""),
+      need(input$decision2, ""),
+      need(input$decision3, ""),
+      need(input$decision4, ""),
+      need(input$decision5, "")
+    )
+      result <- yearlaterdata()
+      
+      w <- 2
+      week_data <- result[result$week_number == w, ]
+      
+      test_row <- week_data[week_data$grouping == "implemented_test", ]
+      control_row <- week_data[week_data$grouping == "implemented_default", ]
+      
+      x <- c(test_row$subscribers, control_row$subscribers)
+      n <- c(test_row$active_users, control_row$active_users)
+      
+      ##feature 1 causes less users
+      if(input$decision1 == TRUE){
+        n[1] <- n[1]*0.9
+      }
+      #bar chart to show users and subscribers
+      barchartdf <- data.frame(
+        Group = c("Test", "Control"),
+        Users = c(n[1], n[2]),
+        Subscribers = c(x[1], x[2])
+      )
+      
+      barchartdf <- barchartdf %>%
+        mutate(NonSubscribers = Users - Subscribers)
+      
+      barchartdflong <- barchartdf %>%
+        select(Group, Subscribers, NonSubscribers) %>%
+        pivot_longer(cols = c(Subscribers, NonSubscribers),
+                     names_to = "Type", values_to = "Count")
+      
+      if (load2() == "loaded2"){
+        ggplot(barchartdflong, aes(x = Group, y = Count, fill = Type)) +
+          geom_bar(stat = "identity") +
+          labs(title = "Subscribers and Users",
+               x = "Type", y = "Count") +
+          scale_fill_manual(values = c("Subscribers" = "pink", "NonSubscribers" = "lightblue")) +
+          theme_bw()
+      }
   })
 
 }
