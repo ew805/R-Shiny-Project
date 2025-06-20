@@ -2655,6 +2655,14 @@ server <- function(input, output, session) {
       }
     }
     
+    if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) <= 4) {
+      basep <- basep * 0.92
+    }
+    
+    if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
+      basep <- basep + 0.02
+    }
+    
     print(basep)
     
     dbExecute(conn, "DELETE FROM sim")
@@ -2806,7 +2814,17 @@ server <- function(input, output, session) {
           feedback <- append(feedback, list(p("Increasing adverts as the first feature
                                               was most effective feature to have first.",
                                               style = "color: green;")
-       )) }
+          )) }
+      if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
+        feedback <- append(feedback, list(p("Offering the free trial as the last
+                                            feature is most effective.",
+                                            style = "color: green;")
+        )) }
+      if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) <= 4) {
+        feedback <- append(feedback, list(p("Offering the free trial too early is
+                                            less effective.",
+                                            style = "color: red;")
+        )) }
        
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
