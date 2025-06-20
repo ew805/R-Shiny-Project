@@ -30,6 +30,7 @@ for (i in c(-364:0)){
   dbWriteTable(conn, "sim", dayta, append = TRUE)
 }
 
+#data for company metrics plots
 #df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
 
 #each feature rate
@@ -749,6 +750,8 @@ server <- function(input, output, session) {
   
   ##page changing
   
+  #forward
+  
   observeEvent(input$next0,
                {updateTabItems(session, "menu", "companymetrics")}
                )
@@ -795,6 +798,8 @@ server <- function(input, output, session) {
                {updateTabItems(session, "menu", "OneYearLater")}
   )
   
+  
+  #back
   observeEvent(input$previous1,
                {updateTabItems(session, "menu", "Overview")}
   )
@@ -842,6 +847,7 @@ server <- function(input, output, session) {
   )
   
   #feature decision throughout
+  #creates rate used for a year later
   featuredecisions <- reactiveValues(A = FALSE, B = FALSE, C = FALSE, D = FALSE, E = FALSE, F = FALSE)
   
   observeEvent(input$decision1, { featuredecisions$A <- as.logical(input$decision1) })
@@ -941,6 +947,7 @@ server <- function(input, output, session) {
   
   avgchurn <- signif((mean(dailychurn$churnrate, na.rm = TRUE))*100,3)
   
+  #info displayed company metrics
   output$cm_users <- renderUI({ 
     tagList(
     p("Currently, someone stays an active user of MonoBingo for 
@@ -1001,6 +1008,7 @@ server <- function(input, output, session) {
      #  theme_bw()
   # })
    
+  #churn rate plot
    output$cmplot3 <- renderPlot({
      ggplot(dailychurn, aes(x = day, y = churnrate)) +
        geom_line() +
@@ -1028,7 +1036,7 @@ server <- function(input, output, session) {
     the sample size for the test."})
   
   #power result
-  
+  #gives power for inputted sample size
   
   output$power <- renderText({
     daynumber <- as.numeric(input$dayquestion)
@@ -1055,7 +1063,7 @@ server <- function(input, output, session) {
     load("pressed")
     
     
-    
+    #5 second delay before revealing
     later(function() {
       
       load("loaded")
@@ -1067,6 +1075,7 @@ server <- function(input, output, session) {
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
   test1data <- reactive({
+    #only runs if question answered
     validate(
       need(input$dayquestion != "", "Please answer the questions on the previous page.")
     )
@@ -1076,23 +1085,26 @@ server <- function(input, output, session) {
     usersnumber <- samplesize * days
     users <- rep(usersnumber, 50)
     
+    #feature rate
     baserate <- 0.05
     lift <- 0.33
     testrate <- baserate * (1 + lift) 
     
     dbExecute(conn, "DELETE FROM sim")
     
+    ##simulation
+    #test simulation
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control simulation
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+    #simulation for active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -1101,6 +1113,8 @@ server <- function(input, output, session) {
     result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
     
   })
+  
+  #creating data from simulation and choices
   output$resultdata <- renderTable({
     validate(
       need(input$dayquestion != "", "Please answer the questions on the previous page.")
@@ -1126,6 +1140,7 @@ server <- function(input, output, session) {
     
     if (load() == "loaded")
     
+      #table with data
     data.frame(
       Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
       Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -1149,6 +1164,7 @@ server <- function(input, output, session) {
       )
     }
     else if (load() == "loaded"){
+      #displays choices made
       daynumber <- as.numeric(input$dayquestion)
       sample <- input$samplesize * daynumber
       result <- power.prop.test(n = sample, 
@@ -1161,12 +1177,9 @@ server <- function(input, output, session) {
         p(paste("You chose to run the test for", input$dayquestion, "day(s) and with
                 a sample size of", input$samplesize,". The power of your test is",
                 resultpower, "%."))
-       
       )
     }
-    else{
-      NULL
-    }
+    else{NULL}
   })
   
   #screen 3  feature 1 results CI
@@ -1180,7 +1193,7 @@ server <- function(input, output, session) {
     )
     #data for table
     req(test1data())
-    
+    #using earlier data
     result <- test1data()
     
     w <- 2
@@ -1192,11 +1205,12 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #test to find confidence intervals
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
     
-    
+    ##display confidence interval result
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton > 0){
       tagList(
@@ -1236,12 +1250,15 @@ server <- function(input, output, session) {
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
       
+      ##creating data for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      
+      #plotting confidence intervals
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -1297,14 +1314,9 @@ server <- function(input, output, session) {
   
   loadfeature2 <- reactiveVal("beforefeature2")
   
-  
-  
   observeEvent(input$resultsbutton2, {
     
-    
     loadfeature2("pressedfeature2")
-    
-    
     
     later(function() {
       
@@ -1316,6 +1328,8 @@ server <- function(input, output, session) {
   
   output$press2 <- renderText ({"Press the button below to reveal the results
     of your test."})
+  
+  #data using choices and simulation
   test2data <- reactive({
     validate(
       need(input$dayquestion2 != "", "Please answer the questions on the previous page.")
@@ -1332,17 +1346,19 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    ##simulation code
+    #test
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+ #simulation active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -1351,6 +1367,8 @@ server <- function(input, output, session) {
     result <- dbGetQuery(conn, weekly_query, params = list(0, query_days_given_weeks(7)))
     
   })
+  
+  #result table data and table
   output$resultdata2 <- renderTable({
     validate(
       need(input$dayquestion2 != "", "Please answer the questions on the previous page.")
@@ -1376,6 +1394,7 @@ server <- function(input, output, session) {
     
     if (loadfeature2() == "loadedfeature2")
       
+      #result table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -1384,7 +1403,7 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 3 feature 1 results 
+  #screen 5 feature 2 results 
   # loading image/text
   
   output$results2 <- renderUI({
@@ -1419,7 +1438,7 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 3  feature 1 results CI
+  #screen 5  feature 2 results CI
   
   output$CI2 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -1445,7 +1464,7 @@ server <- function(input, output, session) {
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
-    
+    #displaying the confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton2 > 0){
@@ -1459,7 +1478,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #Screen 3  feature 1 CI graph
+  #Screen 5  feature 2 CI graph
   
   output$ciplot2 <- renderPlot({
     validate(
@@ -1486,12 +1505,15 @@ server <- function(input, output, session) {
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
       
+      #data frame for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      
+      #plot
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -1543,18 +1565,13 @@ server <- function(input, output, session) {
   #screen 7 feature 3 results
   
   
-  
   loadfeature3 <- reactiveVal("beforefeature3")
-  
-  
   
   observeEvent(input$resultsbutton3, {
     
-    
     loadfeature3("pressedfeature3")
     
-    
-    
+    # 5 second delay to reveal results
     later(function() {
       
       loadfeature3("loadedfeature3")
@@ -1582,17 +1599,18 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    ##simualation
+    #test
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
-    # Run your query to get weekly summary
+    #simulation active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -1625,7 +1643,7 @@ server <- function(input, output, session) {
     p_val <- signif(test_result$p.value, 3)
     
     if (loadfeature3() == "loadedfeature3")
-      
+      #result table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -1695,7 +1713,7 @@ server <- function(input, output, session) {
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
-    
+    #display confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton3 > 0){
@@ -1736,12 +1754,14 @@ server <- function(input, output, session) {
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
       
+      #data for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      #plot
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -1794,9 +1814,7 @@ server <- function(input, output, session) {
   #screen 9 feature 4 results
   
   
-  
   loadfeature4 <- reactiveVal("beforefeature4")
-  
   
   
   observeEvent(input$resultsbutton4, {
@@ -1804,7 +1822,7 @@ server <- function(input, output, session) {
     
     loadfeature4("pressedfeature4")
     
-    
+    #5 second delay before revealing results
     
     later(function() {
       
@@ -1833,17 +1851,19 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    ##simulation
+    #test
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+    # simulation active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -1876,7 +1896,7 @@ server <- function(input, output, session) {
     p_val <- signif(test_result$p.value, 3)
     
     if (loadfeature4() == "loadedfeature4")
-      
+      #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -1946,7 +1966,7 @@ server <- function(input, output, session) {
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
-    
+    #display confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton4 > 0){
@@ -1987,12 +2007,14 @@ server <- function(input, output, session) {
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
       
+      #data frame for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      #plot
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -2044,18 +2066,14 @@ server <- function(input, output, session) {
   })
   #screen 11 feature 5 results
   
-  
-  
   loadfeature5 <- reactiveVal("beforefeature5")
-  
-  
   
   observeEvent(input$resultsbutton5, {
     
     
     loadfeature5("pressedfeature5")
     
-    
+    #5 second delay before revealing results
     
     later(function() {
       
@@ -2084,17 +2102,19 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    #simulation
+    #test
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+    # simulation active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -2127,7 +2147,7 @@ server <- function(input, output, session) {
     p_val <- signif(test_result$p.value, 3)
     
     if (loadfeature5() == "loadedfeature5")
-      
+      #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -2196,7 +2216,7 @@ server <- function(input, output, session) {
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
-    
+    #displaying confidence interval result
     
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton5 > 0){
@@ -2237,12 +2257,14 @@ server <- function(input, output, session) {
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
       
+      #dataframe for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      #plot
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -2295,18 +2317,14 @@ server <- function(input, output, session) {
   })
   #screen 13 feature 6 results
   
-  
-  
   loadfeature6 <- reactiveVal("beforefeature6")
-  
-  
   
   observeEvent(input$resultsbutton6, {
     
     
     loadfeature6("pressedfeature6")
     
-    
+    #5 second delay before results
     
     later(function() {
       
@@ -2335,17 +2353,19 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    #simulation
+    #test
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "test", create_subscription_decision(testrate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
-    
+    #control
     for (i in c(1:7 * 6)) {
       dayta <- day_sim(floor(users[i] / 2), 60, 180, i, "default", create_subscription_decision(baserate))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+    # simulation active users
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
@@ -2378,7 +2398,7 @@ server <- function(input, output, session) {
     p_val <- signif(test_result$p.value, 3)
     
     if (loadfeature6() == "loadedfeature6")
-      
+      #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -2447,7 +2467,7 @@ server <- function(input, output, session) {
     test_result <- prop.test(x, n)
     ci <- signif(test_result$conf.int * 100, 3)
     
-    
+    #displaying confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton6 > 0){
@@ -2487,13 +2507,14 @@ server <- function(input, output, session) {
       rate_control <- round((x[2] / n[2]) * 100, 2)
       rate_diff <- round(rate_test - rate_control, 2)
       sub_diff <- x[1] - x[2]
-      
+      #data frame for plot
       cidata <- data.frame(
         x = "Difference",
         diff = rate_diff,
         lower = ci[1],
         upper = ci[2]
       )
+      #plot
       ylim_min <- min(-0.5, ci[1] - 0.5)
       ylim_max <- max(1, ci[2] + 0.5)
       ggplot(cidata, aes(x = x, y = diff)) +
@@ -2609,6 +2630,8 @@ server <- function(input, output, session) {
     output$order_list <- renderUI({
       req(input$ordered_items)
       
+      
+      #displays chosen features in order
       tags$ul(
         lapply(input$ordered_items, function(item) {
           tags$li(item)
@@ -2639,6 +2662,8 @@ server <- function(input, output, session) {
     ordered_labels <- input$ordered_items 
     ordered_ids <- label_to_id[ordered_labels]
     
+    #effects from different orders
+    
     if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
       if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
         basep <- basep*0.95
@@ -2667,24 +2692,28 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
+    #simulation
+    #test
     for (i in c(1:7 * 6)){
       dayta <- day_sim(users[i], 60, 180, i, "implemented_test", 
                        create_subscription_decision(basep))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
+    #control
     for (i in c(1:7 * 6)){
       dayta <- day_sim(users[i], 60, 180, i, "implemented_default", 
                        create_subscription_decision(0.05))
       dbWriteTable(conn, "sim", dayta, append = TRUE)
     }
     
-    # Run your query to get weekly summary
+    # active user simualtion
     query_days_given_weeks <- function(number_of_weeks) {
       days_in_week <- 7
       (number_of_weeks - 1) * days_in_week 
     }
     
+    #to get week number
     result <- dbGetQuery(conn, "
   SELECT 
     FLOOR(user_starts / 7) + 1 AS week_number,
@@ -2724,6 +2753,7 @@ server <- function(input, output, session) {
                  input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
+    #too many features means less users
     if(yesanswers>= 5){
       n[1] <- n[1] - 3000
     }
@@ -2737,7 +2767,7 @@ server <- function(input, output, session) {
     
     
     if (load2() == "loaded2")
-      
+      #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate"),
         Test_Group = c(x[1], n[1], paste0(rate_test, "%")),
@@ -2790,6 +2820,8 @@ server <- function(input, output, session) {
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
+    
+    #overview of impact of order on results displayed
     feedback <- list()
     if (load2() == "loaded2"){
  
@@ -2897,7 +2929,7 @@ server <- function(input, output, session) {
         select(Group, Subscribers, NonSubscribers) %>%
         pivot_longer(cols = c(Subscribers, NonSubscribers),
                      names_to = "Type", values_to = "Count")
-      
+      #plot
       if (load2() == "loaded2"){
         ggplot(barchartdflong, aes(x = Group, y = Count, fill = Type)) +
           geom_bar(stat = "identity") +
