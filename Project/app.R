@@ -804,7 +804,9 @@ server <- function(input, output, session) {
   subscriptiondays <- signif(mean(dayta$user_subscribes - dayta$user_starts, na.rm = TRUE),3)
   
   output$companymetricssummary <- renderText({
-    "Here is some summary information about MonoBingo and their subscribers and users currently."
+    "Here is ainformation about MonoBingo. This includes information about
+    their subscribers and users currently with some plots to visualise it. Your task
+    is to improve these stats."
   })
   
   #finding churn rate
@@ -839,7 +841,7 @@ server <- function(input, output, session) {
   
   output$cm_users <- renderUI({ 
     tagList(
-    p("Currently at MonoBingo someone stays an active user of this app for 
+    p("Currently, someone stays an active user of MonoBingo for 
     an average of", userlength, "days."),
     p("Of those who never subscribed, they stayed as an active user for an average of",
     nonsubscriberuserlength, "days."),
@@ -908,13 +910,13 @@ server <- function(input, output, session) {
   ##screen 2 text feature 1
   
   output$feature1description <- renderText({ 
-    "You are going to reduce the number of hearts on the free tier from 5 to 3.
-    This should force more users to upgrade."
+    "You are going to reduce the number of hearts per day on the free tier from 5 to 3.
+    This should force more users to upgrade. When they run out of hearts, they can't use
+    the app."
   })
   
-  output$feature1description2 <- renderText({ "Currently, you gain 300 users a day 
-   and 15 subscribers. It is thought that this feature will increase subscription 
-     starts by 33%."
+  output$feature1description2 <- renderText({ "It is thought that this feature will increase
+  subscription starts by 33%."
   })
   
   output$feature1description3 <- renderText({"You are going to test the effectiveness
@@ -1158,7 +1160,8 @@ server <- function(input, output, session) {
   #screen 3 decision
   
   output$decision1 <- renderText({
-    "Now you've seen the results for this test you must decide if you want to introduce feature 1:
+    "Now you've seen the results for this test you must decide if you want to 
+    introduce feature 1:
     reducing the number of hearts on the free tier."
   })
 
@@ -1175,7 +1178,7 @@ server <- function(input, output, session) {
   })
   output$feature2des3 <- renderText({
     "You are going to test the effectiveness of this feature. Please choose the test 
-    length and sample size by using the power calculator."
+    duration and sample size by using the power calculator."
   })
   output$power2 <- renderText({
   daynumber2 <- as.numeric(input$dayquestion2)
@@ -1422,7 +1425,7 @@ server <- function(input, output, session) {
     "It is thought that increasing adverts for free tier will cause 40% more subscribers."
   })
   output$feature3des3 <- renderText({
-    "Test the effectiveness of this feature before you decide whether to introduce it. Choose length
+    "Test the effectiveness of this feature before you decide whether to introduce it. Choose duration
     of test and the sample size by using the power calculator."
   })
   output$power3 <- renderText({
@@ -1667,7 +1670,7 @@ server <- function(input, output, session) {
   
   output$feature4des1 <- renderText({
     "This feature is introducing streaks to subscribers. Currently, free tier do not have this
-    feature. This will give subscribers a way to track progress"
+    feature. This will give subscribers a way to track progress."
   })
   output$feature4des2 <- renderText({
     "It is thought that introducing this will cause 25% more subscribers."
@@ -1916,7 +1919,7 @@ server <- function(input, output, session) {
   #screen 10 feature 5
   
   output$feature5des1 <- renderText({
-    "This feature is introducing subscriber only levels. 
+    "This feature is introducing some levels only for subscribers. 
     Currently, free tier and subscribers can access the same.
     This will give more opportunities to subscribers "
   })
@@ -2167,8 +2170,8 @@ server <- function(input, output, session) {
   ##penultimate screen, order choices
   
   output$orderinfo <- renderText({
-    "Please order the features you chose to introduce in the order you would like
-    them added to the product."
+    "On the right are all the features you chose to introduce. Please order them
+    to the order you wish them to be introduced."
   })
   ##ordering features
   output$orderedlist <- renderUI({
@@ -2232,14 +2235,14 @@ server <- function(input, output, session) {
   #final screen , a year later
   
   output$yearlater <- renderText({
-    "We now look at the status of MonoBingo a year after deciding
-    which features to introduce. 
+    "We now look at the status of MonoBingo a year after introducing the features
+    you chose.
     To see the number of users and subscribers now, a year later, click the button below."
   })  
   
   output$featureschosen <- renderUI({
     tagList(
-    h4("Below is the list of features you chose to introduce to MonoBingo and the order
+    h4("Below is the list of features you chose to introduce to MonoBingo in the order
     you chose to introduce them:"
     )
     )
@@ -2416,28 +2419,34 @@ server <- function(input, output, session) {
     if (load2() == "loaded2"){
  
       if(input$decision1 == TRUE){
-        feedback <- append(feedback, list(p("While reducing the number of hearts for the free tier increased subscriber
-        numbers, it also caused a descrease in the number of users.")))}
+        feedback <- append(feedback, list(p("While reducing the number of hearts
+        for the free tier increased subscribers, it also caused a descrease in 
+          the number of users.")))}
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
         if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to reduce wait time before reducing hearts reduced the effectiveness.")
+          feedback <- append(feedback, list(p("Choosing to reduce wait time before
+                                              reducing hearts reduced the effectiveness.")
        )) } }
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids){
         if (match("decision1", ordered_ids) < match("decision2", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to reduce hearts before reducing wait time was the more effective order.")
+          feedback <- append(feedback, list(p("Choosing to reduce hearts before 
+                                              reducing wait time was the more effective order.")
         ))} }
         
         if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
-          feedback <- append(feedback, list(p("Increasing adverts as the first feature was most effective.")
+          feedback <- append(feedback, list(p("Increasing adverts as the first feature
+                                              was most effective feature to have first.")
        )) }
        
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to introduce a subscriber only level before introducing streaks reduced the
+          feedback <- append(feedback, list(p("Choosing to introduce subscriber 
+          only levels before introducing streaks reduced the
           effectiveness.")))} }
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to introduce streaks before a subsciber only level was
+          feedback <- append(feedback, list(p("Choosing to introduce streaks before 
+          subsciber only levels was
             the more effective order.")))
         }
       }
