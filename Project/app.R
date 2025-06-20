@@ -33,14 +33,14 @@ for (i in c(-364:0)){
 #df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
 
 #each feature rate
-featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18)
+featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18, F = 0.29)
 
 
 #set up for ordering later on
-inputrank <- c("decision1", "decision2", "decision3", "decision4", "decision5")
+inputrank <- c("decision1", "decision2", "decision3", "decision4", "decision5", "decision6")
 labelsrank <- c("Feature 1: reducing hearts", "Feature 2: reducing wait time",
                 "Feature 3: increasing adverts", "Feature 4: introducing streaks",
-                "Feature 5: subscriber only level")
+                "Feature 5: subscriber only level", "Feature 6: free trial")
 
 ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
@@ -60,8 +60,8 @@ ui <- dashboardPage(skin = "blue",
                       menuItem("Feature 4 results", tabName = "Feature4results"),
                       menuItem("Feature 5", tabName = "Feature5"),
                       menuItem("Feature 5 results", tabName = "Feature5results"),
-                      menuItem("Feature 5", tabName = "Feature6"),
-                      menuItem("Feature 5 results", tabName = "Feature6results"),
+                      menuItem("Feature 6", tabName = "Feature6"),
+                      menuItem("Feature 6 results", tabName = "Feature6results"),
                       menuItem("Order the features", tabName = "orderfeatures"),
                       menuItem("One Year Later", tabName = "OneYearLater")
                     )
@@ -777,6 +777,12 @@ server <- function(input, output, session) {
                {updateTabItems(session, "menu", "Feature5results")}
   )
   observeEvent(input$next92,
+               {updateTabItems(session, "menu", "Feature6")}
+  )
+  observeEvent(input$next93,
+               {updateTabItems(session, "menu", "Feature6results")}
+  )
+  observeEvent(input$next94,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
   observeEvent(input$next10,
@@ -816,21 +822,28 @@ server <- function(input, output, session) {
   observeEvent(input$previous92,
                {updateTabItems(session, "menu", "Feature5")}
   )
-  observeEvent(input$previous10,
+  observeEvent(input$previous93,
                {updateTabItems(session, "menu", "Feature5results")}
+  )
+  observeEvent(input$previous94,
+               {updateTabItems(session, "menu", "Feature6")}
+  )
+  observeEvent(input$previous10,
+               {updateTabItems(session, "menu", "Feature6results")}
   )
   observeEvent(input$previous11,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
   
   #feature decision throughout
-  featuredecisions <- reactiveValues(A = FALSE, B = FALSE, C = FALSE, D = FALSE, E = FALSE)
+  featuredecisions <- reactiveValues(A = FALSE, B = FALSE, C = FALSE, D = FALSE, E = FALSE, F = FALSE)
   
   observeEvent(input$decision1, { featuredecisions$A <- as.logical(input$decision1) })
   observeEvent(input$decision2, { featuredecisions$B <- as.logical(input$decision2) })
   observeEvent(input$decision3, { featuredecisions$C <- as.logical(input$decision3) })
   observeEvent(input$decision4, { featuredecisions$D <- as.logical(input$decision4) })
   observeEvent(input$decision5, { featuredecisions$E <- as.logical(input$decision5) })
+  observeEvent(input$decision6, { featuredecisions$F <- as.logical(input$decision6) })
   
   applyrate <- function(baserate, ratelift) {
     totallift <- prod(1 + ratelift)
@@ -2431,7 +2444,7 @@ server <- function(input, output, session) {
     
     
     ci <- signif(test_result$conf.int * 100, 3)
-    if(input$CIbutton5 > 0){
+    if(input$CIbutton6 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is:",
         br(),
@@ -2537,6 +2550,7 @@ server <- function(input, output, session) {
       Q3 = input$surveyquestion3,
       Q4 = input$surveyquestion4,
       Q5 = input$surveyquestion5,
+      Q6 = input$surveyquestion6,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
     )
@@ -2545,7 +2559,8 @@ server <- function(input, output, session) {
       Q2 = input$surveyquestion2,
       Q3 = input$surveyquestion3,
       Q4 = input$surveyquestion4,
-      q5 = input$surveyquestion5,
+      Q5 = input$surveyquestion5,
+      Q6 = input$surveyquestion6,
       Qfinal = input$surveyquestionfinal,
       Timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
       stringsAsFactors = FALSE
@@ -2673,7 +2688,8 @@ server <- function(input, output, session) {
       need(input$decision2, "Please decide whether to add each feature 2"),
       need(input$decision3, "Please decide whether to add each feature 3"),
       need(input$decision4, "Please decide whether to add each feature 4"),
-      need(input$decision5, "Please decide whether to add each feature 5")
+      need(input$decision5, "Please decide whether to add each feature 5"),
+      need(input$decision6, "Please decide whether to add each feature 6")
     )
     result <- yearlaterdata()
     
@@ -2690,10 +2706,11 @@ server <- function(input, output, session) {
     if(input$decision1 == TRUE){
       n[1] <- n[1]*0.9
     }
-    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
+                 input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
-    if(yesanswers>= 4){
+    if(yesanswers>= 5){
       n[1] <- n[1] - 3000
     }
     
@@ -2722,7 +2739,8 @@ server <- function(input, output, session) {
     validate(
       need(input$decision1, "")
     )
-    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
+                 input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
     
@@ -2749,7 +2767,8 @@ server <- function(input, output, session) {
     need(input$decision2, ""),
     need(input$decision3, ""),
     need(input$decision4, ""),
-    need(input$decision5, "")
+    need(input$decision5, ""),
+    need(input$decision6, "")
   )
     label_to_id <- setNames(inputrank, labelsrank)
     ordered_labels <- input$ordered_items 
@@ -2795,7 +2814,7 @@ server <- function(input, output, session) {
             the more effective order.", style = "color: green;")))
         }
       }
-      if (yesanswers >= 4){
+      if (yesanswers >= 5){
         feedback <- append(feedback, list(p("You introduced lots of features. This 
           caused a loss in users as the free version was no longer as good.",
                                             style = "color: red;")))
@@ -2822,7 +2841,8 @@ server <- function(input, output, session) {
       need(input$decision2, ""),
       need(input$decision3, ""),
       need(input$decision4, ""),
-      need(input$decision5, "")
+      need(input$decision5, ""),
+      need(input$decision6, "")
     )
       result <- yearlaterdata()
       
