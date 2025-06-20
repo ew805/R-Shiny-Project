@@ -2267,10 +2267,33 @@ server <- function(input, output, session) {
   })
   
   yearlaterdata <- reactive({
-    
+    basep <- calcRate() 
     
     users <- rep(100000, 50)
-    basep <- calcRate()
+    
+    
+    ##order affects basep
+    label_to_id <- setNames(inputrank, labelsrank)
+    ordered_labels <- input$ordered_items 
+    ordered_ids <- label_to_id[ordered_labels]
+    
+    if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
+      if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
+        basep <- basep*0.95
+      }
+    }
+    
+    if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
+      basep <- basep + 0.03
+    }
+    
+    if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
+      if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
+        basep <- basep*0.97
+      }
+    }
+    
+    print(basep)
     
     dbExecute(conn, "DELETE FROM sim")
     
@@ -2322,9 +2345,13 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    ##feature 1 causes less users
     if(input$decision1 == TRUE){
       n[1] <- n[1]*0.9
     }
+    
+    
+    
     
     rate_test <- round((x[1] / n[1]) * 100, 2)
     rate_control <- round((x[2] / n[2]) * 100, 2)
@@ -2362,7 +2389,8 @@ server <- function(input, output, session) {
     else if (load2() == "loaded2"){
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
-        p("Here are the number of subscribers and users one year later:") 
+        p("Here are the number of subscribers and users one year later:")
+        
       )
     }
     else{
