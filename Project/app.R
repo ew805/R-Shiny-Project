@@ -2798,7 +2798,22 @@ server <- function(input, output, session) {
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
                  input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
-    
+    basep <- calcRate()
+    label_to_id <- setNames(inputrank, labelsrank)
+    ordered_labels <- input$ordered_items 
+    ordered_ids <- label_to_id[ordered_labels]
+    if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
+      if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
+        basep <- basep*0.95}}
+    if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
+      basep <- basep + 0.03}
+    if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
+      if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
+        basep <- basep*0.97}}
+    if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) <= 4) {
+      basep <- basep * 0.92}
+    if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
+      basep <- basep + 0.02}
     
     if(load2()=="pressed2"){
       tagList(
@@ -2809,6 +2824,8 @@ server <- function(input, output, session) {
     else if (load2() == "loaded2"){
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
+        p("Based on the features you chose to introduce, the expected subscription
+          rate is", round(basep * 100, 3), "%."),
         p("Here are the number of subscribers and users one year later both with the
           features you chose to add and without any added, for comparison:")
         
