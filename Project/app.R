@@ -2758,6 +2758,7 @@ server <- function(input, output, session) {
     ##feature 1 causes less users
     if(input$decision1 == TRUE){
       n[1] <- n[1]*0.9
+      x[1] <- x[1]*0.9
     }
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
                  input$decision5, input$decision6)
@@ -2765,23 +2766,24 @@ server <- function(input, output, session) {
     
     #too many features means less users
     if(yesanswers>= 5){
-      n[1] <- n[1] - 3000
+      n[1] <- n[1]*0.94
+      x[1] <- x[1]*0.94
     }
     
     
     rate_test <- round((x[1] / n[1]) * 100, 2)
     rate_control <- round((x[2] / n[2]) * 100, 2)
     rate_diff <- round(rate_test - rate_control, 2)
-    sub_diff <- x[1] - x[2]
-    user_diff <- n[1] - n[2]
+    sub_diff <- round(x[1] - x[2])
+    user_diff <- round(n[1] - n[2])
     
     
     if (load2() == "loaded2")
       #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate"),
-        Features_added = c(x[1], n[1], paste0(rate_test, "%")),
-        No_features_added = c(x[2], n[2], paste0(rate_control, "%")),
+        Features_added = c(round(x[1]), round(n[1]), paste0(rate_test, "%")),
+        No_features_added = c(round(x[2]), round(n[2]), paste0(rate_control, "%")),
         Difference = c(sub_diff, user_diff, paste0(rate_diff, "%"))
         
       )
@@ -2925,6 +2927,17 @@ server <- function(input, output, session) {
       ##feature 1 causes less users
       if(input$decision1 == TRUE){
         n[1] <- n[1]*0.9
+        x[1] <- x[1]*0.9
+      }
+      
+      answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
+                   input$decision5, input$decision6)
+      yesanswers <- sum(answers == TRUE, na.rm = TRUE)
+      
+      #too many features means less users
+      if(yesanswers>= 5){
+        n[1] <- n[1]*0.94
+        x[1] <- x[1]*0.94
       }
       #bar chart to show users and subscribers
       barchartdf <- data.frame(
