@@ -784,6 +784,8 @@ ui <- dashboardPage(skin = "blue",
                               solidHeader = TRUE,
                               textOutput("orderinfo"),
                               br(),
+                            textInput("surveyquestionfinal", "Why did you choose that order?",
+                                      value = "")
                             )
                               ),
                           column(
@@ -794,9 +796,7 @@ ui <- dashboardPage(skin = "blue",
                             title = "Order",
                             status = "primary",
                             solidHeader = TRUE,
-                            uiOutput("orderedlist"),
-                            textInput("surveyquestionfinal", "Why did you choose that order?",
-                                      value = "")
+                            uiOutput("orderedlist")
                               ),
                             box(
                               status ="primary",
