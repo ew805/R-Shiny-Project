@@ -179,7 +179,18 @@ ui <- dashboardPage(skin = "blue",
                                  title = "Choices",
                                  status = "primary",
                                  solidHeader = TRUE,
-                               radioButtons("dayquestion", "How many days would you like to run the test?",
+                                 selectInput(
+                                   inputId = "sl1",                     
+                                   label = "Choose your significance level:",               
+                                   choices = list(
+                                     "1%" = 0.01,
+                                     "5%" = 0.05,
+                                     "10%" = 0.10
+                                   ),
+                                   selected = 0.05                             
+                                 ),
+                               radioButtons("dayquestion", 
+                                            "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4),
                                           selected = character(0)),
@@ -1041,10 +1052,11 @@ server <- function(input, output, session) {
   output$power <- renderText({
     daynumber <- as.numeric(input$dayquestion)
     sample <- input$samplesize * daynumber
+    siglevel <- as.numeric(input$sl1)
     result <- power.prop.test(n = sample, 
                               p1 = 0.05, 
                               p2 = 0.0665, 
-                              sig.level = 0.05)
+                              sig.level = siglevel)
     paste0("The estimated power for your sample size is ",
            round(result$power * 100, 2), "%")
     
@@ -1084,6 +1096,7 @@ server <- function(input, output, session) {
     samplesize <- as.numeric(input$samplesize)
     usersnumber <- samplesize * days
     users <- rep(usersnumber, 50)
+    siglevel <- as.numeric(input$sl1)
     
     #feature rate
     baserate <- 0.05
@@ -1130,7 +1143,9 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
-    test_result <- prop.test(x, n)
+    siglevel <- as.numeric(input$sl1)
+    conflevel <- 1 - siglevel
+    test_result <- prop.test(x, n, conf.level = conflevel)
     
     rate_test <- round((x[1] / n[1]) * 100, 2)
     rate_control <- round((x[2] / n[2]) * 100, 2)
@@ -1167,14 +1182,16 @@ server <- function(input, output, session) {
       #displays choices made
       daynumber <- as.numeric(input$dayquestion)
       sample <- input$samplesize * daynumber
+      siglevel <- as.numeric(input$sl1)
       result <- power.prop.test(n = sample, 
                                 p1 = 0.05, 
                                 p2 = 0.0665, 
-                                sig.level = 0.05)
+                                sig.level = siglevel)
       resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
-        p(paste("You chose to run the test for", input$dayquestion, "day(s) and with
+        p(paste("Your test is at the", siglevel * 100, "% significance level.
+        You chose to run the test for", input$dayquestion, "day(s) and with
                 a sample size of", input$samplesize,". The power of your test is",
                 resultpower, "%."))
       )
@@ -1206,7 +1223,11 @@ server <- function(input, output, session) {
     n <- c(test_row$active_users, control_row$active_users)
     
     #test to find confidence intervals
-    test_result <- prop.test(x, n)
+    
+    siglevel <- as.numeric(input$sl1)
+    conflevel <- 1 - siglevel
+    test_result <- prop.test(x, n, conf.level = conflevel)
+    
     ci <- signif(test_result$conf.int * 100, 3)
     
     
@@ -1243,7 +1264,10 @@ server <- function(input, output, session) {
       x <- c(test_row$subscribers, control_row$subscribers)
       n <- c(test_row$active_users, control_row$active_users)
       
-      test_result <- prop.test(x, n)
+      siglevel <- as.numeric(input$sl1)
+      conflevel <- 1 - siglevel
+      test_result <- prop.test(x, n, conf.level = conflevel)
+      
       ci <- signif(test_result$conf.int * 100, 3)
       rate_test <- round((x[1] / n[1]) * 100, 2)
       rate_control <- round((x[2] / n[2]) * 100, 2)
@@ -2825,8 +2849,8 @@ server <- function(input, output, session) {
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
         p("Based on the features you chose to introduce, the expected subscription
-          rate is", round(basep * 100, 3), "%."),
-        p("Here are the number of subscribers and users one year later both with the
+          rate is", round(basep * 100, 2), "%."),
+        p("Here are the actual number of subscribers and users one year later both with the
           features you chose to add and without any added, for comparison:")
         
       )
