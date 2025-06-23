@@ -2770,8 +2770,8 @@ server <- function(input, output, session) {
       #results table
       data.frame(
         Test = c("Subscribers", "Users", "Subscription Rate"),
-        Test_Group = c(x[1], n[1], paste0(rate_test, "%")),
-        Control_Group = c(x[2], n[2], paste0(rate_control, "%")),
+        Features_added = c(x[1], n[1], paste0(rate_test, "%")),
+        No_features_added = c(x[2], n[2], paste0(rate_control, "%")),
         Difference = c(sub_diff, user_diff, paste0(rate_diff, "%"))
         
       )
@@ -2797,7 +2797,8 @@ server <- function(input, output, session) {
     else if (load2() == "loaded2"){
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
-        p("Here are the number of subscribers and users one year later:")
+        p("Here are the number of subscribers and users one year later both with the
+          features you chose to add and without any added, for comparison:")
         
       )
     }
@@ -2917,7 +2918,7 @@ server <- function(input, output, session) {
       }
       #bar chart to show users and subscribers
       barchartdf <- data.frame(
-        Group = c("Test", "Control"),
+        Group = c("Added", "NotAdded"),
         Users = c(n[1], n[2]),
         Subscribers = c(x[1], x[2])
       )
