@@ -2551,6 +2551,16 @@ server <- function(input, output, session) {
   })
   ##ordering features
   output$orderedlist <- renderUI({
+    
+    validate( #checking all questions are answered
+      need(input$decision1, "Please decide whether to add each feature 1"),
+      need(input$decision2, "Please decide whether to add each feature 2"),
+      need(input$decision3, "Please decide whether to add each feature 3"),
+      need(input$decision4, "Please decide whether to add each feature 4"),
+      need(input$decision5, "Please decide whether to add each feature 5"),
+      need(input$decision6, "Please decide whether to add each feature 6")
+    )
+    
     selected <- labelsrank[unlist(lapply(inputrank, function(id) {
       val <- input[[id]]
       !is.null(val) && val == TRUE
