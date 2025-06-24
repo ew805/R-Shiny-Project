@@ -132,10 +132,7 @@ ui <- dashboardPage(skin = "blue",
                                  valueBoxOutput("cm_users", width = 12),
                                 
                                      
-                                     plotOutput("cmplot1"),
-                                 box(width=12,  
-                                     actionButton("previous1", "Previous Page")
-                                     )
+                                     plotOutput("cmplot1")
                                      
                                  ),
                           column(width = 4,
@@ -145,14 +142,21 @@ ui <- dashboardPage(skin = "blue",
                                      plotOutput("cmplot2")
                                  ),
                           column(width = 4,
-                                 valueBoxOutput("cm_cr", width = 12),
+                                 valueBoxOutput("cm_cr", width = 12))),
                                  box(width=12,
                                   plotOutput("cmplot3")
                                          ),
-                               box(width=12,  
-                              actionButton("next1", "Next Page")
-                              ) )
-                              
+                          fluidRow(
+                            column(width=6, 
+                                   align = "left",
+                                   actionButton("previous1", "Previous Page",
+                                                style = "margin-top: 20px; padding: 10px 20px;")
+                            ),
+                            column(width=6, 
+                                   align = "right",
+                                   actionButton("next1", "Next Page",
+                                                style = "margin-top: 20px; padding: 10px 20px;")
+                            )
                           )),
                   
                   
@@ -348,13 +352,20 @@ ui <- dashboardPage(skin = "blue",
                                          value = 3000,
                                          step = 100),
                              textOutput("power2")
-                           ),
-                           box(width = 12,
-                               status ="primary",
-                               solidHeader = TRUE,
-                               actionButton("previous4", "Previous Page"),
-                               actionButton("next4", "Next Page"))
-                         ))
+                           ))),
+                           
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous4", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next4", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )
                          
                          
                          
@@ -398,13 +409,19 @@ ui <- dashboardPage(skin = "blue",
                              uiOutput("CInumbers2"),
                              plotOutput("ciplot2")
                              
-                           ),
-                           box(width = 12,
-                               status ="primary",
-                               solidHeader = TRUE,
-                               actionButton("previous5", "Previous Page"),
-                               actionButton("next5", "Next Page"))
-                         ) )
+                           ))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous5", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next5", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )
                 ),
                 tabItem(tabName = "Feature3",
                          h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
@@ -455,13 +472,19 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power3")),
-                             box(width = 12,
-                                 status ="primary",
-                                 solidHeader = TRUE,
-                                 actionButton("previous6", "Previous Page"),
-                                 actionButton("next6", "Next Page"))
-                         ))
+                                     textOutput("power3")))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous6", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next6", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )
                          ),
                 tabItem(tabName = "Feature3Results",
                          h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
@@ -497,13 +520,19 @@ ui <- dashboardPage(skin = "blue",
                              tableOutput("resultdata3"),
                              uiOutput("CInumbers3"),
                              plotOutput("ciplot3")
-                           ),
-                           box(width = 12,
-                               status ="primary",
-                               solidHeader = TRUE,
-                               actionButton("previous7", "Previous Page"),
-                               actionButton("next7", "Next Page"))
-                         )) ),
+                           ))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous7", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next7", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        ) ),
                 tabItem(tabName = "Feature4",
                          h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
                          fluidRow(
@@ -553,13 +582,20 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power4")),
-                               box(width = 12,
-                                   status ="primary",
-                                   solidHeader = TRUE,
-                                   actionButton("previous8", "Previous Page"),
-                                   actionButton("next8", "Next Page"))
-                         ))),
+                                     textOutput("power4")))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous8", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next8", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )
+                              ),
                 tabItem(tabName = "Feature4results",
                          h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
                          fluidRow(
@@ -594,14 +630,19 @@ ui <- dashboardPage(skin = "blue",
                              tableOutput("resultdata4"),
                              uiOutput("CInumbers4"),
                              plotOutput("ciplot4")
-                           ),
-                           box(width = 12,
-                               status ="primary",
-                               solidHeader = TRUE,
-                               actionButton("previous9", "Previous Page"),
-                               actionButton("next9", "Next Page"))
-                      
-                         ))),
+                           ))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous9", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next9", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )),
                 
                 tabItem(tabName = "Feature5",
                         h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
@@ -652,13 +693,19 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power5")),
-                                 box(width = 12,
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     actionButton("previous91", "Previous Page"),
-                                     actionButton("next91", "Next Page"))
-                          ))),
+                                     textOutput("power5")))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous91", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next91", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )),
                 tabItem(tabName = "Feature5results",
                         h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
                         fluidRow(
@@ -693,14 +740,19 @@ ui <- dashboardPage(skin = "blue",
                                      tableOutput("resultdata5"),
                                      uiOutput("CInumbers5"),
                                      plotOutput("ciplot5")
-                                 ),
-                                 box(width = 12,
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     actionButton("previous92", "Previous Page"),
-                                     actionButton("next92", "Next Page"))
-                                 
-                          ))),
+                                 ))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous92", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next92", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )),
                 
                 tabItem(tabName = "Feature6",
                         h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
@@ -751,13 +803,19 @@ ui <- dashboardPage(skin = "blue",
                                                  max = 10000,
                                                  value = 3000,
                                                  step = 100),
-                                     textOutput("power6")),
-                                 box(width = 12,
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     actionButton("previous93", "Previous Page"),
-                                     actionButton("next93", "Next Page"))
-                          ))),
+                                     textOutput("power6")))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous93", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          ),
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next93", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )),
                 tabItem(tabName = "Feature6results",
                         h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
                         fluidRow(
@@ -791,15 +849,19 @@ ui <- dashboardPage(skin = "blue",
                                      uiOutput("results6"),
                                      tableOutput("resultdata6"),
                                      uiOutput("CInumbers6"),
-                                     plotOutput("ciplot6")
-                                 ),
-                                 box(width = 12,
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     actionButton("previous94", "Previous Page"),
-                                     actionButton("next94", "Next Page"))
-                                 
-                          ))),
+                                     plotOutput("ciplot6")))),
+                                     fluidRow(
+                                       column(width=6, 
+                                              align = "left",
+                                              actionButton("previous94", "Previous Page",
+                                                           style = "margin-top: 20px; padding: 10px 20px;")
+                                       ),
+                                       column(width=6, 
+                                              align = "right",
+                                              actionButton("next94", "Next Page",
+                                                           style = "margin-top: 20px; padding: 10px 20px;")
+                                       )
+                                     )),
                 
                 
                 tabItem(tabName = "orderfeatures",
@@ -834,13 +896,19 @@ ui <- dashboardPage(skin = "blue",
                               width = 3,
                               actionButton("submitbutton", "Submit all"),
                               textOutput("submitted")
+                          ))),
+                        fluidRow(
+                          column(width=6, 
+                                 align = "left",
+                                 actionButton("previous10", "Previous Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
                           ),
-                          box(width = 6,
-                              status ="primary",
-                              solidHeader = TRUE,
-                              actionButton("previous10", "Previous Page"),
-                              actionButton("next10", "Next Page")))
-                            )
+                          column(width=6, 
+                                 align = "right",
+                                 actionButton("next10", "Next Page",
+                                              style = "margin-top: 20px; padding: 10px 20px;")
+                          )
+                        )
                           ),
                         
                 
@@ -872,13 +940,15 @@ ui <- dashboardPage(skin = "blue",
                               tableOutput("yeartable"),
                               plotOutput("yearbarchart")
                               
-                            ),
-                            box(width = 4,
-                                status = "primary",
-                                solidHeader = TRUE,
-                                actionButton("previous11", "Previous Page")
-                                )
-                          )) )
+                            ))),
+                         fluidRow(
+                           column(width=6, 
+                                  align = "left",
+                                  actionButton("previous11", "Previous Page",
+                                               style = "margin-top: 20px; padding: 10px 20px;")
+                           ),
+                           
+                         ) )
                 
                 
 )
