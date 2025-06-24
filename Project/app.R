@@ -159,8 +159,9 @@ ui <- dashboardPage(skin = "blue",
                   tabItem(tabName = "Feature1",
                            
                            h2("Reducing Hearts on the Free Tier",align = "center", style = "font-weight: bold"),
+                          br(),
                            fluidRow(
-                             column(width = 5, 
+                             column(width = 4,
                                     box(width=12,
                                  title = "Information",
                                  status = "primary",
@@ -180,12 +181,12 @@ ui <- dashboardPage(skin = "blue",
                                textOutput("feature1description3")
                                )
                                ),
-                             column(width = 7,
+                             column(width = 8,
                                     box( width = 12,
+                                         style = "min-height: 424px;",
                                  title = "Choices",
                                  status = "primary",
                                  solidHeader = TRUE,
-                                 style = "min-height: 385px;",
                                  selectInput(
                                    inputId = "sl1",                     
                                    label = "Choose your significance level:",               
@@ -196,23 +197,22 @@ ui <- dashboardPage(skin = "blue",
                                    ),
                                    selected = 0.05                             
                                  ),
+                                 br(),
                                radioButtons("dayquestion", 
                                             "How many days would you like to run the test?",
                                             choices =
                                               c(1, 2, 3, 4),
                                           selected = character(0)),
-                               
+                               br(),
                                sliderInput("samplesize",
                                            "Choose your sample size:",
                                            min = 1000,
                                            max = 10000,
                                            value = 3000,
                                            step = 100),
+                               br(),
                                textOutput("power"))
-                             ) ),
-                          br(),
-                          br(),
-                          br(),
+                             ) ) ,
                           fluidRow(
                             column(width=6, 
                                    align = "left",
@@ -262,15 +262,22 @@ ui <- dashboardPage(skin = "blue",
                              
                              column(
                                width = 8,
-                               box(width=12,
-                               title = "Results",
-                               status = "primary",
-                               solidHeader = TRUE,
+                               tabBox(width=12,
+                                      id = "feature1tabs",
+                               tabPanel( 
+                                 status = "primary",
+                                 solidHeader = TRUE,
+                                 title = "Results",
                                uiOutput("results"),
-                               tableOutput("resultdata"),
+                               tableOutput("resultdata")
+                               ),
+                               tabPanel(
+                                 status = "primary",
+                                 solidHeader = TRUE,
+                                 title = "Confidence Interval",
                                uiOutput("CInumbers"),
                                plotOutput("ciplot")
-                               
+                               )
                              ),
                              box(width = 12,
                                  status ="primary",
@@ -1034,7 +1041,7 @@ server <- function(input, output, session) {
   nonsubscriberuserlength <- signif(mean(dayta$user_leaves[is.na(dayta$user_subscribes)] - 
          dayta$user_starts[is.na(dayta$user_subscribes)]),3)
   
-  subscriptionrate <- signif(mean(!is.na(dayta$user_subscribes)), 3)
+  subscriptionrate <- signif((mean(!is.na(dayta$user_subscribes)))*100, 3) 
   
   subscriptiondays <- signif(mean(dayta$user_subscribes - dayta$user_starts, na.rm = TRUE),3)
   
