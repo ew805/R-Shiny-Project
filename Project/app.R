@@ -96,7 +96,7 @@ ui <- dashboardPage(skin = "blue",
                                     title = "Instructions",
                                     uiOutput("instructions"),
                                     status = "primary",
-                                    solidHeader = TRUE,
+                                    solidHeader = TRUE
                                     )
                                     ),
                           
@@ -105,7 +105,7 @@ ui <- dashboardPage(skin = "blue",
                                     title = "Purpose",
                                     textOutput("purpose"),
                                     status = "primary",
-                                    solidHeader = TRUE,
+                                    solidHeader = TRUE
                                     ),
                                     box(width = 3,
                                         status ="primary",
@@ -116,44 +116,33 @@ ui <- dashboardPage(skin = "blue",
                           ),
                   tabItem(tabName = "companymetrics",
                           h2("MonoBingo Company Metrics", align = "center"),
-                          fluidRow(box(
-                            width = 12,
-                            status ="primary",
-                            solidHeader = TRUE,
-                            textOutput("companymetricssummary")
-                           
-                           
-                          ),
+                          fluidRow(
+                            
                           column(width = 4,
-                                 box(width = 12,
-                                     title = "Users",
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     uiOutput("cm_users"),
-                                     plotOutput("cmplot1")
+                                 valueBoxOutput("cm_users", width = 12),
+                                
+                                     
+                                     plotOutput("cmplot1"),
+                                 box(width=12,  
+                                     actionButton("previous1", "Previous Page")
                                      )
+                                     
                                  ),
                           column(width = 4,
-                                 box(width = 12,
-                                     title = "Subscribers",
-                                     status ="primary",
-                                    solidHeader = TRUE,
-                                     uiOutput("cm_subscribers"),
-                                     plotOutput("cmplot2"))
+                                 valueBoxOutput("cm_subscribers", width = 12),
+                                 valueBoxOutput("cm_subscribers2", width = 12),
+                                
+                                     plotOutput("cmplot2")
                                  ),
                           column(width = 4,
-                                 box(width = 12,
-                                     title = "Churn Rate",
-                                     status ="primary",
-                                     solidHeader = TRUE,
-                                     uiOutput("cm_cr"),
-                                     plotOutput("cmplot3")),
-                                 
-                            box(width = 12,
-                              status ="primary",
-                              solidHeader = TRUE,
-                              actionButton("previous1", "Previous Page"),
-                              actionButton("next1", "Next Page")))
+                                 valueBoxOutput("cm_cr", width = 12),
+                                 box(width=12,
+                                  plotOutput("cmplot3")
+                                         ),
+                               box(width=12,  
+                              actionButton("next1", "Next Page")
+                              ) )
+                              
                           )),
                   
                   
@@ -166,20 +155,20 @@ ui <- dashboardPage(skin = "blue",
                                  title = "Information",
                                  status = "primary",
                                  solidHeader = TRUE,
-                               textOutput("feature1description"),
+                               textOutput("feature1description")
                                ),
                                box(width = 12,
                                    title = "Expected Rate",
                                    status = "primary",
                                    solidHeader = TRUE,
-                               textOutput("feature1description2"),
+                               textOutput("feature1description2")
                                ),
                                box(width = 12,
                                    title = "Instructions",
                                    status = "primary",
                                    solidHeader = TRUE,
-                               textOutput("feature1description3"),
-                               ),
+                               textOutput("feature1description3")
+                               )
                                ),
                              column(width = 7,
                                     box( width = 12,
@@ -216,7 +205,7 @@ ui <- dashboardPage(skin = "blue",
                                    actionButton("next2", "Next Page"))
                              )
                              
-                           ),
+                           )
                   ),
                   
                   tabItem(tabName = "Feature1results",
@@ -243,7 +232,7 @@ ui <- dashboardPage(skin = "blue",
                                             choices = c("Yes" = TRUE, "No" = FALSE), 
                                             selected = character(0)),
                                textInput("surveyquestion1", "Why did you make that decision?", 
-                                         value = ""),
+                                         value = "")
                                
                              ) ),
                              
@@ -275,20 +264,20 @@ ui <- dashboardPage(skin = "blue",
                                       title = "Information",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature2des1"),
+                                      textOutput("feature2des1")
                                   ),
                                   box(width = 12,
                                       title = "Expected Rate",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature2des2"),
+                                      textOutput("feature2des2")
                                   ),
                                   box(width = 12,
                                       title = "Instructions",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature2des3"),
-                                  ),
+                                      textOutput("feature2des3")
+                                  )
                                   ),
                            column(width = 7,
                                   box(width=12,
@@ -354,7 +343,7 @@ ui <- dashboardPage(skin = "blue",
                                           choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion2", "question?", 
-                                       value = ""),
+                                       value = "")
                            )),
                            
                            
@@ -384,20 +373,20 @@ ui <- dashboardPage(skin = "blue",
                                       title = "Information",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature3des1"),
+                                      textOutput("feature3des1")
                                   ),
                                   box(width = 12,
                                       title = "Expected Rate",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature3des2"),
+                                      textOutput("feature3des2")
                                   ),
                                   box(width = 12,
                                       title = "Instructions",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature3des3"),
-                                  ),
+                                      textOutput("feature3des3")
+                                  )
                                   ),
                            column(width = 7,
                                box(width=12,
@@ -456,7 +445,7 @@ ui <- dashboardPage(skin = "blue",
                                           choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion3", "question?", 
-                                       value = ""),
+                                       value = "")
                            )),
                            column(width = 8,
                                   box(width=12,
@@ -482,20 +471,20 @@ ui <- dashboardPage(skin = "blue",
                                       title = "Information",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature4des1"),
+                                      textOutput("feature4des1")
                                   ),
                                   box(width = 12,
                                       title = "Expected Rate",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature4des2"),
+                                      textOutput("feature4des2")
                                   ),
                                   box(width = 12,
                                       title = "Instructions",
                                       status = "primary",
                                       solidHeader = TRUE,
-                                      textOutput("feature4des3"),
-                                  ),
+                                      textOutput("feature4des3")
+                                  )
                            ),
                            column(width = 7,
                                box(width = 12,
@@ -553,7 +542,7 @@ ui <- dashboardPage(skin = "blue",
                                           choices = c("Yes" = TRUE, "No" = FALSE), 
                                           selected = character(0)),
                              textInput("surveyquestion4", "question?", 
-                                       value = ""),
+                                       value = "")
                            )),
                            column(width = 8,
                                   box(width=12,
@@ -581,20 +570,20 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Information",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature5des1"),
+                                     textOutput("feature5des1")
                                  ),
                                  box(width = 12,
                                      title = "Expected Rate",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature5des2"),
+                                     textOutput("feature5des2")
                                  ),
                                  box(width = 12,
                                      title = "Instructions",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature5des3"),
-                                 ),
+                                     textOutput("feature5des3")
+                                 )
                                  ),
                           column(width = 7,
                                  box(width = 12,
@@ -652,7 +641,7 @@ ui <- dashboardPage(skin = "blue",
                                                   choices = c("Yes" = TRUE, "No" = FALSE), 
                                                   selected = character(0)),
                                      textInput("surveyquestion5", "question?", 
-                                               value = ""),
+                                               value = "")
                                  )),
                           column(width = 8,
                                  box(width=12,
@@ -680,20 +669,20 @@ ui <- dashboardPage(skin = "blue",
                                      title = "Information",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature6des1"),
+                                     textOutput("feature6des1")
                                  ),
                                  box(width = 12,
                                      title = "Expected Rate",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature6des2"),
+                                     textOutput("feature6des2")
                                  ),
                                  box(width = 12,
                                      title = "Instructions",
                                      status = "primary",
                                      solidHeader = TRUE,
-                                     textOutput("feature6des3"),
-                                 ),
+                                     textOutput("feature6des3")
+                                 )
                                  ),
                           column(width = 7,
                                  box(width = 12,
@@ -751,7 +740,7 @@ ui <- dashboardPage(skin = "blue",
                                                   choices = c("Yes" = TRUE, "No" = FALSE), 
                                                   selected = character(0)),
                                      textInput("surveyquestion6", "question?", 
-                                               value = ""),
+                                               value = "")
                                  )),
                           column(width = 8,
                                  box(width=12,
@@ -810,7 +799,7 @@ ui <- dashboardPage(skin = "blue",
                               solidHeader = TRUE,
                               actionButton("previous10", "Previous Page"),
                               actionButton("next10", "Next Page")))
-                            ),
+                            )
                           ),
                         
                 
@@ -1060,30 +1049,43 @@ server <- function(input, output, session) {
   avgchurn <- signif((mean(dailychurn$churnrate, na.rm = TRUE))*100,3)
   
   #info displayed company metrics
-  output$cm_users <- renderUI({ 
-    tagList(
-    p("Currently, someone stays an active user of MonoBingo for 
-    an average of", userlength, "days."),
-    p("Of those who never subscribed, they stayed as an active user for an average of",
-    nonsubscriberuserlength, "days."),
-    p("The graph below shows the number of users and subscribers over the last month.")
+  
+  output$cm_users <- renderValueBox({
+    valueBox(
+      value = paste(userlength, "days"),
+      subtitle = "Average User Lifespan",
+      icon = icon("users"),
+      color = "blue"
     )
   })
-  output$cm_subscribers <- renderUI({
-    tagList(
-    p("MonoBingo has a subscription rate of ", subscriptionrate, "%."),
-    p("It currently takes an average of", subscriptiondays, " days for a user to subscribe,
-      if they do."),
-    p("The graph below shows the conversion rate of users to subscribers over the last month. ")
+  output$cm_subscribers <- renderValueBox({
+    valueBox(
+      value = paste(subscriptionrate, "%"),
+      subtitle = "Average Subscription Rate",
+      icon = icon("users"),
+      color = "blue"
     )
-    })
-  output$cm_cr <- renderUI({
-    tagList(
-    p("MonoBingo currently has an average churn rate of", 
-    avgchurn, "%. This means, on average,", avgchurn, "% of active users leave each day."),
-    p("The graph below shows the churn rate over time.")
+  })
+  output$cm_subscribers2 <- renderValueBox({
+    valueBox(
+      value = paste(subscriptiondays, "days"),
+      subtitle = "Average Time to Subscribe",
+      icon = icon("users"),
+      color = "blue"
     )
-    })
+  })
+  output$cm_cr <- renderValueBox({
+    valueBox(
+      value = paste(avgchurn, "%"),
+      subtitle = "Average Churn Rate",
+      icon = icon("users"),
+      color = "blue"
+    )
+  })
+  
+  
+  
+  
   
   ##company metrics plots
  
@@ -1124,7 +1126,7 @@ server <- function(input, output, session) {
    output$cmplot3 <- renderPlot({
      ggplot(dailychurn, aes(x = day, y = churnrate)) +
        geom_line() +
-       labs(title = "MonoBingo: Daily Churn Rate Over Time", y = "Churn Rate", x = "Day") +
+       labs(title = "Daily Churn Rate Over Time", y = "Churn Rate", x = "Day") +
        theme_bw()
    }
    )
