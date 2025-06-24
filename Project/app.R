@@ -158,7 +158,7 @@ ui <- dashboardPage(skin = "blue",
                   
                   tabItem(tabName = "Feature1",
                            
-                           h2("Reducing hearts for free tier",align = "center", style = "font-weight: bold"),
+                           h2("Reducing Hearts on the Free Tier",align = "center", style = "font-weight: bold"),
                            fluidRow(
                              column(width = 5, 
                                     box(width=12,
@@ -185,6 +185,7 @@ ui <- dashboardPage(skin = "blue",
                                  title = "Choices",
                                  status = "primary",
                                  solidHeader = TRUE,
+                                 style = "min-height: 385px;",
                                  selectInput(
                                    inputId = "sl1",                     
                                    label = "Choose your significance level:",               
@@ -207,15 +208,27 @@ ui <- dashboardPage(skin = "blue",
                                            max = 10000,
                                            value = 3000,
                                            step = 100),
-                               textOutput("power")),
-                               box(width = 12,
-                                   status ="primary",
-                                   solidHeader = TRUE,
-                                   actionButton("previous2", "Previous Page"),
-                                   actionButton("next2", "Next Page"))
-                             )
+                               textOutput("power"))
+                             ) ),
+                          br(),
+                          br(),
+                          br(),
+                          fluidRow(
+                            column(width=6, 
+                                   align = "left",
+                                   actionButton("previous2", "Previous Page",
+                                                style = "margin-top: 20px; padding: 10px 20px;")
+                            ),
+                            column(width=6, 
+                                   align = "right",
+                                   actionButton("next2", "Next Page",
+                                                style = "margin-top: 20px; padding: 10px 20px;")
+                            )
+                          )
+                               
                              
-                           )
+                             
+                           
                   ),
                   
                   tabItem(tabName = "Feature1results",
@@ -1147,9 +1160,9 @@ server <- function(input, output, session) {
   ##screen 2 text feature 1
   
   output$feature1description <- renderText({ 
-    "You are going to reduce the number of hearts per day on the free tier from 5 to 3.
-    This should force more users to upgrade. When they run out of hearts, they can't use
-    the app."
+    "This feature is reducing the number of hearts per day on the free tier from 5 to 3. 
+    Each round on the app uses a heart. When the users runs out of hearts, they can't use the app.
+    This should force more users to upgrade."
   })
   
   output$feature1description2 <- renderText({ "It is thought that this feature will increase
@@ -1157,8 +1170,8 @@ server <- function(input, output, session) {
   })
   
   output$feature1description3 <- renderText({"You are going to test the effectiveness
-     of this feature. Choose the number of days you want to test this feature for.
-     Use the power calculator to help you choose the sample size for the test."})
+     of this feature. To do this, choose your test parameters on the right,  useing the power
+     calculator to help you decide. Then go to the next page for results."})
   
   #power result
   #gives power for inputted sample size
@@ -1171,8 +1184,8 @@ server <- function(input, output, session) {
                               p1 = 0.05, 
                               p2 = 0.0665, 
                               sig.level = siglevel)
-    paste0("The estimated power for your sample size is ",
-           round(result$power * 100, 2), "%")
+    paste0("The estimated power for your parameters is ",
+           round(result$power * 100, 2),"%")
     
   })
   
