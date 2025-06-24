@@ -233,6 +233,7 @@ ui <- dashboardPage(skin = "blue",
                   
                   tabItem(tabName = "Feature1results",
                            h2("Reducing hearts for free tier", align = "center", style = "font-weight: bold"),
+                          br(),
                            fluidRow(
                              column(
                                width = 4,
@@ -263,28 +264,38 @@ ui <- dashboardPage(skin = "blue",
                              column(
                                width = 8,
                                tabBox(width=12,
+                                      
                                       id = "feature1tabs",
-                               tabPanel( 
-                                 status = "primary",
-                                 solidHeader = TRUE,
+                               tabPanel(
                                  title = "Results",
+                                 style = "min-height: 400px;",
+                              
                                uiOutput("results"),
+                               br(),
                                tableOutput("resultdata")
                                ),
                                tabPanel(
-                                 status = "primary",
-                                 solidHeader = TRUE,
                                  title = "Confidence Interval",
+                                 style = "min-height: 400px;",
                                uiOutput("CInumbers"),
+                               br(),
                                plotOutput("ciplot")
                                )
                              ),
-                             box(width = 12,
-                                 status ="primary",
-                                 solidHeader = TRUE,
-                                 actionButton("previous3", "Previous Page"),
-                                 actionButton("next3", "Next Page"))
-                           ) )
+                             
+                           ) ),
+                          fluidRow(
+                            column(width=6, 
+                                   align = "left",
+                                   actionButton("previous3", "Previous Page",
+                                                style = "margin-top: 10px; padding: 10px 20px;")
+                            ),
+                            column(width=6, 
+                                   align = "right",
+                                   actionButton("next3", "Next Page",
+                                                style = "margin-top: 10px; padding: 10px 20px;")
+                            )
+                          )
                 ),
                 tabItem(tabName = "Feature2",
                          h2("Reducing wait time for subscribers", align = "center", style = "font-weight: bold"),
@@ -1324,10 +1335,10 @@ server <- function(input, output, session) {
       resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
-        p(paste("Your test is at the", siglevel * 100, "% significance level.
-        You chose to run the test for", input$dayquestion, "day(s) and with
-                a sample size of", input$samplesize,". The power of your test is",
-                resultpower, "%."))
+        p(paste("Your test is at the", siglevel * 100, "% significance level.")),
+        p(paste("You chose to run the test for", input$dayquestion, "day(s) and with
+                a sample size of", input$samplesize,".")),
+        p(paste("The power of your test is",resultpower, "%."))
       )
     }
     else{NULL}
@@ -1367,15 +1378,20 @@ server <- function(input, output, session) {
     
     ##display confidence interval result
     ci <- signif(test_result$conf.int * 100, 3)
-    if(input$CIbutton > 0){
+    if(input$CIbutton > 0 && input$resultsbutton > 0){
       tagList(
-        "The 95% confidence interval for the percentage difference of rate in your test is:",
-        br(),
-        br(),
-        "[",ci[1], "%, ", ci[2], "%]" ,
+        "The 95% confidence interval for the percentage difference of rate in your test is",
+
+        "[",ci[1], "%, ", ci[2], "%]." ,
         br()
       )
     }
+    else if (input$resultsbutton == 0){
+      tagList(
+    "Please view results first."
+      )
+    }
+    else {NULL}
     
   })
   #Screen 3  feature 1 CI graph
@@ -1384,7 +1400,7 @@ server <- function(input, output, session) {
     validate(
       need(input$dayquestion != "", "")
     )
-    if(input$CIbutton > 0){
+    if(input$CIbutton > 0 && input$resultsbutton > 0){
       req(test1data())
       
       result <- test1data()
@@ -1437,7 +1453,7 @@ server <- function(input, output, session) {
   #screen 3 decision
   
   output$decision1 <- renderText({
-    "Now you've seen the results for this test you must decide if you want to 
+    "Now you've seen the results, you must decide if you want to 
     introduce feature 1:
     reducing the number of hearts on the free tier."
   })
