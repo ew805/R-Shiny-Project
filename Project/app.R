@@ -78,7 +78,9 @@ ui <- dashboardPage(skin = "blue",
                 tabItems(
                 
                   tabItem(tabName = "Overview", 
-                           h2("MonoBingo", align = "center"),
+                           h2("MonoBingo", align = "center", style = "font-weight: bold"),
+                          br(),
+                          br(),
                            fluidRow(
                              box(
                                title = "Summary",
@@ -103,17 +105,25 @@ ui <- dashboardPage(skin = "blue",
                              column(6,
                                     box(width = 12,
                                     title = "Purpose",
-                                    textOutput("purpose"),
+                                    uiOutput("purpose"),
                                     status = "primary",
                                     solidHeader = TRUE
-                                    ),
-                                    box(width = 3,
-                                        status ="primary",
-                                        solidHeader = TRUE,
-                                        actionButton("next0", "Next Page"))
-                           )
+                                    ) ) ),
+                          fluidRow(
+                            column(12, align = "right",
+                                   actionButton("next0", "Next Page",
+                                                style = "margin-top: 20px; 
+                                                margin-right: 10px; 
+                                                padding: 10px 20px")
+                            )
                           )
-                          ),
+                  ),    
+                                    
+                                        
+                                      
+                                      
+                           
+                          
                   tabItem(tabName = "companymetrics",
                           h2("MonoBingo Company Metrics", align = "center"),
                           fluidRow(
@@ -990,15 +1000,18 @@ server <- function(input, output, session) {
       tags$li("Work through the features in order."),
       tags$li("Choose your test conditions and then look at the results tab for each."),
       tags$li("On each results tab decide if you want to introduce the feature."),
-      tags$li("Answer the text questions as you go along"),
-      tags$li("Choose the order you wish to introduce the features"),
-      tags$li("After testing each feature look at the status of MonoBingo one year later.")
+      tags$li("Answer the written questions as you go along."),
+      tags$li("Choose the order you wish to introduce the features."),
+      tags$li("Then look at the status of MonoBingo one year later to see the effect
+              of your choices.")
     
     )
   })
-  output$purpose <- renderText({
-    "This is a simulation app being used to study the transfer of learning."
-  })
+  output$purpose <- renderUI({
+    tagList(
+    p("This is a simulation app being used for research of the transfer of learning."),
+    p("Your decisions and responses are saved to study how you apply knowledge to an unfamiliar context.")
+ ) })
   
   ##company metrics page
  
