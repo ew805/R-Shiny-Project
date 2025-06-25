@@ -126,6 +126,7 @@ ui <- dashboardPage(skin = "blue",
                           
                   tabItem(tabName = "companymetrics",
                           h2("MonoBingo Company Metrics", align = "center", style = "font-weight: bold"),
+                          br(),
                           fluidRow(
                             
                           column(width = 4,
@@ -303,6 +304,7 @@ ui <- dashboardPage(skin = "blue",
                 ),
                 tabItem(tabName = "Feature2",
                          h2("Reducing wait time for subscribers", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 5,
                                   box(width=12,
@@ -373,6 +375,7 @@ ui <- dashboardPage(skin = "blue",
                 ),
                 tabItem(tabName = "Feature2results",
                          h2("Reducing wait time for subscribers", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 4,
                                   box(width=12,
@@ -425,6 +428,7 @@ ui <- dashboardPage(skin = "blue",
                 ),
                 tabItem(tabName = "Feature3",
                          h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 5,
                                   box(width=12,
@@ -488,6 +492,7 @@ ui <- dashboardPage(skin = "blue",
                          ),
                 tabItem(tabName = "Feature3Results",
                          h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 4,
                                box(width=12,
@@ -535,6 +540,7 @@ ui <- dashboardPage(skin = "blue",
                         ) ),
                 tabItem(tabName = "Feature4",
                          h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 5,
                                   box(width=12,
@@ -598,6 +604,7 @@ ui <- dashboardPage(skin = "blue",
                               ),
                 tabItem(tabName = "Feature4results",
                          h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
+                        br(),
                          fluidRow(
                            column(width = 4,
                                box(width=12,
@@ -646,6 +653,7 @@ ui <- dashboardPage(skin = "blue",
                 
                 tabItem(tabName = "Feature5",
                         h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
+                        br(),
                         fluidRow(
                           column(width = 5,
                                  box(width=12,
@@ -708,6 +716,7 @@ ui <- dashboardPage(skin = "blue",
                         )),
                 tabItem(tabName = "Feature5results",
                         h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
+                        br(),
                         fluidRow(
                           column(width = 4,
                                  box(width=12,
@@ -756,6 +765,7 @@ ui <- dashboardPage(skin = "blue",
                 
                 tabItem(tabName = "Feature6",
                         h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
+                        br(),
                         fluidRow(
                           column(width = 5,
                                  box(width=12,
@@ -818,6 +828,7 @@ ui <- dashboardPage(skin = "blue",
                         )),
                 tabItem(tabName = "Feature6results",
                         h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
+                        br(),
                         fluidRow(
                           column(width = 4,
                                  box(width=12,
@@ -866,6 +877,7 @@ ui <- dashboardPage(skin = "blue",
                 
                 tabItem(tabName = "orderfeatures",
                         h2("Order your chosen features", align = "center", style = "font-weight: bold"),
+                        br(),
                         fluidRow(
                           column(
                             width =5,
@@ -914,6 +926,7 @@ ui <- dashboardPage(skin = "blue",
                 
                  tabItem(tabName = "OneYearLater",
                           h2("Status of MonoBingo one year later", align = "center", style = "font-weight: bold"),
+                         br(),
                           fluidRow(
                             column(width = 5,
                                box(width = 12,
