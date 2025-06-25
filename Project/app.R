@@ -237,7 +237,7 @@ ui <- dashboardPage(skin = "blue",
                   ),
                   
                   tabItem(tabName = "Feature1results",
-                           h2("Reducing hearts for free tier", align = "center", style = "font-weight: bold"),
+                           h2("Reducing hearts on the Free Tier", align = "center", style = "font-weight: bold"),
                           br(),
                            fluidRow(
                              column(
@@ -303,7 +303,7 @@ ui <- dashboardPage(skin = "blue",
                           )
                 ),
                 tabItem(tabName = "Feature2",
-                         h2("Reducing wait time for subscribers", align = "center", style = "font-weight: bold"),
+                         h2("Reducing Wait Time for Subscribers", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 5,
@@ -374,7 +374,7 @@ ui <- dashboardPage(skin = "blue",
                          
                 ),
                 tabItem(tabName = "Feature2results",
-                         h2("Reducing wait time for subscribers", align = "center", style = "font-weight: bold"),
+                         h2("Reducing Wait Time for Subscribers", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 4,
@@ -403,26 +403,39 @@ ui <- dashboardPage(skin = "blue",
                            
                            
                            column(width = 8,
-                                  box(width=12,
-                               title = "Results",
-                               status = "primary",
-                               solidHeader = TRUE,
-                             uiOutput("results2"),
-                             tableOutput("resultdata2"),
-                             uiOutput("CInumbers2"),
-                             plotOutput("ciplot2")
+                                  
+                                      tabBox(width=12,
+                                             
+                                             id = "feature2tabs",
+                                             tabPanel(
+                                               title = "Results",
+                                               style = "min-height: 400px;",
+                                               
+                                               uiOutput("results2"),
+                                               br(),
+                                               tableOutput("resultdata2")
+                                             ),
+                                             tabPanel(
+                                               title = "Confidence Interval",
+                                               style = "min-height: 400px;",
+                                               uiOutput("CInumbers2"),
+                                               br(),
+                                               plotOutput("ciplot2")
+                                             )
+                                      ),
+                               
                              
-                           ))),
+                           )),
                         fluidRow(
                           column(width=6, 
                                  align = "left",
                                  actionButton("previous5", "Previous Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
                                  actionButton("next5", "Next Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           )
                         )
                 ),
@@ -1545,7 +1558,7 @@ server <- function(input, output, session) {
   #screen 5 feature 2
   
   output$feature2des1 <- renderText({
-    "The second feature that can be installed is reducing the wait time for
+    "The second feature is reducing the wait time for
     those who subscribe. Currently, the free tier requires 3 minutes wait between
     each round. This feature would mean those who subscribe only wait 30 seconds."
   })
@@ -1554,7 +1567,7 @@ server <- function(input, output, session) {
   })
   output$feature2des3 <- renderText({
     "You are going to test the effectiveness of this feature. Please choose the test 
-    duration and sample size by using the power calculator."
+    parameters, using the power calculator to help. Then, view the results on the next page."
   })
   output$power2 <- renderText({
   daynumber2 <- as.numeric(input$dayquestion2)
@@ -1689,12 +1702,13 @@ server <- function(input, output, session) {
       resultpower <- round(result$power * 100, 2)
       tagList(
         h3("These are the results of your test:"),
-        p(paste("Your test is at the", siglevel2 * 100, "% significance level.
-        You chose to run the test for", input$dayquestion2, "day(s) and with
-                a sample size of", input$samplesize2,". The power of your test is",
-                resultpower, "%."))
+        p(paste("Your test is at the", siglevel2 * 100, "% significance level.")),
+        p(paste("You chose to run the test for", input$dayquestion2, "day(s) and with
+                a sample size of", input$samplesize2,".")),
+        p(paste("The power of your test is",
+                resultpower, "%.")))
         
-      )
+      
     }
     else{
       NULL
@@ -1732,15 +1746,20 @@ server <- function(input, output, session) {
     #displaying the confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
-    if(input$CIbutton2 > 0){
+    if(input$CIbutton2 > 0 && input$resultsbutton2 > 0){
       tagList(
-        "The 95% confidence interval for the percentage difference of rate in your test is:",
-        br(),
-        br(),
-        "[",ci[1], "%, ", ci[2], "%]" ,
+        "The 95% confidence interval for the percentage difference of rate in your test is",
+        
+        "[",ci[1], "%, ", ci[2], "%]." ,
         br()
       )
     }
+    else if (input$resultsbutton2 == 0){
+      tagList(
+        "Please view results first."
+      )
+    }
+    else {NULL}
     
   })
   #Screen 5  feature 2 CI graph
@@ -1749,7 +1768,7 @@ server <- function(input, output, session) {
     validate(
       need(input$dayquestion2 != "", "")
     )
-    if(input$CIbutton2 > 0){
+    if(input$CIbutton2 > 0 && input$resultsbutton2 > 0){
       req(test2data())
       
       result <- test2data()
