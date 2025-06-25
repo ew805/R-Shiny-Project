@@ -104,6 +104,7 @@ ui <- dashboardPage(skin = "blue",
                           
                              column(6,
                                     box(width = 12,
+                                        style = "min-height: 190px;",
                                     title = "Purpose",
                                     uiOutput("purpose"),
                                     status = "primary",
