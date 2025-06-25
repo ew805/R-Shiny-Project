@@ -39,9 +39,9 @@ featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18, F = 0.29)
 
 #set up for ordering later on
 inputrank <- c("decision1", "decision2", "decision3", "decision4", "decision5", "decision6")
-labelsrank <- c("Feature 1: reducing hearts", "Feature 2: reducing wait time",
-                "Feature 3: increasing adverts", "Feature 4: introducing streaks",
-                "Feature 5: subscriber only level", "Feature 6: free trial")
+labelsrank <- c("Feature 1: Reducing Hearts", "Feature 2: Reducing Wait Time",
+                "Feature 3: Increasing Adverts", "Feature 4: Introducing Streaks",
+                "Feature 5: Subscriber Exclusive Level", "Feature 6: Free Trial")
 
 ui <- dashboardPage(skin = "blue",
   dashboardHeader(title = "Project"),
@@ -440,7 +440,7 @@ ui <- dashboardPage(skin = "blue",
                         )
                 ),
                 tabItem(tabName = "Feature3",
-                         h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
+                         h2("Increasing Adverts for Free Tier", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 5,
@@ -504,7 +504,7 @@ ui <- dashboardPage(skin = "blue",
                         )
                          ),
                 tabItem(tabName = "Feature3Results",
-                         h2("Increasing adverts for free tier", align = "center", style = "font-weight: bold"),
+                         h2("Increasing Adverts for Free Tier", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 4,
@@ -553,16 +553,16 @@ ui <- dashboardPage(skin = "blue",
                           column(width=6, 
                                  align = "left",
                                  actionButton("previous7", "Previous Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
                                  actionButton("next7", "Next Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           )
                         ) ),
                 tabItem(tabName = "Feature4",
-                         h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
+                         h2("Introducing Streaks for Subscription Users", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 5,
@@ -626,7 +626,7 @@ ui <- dashboardPage(skin = "blue",
                         )
                               ),
                 tabItem(tabName = "Feature4results",
-                         h2("Introducing streaks for subscription users", align = "center", style = "font-weight: bold"),
+                         h2("Introducing Streaks for Subscription Users", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
                            column(width = 4,
@@ -675,17 +675,17 @@ ui <- dashboardPage(skin = "blue",
                           column(width=6, 
                                  align = "left",
                                  actionButton("previous9", "Previous Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
                                  actionButton("next9", "Next Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           )
                         )),
                 
                 tabItem(tabName = "Feature5",
-                        h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
+                        h2("Introducing Subscription Exclusive Levels", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
                           column(width = 5,
@@ -748,7 +748,7 @@ ui <- dashboardPage(skin = "blue",
                           )
                         )),
                 tabItem(tabName = "Feature5results",
-                        h2("Introducing subscription only levels", align = "center", style = "font-weight: bold"),
+                        h2("Introducing Subscription Exclusive Levels", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
                           column(width = 4,
@@ -797,17 +797,17 @@ ui <- dashboardPage(skin = "blue",
                           column(width=6, 
                                  align = "left",
                                  actionButton("previous92", "Previous Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
                                  actionButton("next92", "Next Page",
-                                              style = "margin-top: 20px; padding: 10px 20px;")
+                                              style = "margin-top: 10px; padding: 10px 20px;")
                           )
                         )),
                 
                 tabItem(tabName = "Feature6",
-                        h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
+                        h2("Offering a Free Trial of the Subscription", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
                           column(width = 5,
@@ -870,7 +870,7 @@ ui <- dashboardPage(skin = "blue",
                           )
                         )),
                 tabItem(tabName = "Feature6results",
-                        h2("Offering a free trial of the subscription", align = "center", style = "font-weight: bold"),
+                        h2("Offering a Free Trial of the Subscription", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
                           column(width = 4,
@@ -919,12 +919,12 @@ ui <- dashboardPage(skin = "blue",
                                        column(width=6, 
                                               align = "left",
                                               actionButton("previous94", "Previous Page",
-                                                           style = "margin-top: 20px; padding: 10px 20px;")
+                                                           style = "margin-top: 10px; padding: 10px 20px;")
                                        ),
                                        column(width=6, 
                                               align = "right",
                                               actionButton("next94", "Next Page",
-                                                           style = "margin-top: 20px; padding: 10px 20px;")
+                                                           style = "margin-top: 10px; padding: 10px 20px;")
                                        )
                                      )),
                 
