@@ -169,7 +169,7 @@ ui <- dashboardPage(skin = "blue",
                   
                   tabItem(tabName = "Feature1",
                            
-                           h2("Reducing Hearts on the Free Tier",align = "center", style = "font-weight: bold"),
+                           h2("Reducing Hearts on the Free Tier", align = "center", style = "font-weight: bold"),
                           br(),
                            fluidRow(
                              column(width = 4,
@@ -243,7 +243,7 @@ ui <- dashboardPage(skin = "blue",
                   ),
                   
                   tabItem(tabName = "Feature1results",
-                           h2("Reducing hearts on the Free Tier", align = "center", style = "font-weight: bold"),
+                           h2("Reducing Hearts on the Free Tier", align = "center", style = "font-weight: bold"),
                           br(),
                            fluidRow(
                              column(
@@ -3283,18 +3283,18 @@ server <- function(input, output, session) {
  
       if(input$decision1 == TRUE){
         badfeedback <- append(badfeedback, list(p("While reducing the number of hearts
-        for the free tier increased subscribers, it also caused a descrease in 
+        for the free tier increased subscribers, it also caused a decrease in 
           the number of users.")))}
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
         if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
           badfeedback <- append(badfeedback, list(p("Choosing to reduce wait time before
-                                              reducing hearts reduced the effectiveness." 
+                                              reducing hearts reduced the effectiveness of the features.." 
                                               )
        )) } }
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids){
         if (match("decision1", ordered_ids) < match("decision2", ordered_ids)) {
           goodfeedback <- append(goodfeedback, list(p("Choosing to reduce hearts before 
-                                              reducing wait time was the more effective order."
+                                              reducing wait time was the more effective order for the features."
                                               )
         ))} }
         
@@ -3305,7 +3305,7 @@ server <- function(input, output, session) {
           )) }
       if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
         goodfeedback <- append(goodfeedback, list(p("Offering the free trial as the last
-                                            feature is most effective."
+                                            feature is most effective time to introduce it."
                                             )
         )) }
       if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) <= 4) {
@@ -3317,16 +3317,17 @@ server <- function(input, output, session) {
         if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
           badfeedback <- append(badfeedback, list(p("Choosing to introduce subscriber 
           only levels before introducing streaks reduced the
-          effectiveness.")))} }
+          effectiveness of the features.")))} }
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
           goodfeedback <- append(goodfeedback, list(p("Choosing to introduce streaks before 
           subsciber only levels was
-            the more effective order.")))
+            the more effective order for the features.")))
         }
       }
       if (yesanswers >= 5){
-        badfeedback <- append(badfeedback, list(p("You introduced lots of features. This 
+        badfeedback <- append(badfeedback, list(p("You introduced lots of features. 
+        Although this gains subscribers, it also 
           caused a loss in users as the free version was no longer as good.")))
       }    
       
@@ -3385,7 +3386,7 @@ server <- function(input, output, session) {
       }
       #bar chart to show users and subscribers
       barchartdf <- data.frame(
-        Group = c("Added", "NotAdded"),
+        Group = c("Features Added", "No Features Added"),
         Users = c(n[1], n[2]),
         Subscribers = c(x[1], x[2])
       )
