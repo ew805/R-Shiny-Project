@@ -306,7 +306,7 @@ ui <- dashboardPage(skin = "blue",
                          h2("Reducing Wait Time for Subscribers", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
-                           column(width = 5,
+                           column(width = 4,
                                   box(width=12,
                                       title = "Information",
                                       status = "primary",
@@ -326,9 +326,9 @@ ui <- dashboardPage(skin = "blue",
                                       textOutput("feature2des3")
                                   )
                                   ),
-                           column(width = 7,
+                           column(width = 8,
                                   box(width=12,
-                               
+                                      style = "min-height: 405px;",
                                title = "Choices",
                                status = "primary",
                                solidHeader = TRUE,
@@ -443,7 +443,7 @@ ui <- dashboardPage(skin = "blue",
                          h2("Increasing Adverts for Free Tier", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
-                           column(width = 5,
+                           column(width = 4,
                                   box(width=12,
                                       title = "Information",
                                       status = "primary",
@@ -463,8 +463,9 @@ ui <- dashboardPage(skin = "blue",
                                       textOutput("feature3des3")
                                   )
                                   ),
-                           column(width = 7,
+                           column(width = 8,
                                box(width=12,
+                                   style = "min-height: 385px;",
                                title = "Choices",
                                status = "primary",
                                solidHeader = TRUE,
@@ -565,7 +566,7 @@ ui <- dashboardPage(skin = "blue",
                          h2("Introducing Streaks for Subscription Users", align = "center", style = "font-weight: bold"),
                         br(),
                          fluidRow(
-                           column(width = 5,
+                           column(width = 4,
                                   box(width=12,
                                       title = "Information",
                                       status = "primary",
@@ -585,8 +586,9 @@ ui <- dashboardPage(skin = "blue",
                                       textOutput("feature4des3")
                                   )
                            ),
-                           column(width = 7,
+                           column(width = 8,
                                box(width = 12,
+                                   style = "min-height: 385px;",
                                title = "Choices",
                                status = "primary",
                                solidHeader = TRUE,
@@ -688,7 +690,7 @@ ui <- dashboardPage(skin = "blue",
                         h2("Introducing Subscription Exclusive Levels", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
-                          column(width = 5,
+                          column(width = 4,
                                  box(width=12,
                                      title = "Information",
                                      status = "primary",
@@ -708,8 +710,9 @@ ui <- dashboardPage(skin = "blue",
                                      textOutput("feature5des3")
                                  )
                                  ),
-                          column(width = 7,
+                          column(width = 8,
                                  box(width = 12,
+                                     style = "min-height: 405px;",
                                      title = "Choices",
                                      status = "primary",
                                      solidHeader = TRUE,
@@ -810,7 +813,7 @@ ui <- dashboardPage(skin = "blue",
                         h2("Offering a Free Trial of the Subscription", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
-                          column(width = 5,
+                          column(width = 4,
                                  box(width=12,
                                      title = "Information",
                                      status = "primary",
@@ -830,8 +833,9 @@ ui <- dashboardPage(skin = "blue",
                                      textOutput("feature6des3")
                                  )
                                  ),
-                          column(width = 7,
+                          column(width = 8,
                                  box(width = 12,
+                                     style = "min-height: 405px;",
                                      title = "Choices",
                                      status = "primary",
                                      solidHeader = TRUE,
@@ -930,11 +934,11 @@ ui <- dashboardPage(skin = "blue",
                 
                 
                 tabItem(tabName = "orderfeatures",
-                        h2("Order your chosen features", align = "center", style = "font-weight: bold"),
+                        h2("Order the Chosen Features", align = "center", style = "font-weight: bold"),
                         br(),
                         fluidRow(
                           column(
-                            width =5,
+                            width =6,
                             box(
                             width = 12,
                               title = "Instructions",
@@ -943,11 +947,13 @@ ui <- dashboardPage(skin = "blue",
                               textOutput("orderinfo"),
                               br(),
                             textInput("surveyquestionfinal", "Why did you choose that order?",
-                                      value = "")
+                                      value = ""),
+                            actionButton("submitbutton", "Submit all"),
+                            textOutput("submitted")
                             )
                               ),
                           column(
-                            width = 7,
+                            width = 6,
                             box(
                               width = 12,
                             
@@ -955,14 +961,7 @@ ui <- dashboardPage(skin = "blue",
                             status = "primary",
                             solidHeader = TRUE,
                             uiOutput("orderedlist")
-                              ),
-                            box(
-                              status ="primary",
-                              solidHeader = TRUE,
-                              width = 3,
-                              actionButton("submitbutton", "Submit all"),
-                              textOutput("submitted")
-                          ))),
+                              ))),
                         fluidRow(
                           column(width=6, 
                                  align = "left",
