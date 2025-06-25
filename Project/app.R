@@ -993,20 +993,33 @@ ui <- dashboardPage(skin = "blue",
                               br(),
                               uiOutput("featureschosen"),
                               br(),
-                              uiOutput("order_list"),
-                              uiOutput("yeartext")
+                              uiOutput("order_list")
                             )),
                             
                             column(width = 7,
-                                box(width = 12,
-                                title = "Results",
-                                status = "primary",
-                                solidHeader = TRUE,
-                              uiOutput("yearresults"),
-                              tableOutput("yeartable"),
-                              plotOutput("yearbarchart")
-                              
-                            ))),
+                                   tabBox(width=12,
+                                          
+                                          id = "yearlatertabs",
+                                          tabPanel(
+                                            title = "Results",
+                                            style = "min-height: 400px;",
+                                            uiOutput("yearresults"),
+                                            br(),
+                                            tableOutput("yeartable")
+                                            ),
+                                          tabPanel(
+                                            title = "Results Summary",
+                                            style = "min-height: 400px;",
+                                            uiOutput("yeartext")
+                                            
+                                          ),
+                                          tabPanel(
+                                            title = "Results Plot",
+                                            style = "min-height: 400px;",
+                                            plotOutput("yearbarchart")
+                                          )
+                                   )
+                               )),
                          fluidRow(
                            column(width=6, 
                                   align = "left",
@@ -3024,7 +3037,7 @@ server <- function(input, output, session) {
   
   output$featureschosen <- renderUI({
     tagList(
-    p("Below is the list of features you chose to introduce to MonoBingo in the order
+    h4("Below is the list of features you chose to introduce to MonoBingo in the order
     you chose to introduce them:"
     )
     )
