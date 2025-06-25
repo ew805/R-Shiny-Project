@@ -129,24 +129,29 @@ ui <- dashboardPage(skin = "blue",
                           br(),
                           fluidRow(
                             
-                          column(width = 4,
+                          column(width = 3,
                                  valueBoxOutput("cm_users", width = 12),
-                                
-                                     
-                                     plotOutput("cmplot1")
-                                     
-                                 ),
-                          column(width = 4,
+                                ),
+                          column(width = 3,
                                  valueBoxOutput("cm_subscribers", width = 12),
                                  valueBoxOutput("cm_subscribers2", width = 12),
-                                
-                                     plotOutput("cmplot2")
+                                ),
+                          column(width = 3,
+                                 valueBoxOutput("cm_subscribers2", width = 12),
                                  ),
-                          column(width = 4,
-                                 valueBoxOutput("cm_cr", width = 12))),
-                                 box(width=12,
-                                  plotOutput("cmplot3")
-                                         ),
+                          column(width = 3,
+                                 valueBoxOutput("cm_cr", width = 12)
+                                 )),
+                          fluidRow(
+                            column(width = 4,
+                                   plotOutput("cmplot1")),
+                            column(width = 4,
+                                   plotOutput("cmplot2")),
+                            column(width = 4,
+                                   box(width=12,
+                                       plotOutput("cmplot3")
+                                   ))
+                          ),
                           fluidRow(
                             column(width=6, 
                                    align = "left",
