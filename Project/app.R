@@ -944,7 +944,7 @@ ui <- dashboardPage(skin = "blue",
                               title = "Instructions",
                               status = "primary",
                               solidHeader = TRUE,
-                              textOutput("orderinfo"),
+                              uiOutput("orderinfo"),
                               br(),
                             textInput("surveyquestionfinal", "Why did you choose that order?",
                                       value = ""),
@@ -2935,9 +2935,13 @@ server <- function(input, output, session) {
   
   ##penultimate screen, order choices
   
-  output$orderinfo <- renderText({
-    "On the right are all the features you chose to introduce. Please order them
-    to the order you wish them to be introduced."
+  output$orderinfo <- renderUI({
+    tagList(
+    p("On the right is the list of all the features you chose to introduce."),
+    p("Please drag to reorder them
+    to the order you wish them to be introduced to MonoBingo."),
+    p("You are aiming for the most effective order to gain subscribers.")
+    )
   })
   ##ordering features
   output$orderedlist <- renderUI({
@@ -3013,14 +3017,14 @@ server <- function(input, output, session) {
   #final screen , a year later
   
   output$yearlater <- renderText({
-    "We now look at the status of MonoBingo a year after introducing the features
+    "Now we have the status of MonoBingo a year after introducing the features
     you chose.
     To see the number of users and subscribers now, a year later, click the button below."
   })  
   
   output$featureschosen <- renderUI({
     tagList(
-    h4("Below is the list of features you chose to introduce to MonoBingo in the order
+    p("Below is the list of features you chose to introduce to MonoBingo in the order
     you chose to introduce them:"
     )
     )
