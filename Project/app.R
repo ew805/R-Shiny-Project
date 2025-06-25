@@ -978,7 +978,7 @@ ui <- dashboardPage(skin = "blue",
                         
                 
                  tabItem(tabName = "OneYearLater",
-                          h2("Status of MonoBingo one year later", align = "center", style = "font-weight: bold"),
+                          h2("Status of MonoBingo One Year Later", align = "center", style = "font-weight: bold"),
                          br(),
                           fluidRow(
                             column(width = 5,
@@ -1010,7 +1010,19 @@ ui <- dashboardPage(skin = "blue",
                                           tabPanel(
                                             title = "Results Summary",
                                             style = "min-height: 400px;",
-                                            uiOutput("yeartext")
+                                            fluidRow(
+                                              column(6,
+                                                     tags$h4("Successful Choices", 
+                                                             align = "center", style = "font-weight: bold"),
+                                                     uiOutput("goodresult")
+                                              ),
+                                              column(6,
+                                                     tags$h4("Unsuccessful Choices", 
+                                                             align = "center", style = "font-weight: bold"),
+                                                     uiOutput("badresult")
+                                              )
+                                            )
+                                            
                                             
                                           ),
                                           tabPanel(
@@ -3242,7 +3254,7 @@ server <- function(input, output, session) {
       NULL
     }
    })
-  output$yeartext <- renderUI({
+  feedback <- reactive({
     validate(
     need(input$decision1, ""),
     need(input$decision2, ""),
@@ -3259,58 +3271,57 @@ server <- function(input, output, session) {
     
     
     #overview of impact of order on results displayed
-    feedback <- list()
+    goodfeedback <- list()
+    badfeedback <- list()
     if (load2() == "loaded2"){
  
       if(input$decision1 == TRUE){
-        feedback <- append(feedback, list(p("While reducing the number of hearts
+        badfeedback <- append(badfeedback, list(p("While reducing the number of hearts
         for the free tier increased subscribers, it also caused a descrease in 
-          the number of users.", style = "color: red;")))}
+          the number of users.")))}
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
         if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to reduce wait time before
-                                              reducing hearts reduced the effectiveness.", 
-                                              style = "color: red;")
+          badfeedback <- append(badfeedback, list(p("Choosing to reduce wait time before
+                                              reducing hearts reduced the effectiveness." 
+                                              )
        )) } }
       if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids){
         if (match("decision1", ordered_ids) < match("decision2", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to reduce hearts before 
-                                              reducing wait time was the more effective order.",
-                                              style = "color: green;")
+          goodfeedback <- append(goodfeedback, list(p("Choosing to reduce hearts before 
+                                              reducing wait time was the more effective order."
+                                              )
         ))} }
         
         if ("decision3" %in% ordered_ids && match("decision3", ordered_ids) == 1) {
-          feedback <- append(feedback, list(p("Increasing adverts as the first feature
-                                              was most effective feature to have first.",
-                                              style = "color: green;")
+          goodfeedback <- append(goodfeedback, list(p("Increasing adverts as the first feature
+                                              was most effective feature to have first."
+                                              )
           )) }
       if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
-        feedback <- append(feedback, list(p("Offering the free trial as the last
-                                            feature is most effective.",
-                                            style = "color: green;")
+        goodfeedback <- append(goodfeedback, list(p("Offering the free trial as the last
+                                            feature is most effective."
+                                            )
         )) }
       if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) <= 4) {
-        feedback <- append(feedback, list(p("Offering the free trial too early is
-                                            less effective.",
-                                            style = "color: red;")
+        badfeedback <- append(badfeedback, list(p("Offering the free trial too early is
+                                            less effective.")
         )) }
        
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision5", ordered_ids) < match("decision4", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to introduce subscriber 
+          badfeedback <- append(badfeedback, list(p("Choosing to introduce subscriber 
           only levels before introducing streaks reduced the
-          effectiveness.", style = "color: red;")))} }
+          effectiveness.")))} }
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
-          feedback <- append(feedback, list(p("Choosing to introduce streaks before 
+          goodfeedback <- append(goodfeedback, list(p("Choosing to introduce streaks before 
           subsciber only levels was
-            the more effective order.", style = "color: green;")))
+            the more effective order.")))
         }
       }
       if (yesanswers >= 5){
-        feedback <- append(feedback, list(p("You introduced lots of features. This 
-          caused a loss in users as the free version was no longer as good.",
-                                            style = "color: red;")))
+        badfeedback <- append(badfeedback, list(p("You introduced lots of features. This 
+          caused a loss in users as the free version was no longer as good.")))
       }    
       
       }
@@ -3319,14 +3330,17 @@ server <- function(input, output, session) {
       NULL
     }
     
-    if (length(feedback) > 0) {
-      return(tagList(
-        tags$h3("Overview"),
-        feedback))
-    } else {
-      return(NULL)
-    }
+    
+    return(list(good = goodfeedback, bad = badfeedback))
   })
+    output$goodresult <- renderUI({
+      tagList(feedback()$good)
+    })
+    
+    output$badresult <- renderUI({
+      tagList(feedback()$bad)
+    })
+  
   
   output$yearbarchart <- renderPlot({
     validate(
