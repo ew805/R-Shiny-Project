@@ -955,8 +955,7 @@ ui <- dashboardPage(skin = "blue",
                               br(),
                             textInput("surveyquestionfinal", "Why did you choose that order?",
                                       value = ""),
-                            actionButton("submitbutton", "Submit all"),
-                            textOutput("submitted")
+                            actionButton("submitbutton", "Submit all")
                             )
                               ),
                           column(
@@ -1534,7 +1533,7 @@ server <- function(input, output, session) {
   
   #pressing CI button changes the button
   observeEvent(input$CIbutton, {
-    if(load() == "loading"){
+    if(load() == "pressed"){
       updateActionButton(session, "CIbutton", label = "Loading...")
     }
     if(load() == "loaded"){
@@ -1839,7 +1838,7 @@ server <- function(input, output, session) {
   
   #pressing CI button changes the button
   observeEvent(input$CIbutton2, {
-    if(loadfeature2() == "loadingfeature2"){
+    if(loadfeature2() == "pressedfeature2"){
       updateActionButton(session, "CIbutton2", label = "Loading...")
     }
     if(loadfeature2() == "loadedfeature2"){
@@ -2129,7 +2128,7 @@ server <- function(input, output, session) {
   #screen 8  feature 3 results CI
   
   observeEvent(input$CIbutton3, {
-    if(loadfeature3() == "loadingfeature3"){
+    if(loadfeature3() == "pressedfeature3"){
       updateActionButton(session, "CIbutton3", label = "Loading...")
     }
     if(loadfeature3() == "loadedfeature3"){
@@ -2426,7 +2425,7 @@ server <- function(input, output, session) {
   #screen 10  feature 4 results CI
   
   observeEvent(input$CIbutton4, {
-    if(loadfeature4() == "loadingfeature4"){
+    if(loadfeature4() == "pressedfeature4"){
       updateActionButton(session, "CIbutton4", label = "Loading...")
     }
     if(loadfeature4() == "loadedfeature4"){
@@ -2719,7 +2718,7 @@ server <- function(input, output, session) {
   #screen 12  feature 5 results CI
   
   observeEvent(input$CIbutton5, {
-    if(loadfeature5() == "loadingfeature5"){
+    if(loadfeature5() == "pressedfeature5"){
       updateActionButton(session, "CIbutton5", label = "Loading...")
     }
     if(loadfeature5() == "loadedfeature5"){
@@ -3013,7 +3012,7 @@ server <- function(input, output, session) {
   #screen 14  feature 6 results CI
   
   observeEvent(input$CIbutton6, {
-    if(loadfeature6() == "loadingfeature6"){
+    if(loadfeature6() == "pressedfeature6"){
       updateActionButton(session, "CIbutton6", label = "Loading...")
     }
     if(loadfeature6() == "loadedfeature6"){
@@ -3177,6 +3176,7 @@ server <- function(input, output, session) {
   })
   ##saving survey responses after pressing submit
   observeEvent(input$submitbutton, {
+    updateActionButton(session, "submitbutton", label = "Submitted!")
     
     #responses in saveable format
     responses <- list(
@@ -3216,7 +3216,7 @@ server <- function(input, output, session) {
     
     #save as google sheet
     sheet_append(ss = sheet_id, data = surveyresponses)
-    output$submitted <- renderText("Your responses have been saved. Thank you!")
+    
   })
   #final screen , a year later
   
@@ -3253,8 +3253,10 @@ server <- function(input, output, session) {
   
   observeEvent(input$yearbutton, {
     load2("pressed2")
+    updateActionButton(session, "yearbutton", label = "Loading...")
     later(function(){
       load2("loaded2")
+      updateActionButton(session, "yearbutton", label = "Loaded!")
     },
     delay=5)
   })
