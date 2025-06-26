@@ -1532,6 +1532,16 @@ server <- function(input, output, session) {
   
   #screen 4 feature 1 results CI
   
+  #pressing CI button changes the button
+  observeEvent(input$CIbutton, {
+    if(load() == "loading"){
+      updateActionButton(session, "CIbutton", label = "Loading...")
+    }
+    if(load() == "loaded"){
+    updateActionButton(session, "CIbutton", label = "Loaded!")
+    }})
+  
+  
   output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
@@ -1827,6 +1837,15 @@ server <- function(input, output, session) {
   
   #screen 6  feature 2 results CI
   
+  #pressing CI button changes the button
+  observeEvent(input$CIbutton2, {
+    if(loadfeature2() == "loadingfeature2"){
+      updateActionButton(session, "CIbutton2", label = "Loading...")
+    }
+    if(loadfeature2() == "loadedfeature2"){
+      updateActionButton(session, "CIbutton2", label = "Loaded!")
+    }})
+  
   output$CI2 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
@@ -2108,6 +2127,14 @@ server <- function(input, output, session) {
   })
   
   #screen 8  feature 3 results CI
+  
+  observeEvent(input$CIbutton3, {
+    if(loadfeature3() == "loadingfeature3"){
+      updateActionButton(session, "CIbutton3", label = "Loading...")
+    }
+    if(loadfeature3() == "loadedfeature3"){
+      updateActionButton(session, "CIbutton3", label = "Loaded!")
+    }})
   
   output$CI3 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -2398,6 +2425,14 @@ server <- function(input, output, session) {
   
   #screen 10  feature 4 results CI
   
+  observeEvent(input$CIbutton4, {
+    if(loadfeature4() == "loadingfeature4"){
+      updateActionButton(session, "CIbutton4", label = "Loading...")
+    }
+    if(loadfeature4() == "loadedfeature4"){
+      updateActionButton(session, "CIbutton4", label = "Loaded!")
+    }})
+  
   output$CI4 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
@@ -2682,6 +2717,14 @@ server <- function(input, output, session) {
   })
   
   #screen 12  feature 5 results CI
+  
+  observeEvent(input$CIbutton5, {
+    if(loadfeature5() == "loadingfeature5"){
+      updateActionButton(session, "CIbutton5", label = "Loading...")
+    }
+    if(loadfeature5() == "loadedfeature5"){
+      updateActionButton(session, "CIbutton5", label = "Loaded!")
+    }})
   
   output$CI5 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
@@ -2968,6 +3011,14 @@ server <- function(input, output, session) {
   })
   
   #screen 14  feature 6 results CI
+  
+  observeEvent(input$CIbutton6, {
+    if(loadfeature6() == "loadingfeature6"){
+      updateActionButton(session, "CIbutton6", label = "Loading...")
+    }
+    if(loadfeature6() == "loadedfeature6"){
+      updateActionButton(session, "CIbutton6", label = "Loaded!")
+    }})
   
   output$CI6 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
