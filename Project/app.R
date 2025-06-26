@@ -748,12 +748,12 @@ ui <- dashboardPage(skin = "blue",
                         fluidRow(
                           column(width=6, 
                                  align = "left",
-                                 actionButton("previous91", "Previous Page",
+                                 actionButton("previous10", "Previous Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
-                                 actionButton("next91", "Next Page",
+                                 actionButton("next10", "Next Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           )
                         )),
@@ -806,12 +806,12 @@ ui <- dashboardPage(skin = "blue",
                         fluidRow(
                           column(width=6, 
                                  align = "left",
-                                 actionButton("previous92", "Previous Page",
+                                 actionButton("previous11", "Previous Page",
                                               style = "margin-top: 10px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
-                                 actionButton("next92", "Next Page",
+                                 actionButton("next11", "Next Page",
                                               style = "margin-top: 10px; padding: 10px 20px;")
                           )
                         )),
@@ -871,12 +871,12 @@ ui <- dashboardPage(skin = "blue",
                         fluidRow(
                           column(width=6, 
                                  align = "left",
-                                 actionButton("previous93", "Previous Page",
+                                 actionButton("previous12", "Previous Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
-                                 actionButton("next93", "Next Page",
+                                 actionButton("next12", "Next Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           )
                         )),
@@ -929,12 +929,12 @@ ui <- dashboardPage(skin = "blue",
                                      fluidRow(
                                        column(width=6, 
                                               align = "left",
-                                              actionButton("previous94", "Previous Page",
+                                              actionButton("previous13", "Previous Page",
                                                            style = "margin-top: 10px; padding: 10px 20px;")
                                        ),
                                        column(width=6, 
                                               align = "right",
-                                              actionButton("next94", "Next Page",
+                                              actionButton("next13", "Next Page",
                                                            style = "margin-top: 10px; padding: 10px 20px;")
                                        )
                                      )),
@@ -971,12 +971,12 @@ ui <- dashboardPage(skin = "blue",
                         fluidRow(
                           column(width=6, 
                                  align = "left",
-                                 actionButton("previous10", "Previous Page",
+                                 actionButton("previous14", "Previous Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           ),
                           column(width=6, 
                                  align = "right",
-                                 actionButton("next10", "Next Page",
+                                 actionButton("next14", "Next Page",
                                               style = "margin-top: 20px; padding: 10px 20px;")
                           )
                         )
@@ -1040,7 +1040,7 @@ ui <- dashboardPage(skin = "blue",
                          fluidRow(
                            column(width=4, 
                                   align = "left",
-                                  actionButton("previous11", "Previous Page",
+                                  actionButton("previous15", "Previous Page",
                                                style = "margin-top: 20px; padding: 10px 20px;")
                            ),
                            column(
@@ -1104,19 +1104,19 @@ server <- function(input, output, session) {
   observeEvent(input$next9,
                {updateTabItems(session, "menu", "Feature5")}
   )
-  observeEvent(input$next91,
+  observeEvent(input$next10,
                {updateTabItems(session, "menu", "Feature5results")}
   )
-  observeEvent(input$next92,
+  observeEvent(input$next11,
                {updateTabItems(session, "menu", "Feature6")}
   )
-  observeEvent(input$next93,
+  observeEvent(input$next12,
                {updateTabItems(session, "menu", "Feature6results")}
   )
-  observeEvent(input$next94,
+  observeEvent(input$next13,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
-  observeEvent(input$next10,
+  observeEvent(input$next14,
                {updateTabItems(session, "menu", "OneYearLater")}
   )
   
@@ -1149,22 +1149,22 @@ server <- function(input, output, session) {
   observeEvent(input$previous9,
                {updateTabItems(session, "menu", "Feature4")}
   )
-  observeEvent(input$previous91,
+  observeEvent(input$previous10,
                {updateTabItems(session, "menu", "Feature4results")}
   )
-  observeEvent(input$previous92,
+  observeEvent(input$previous11,
                {updateTabItems(session, "menu", "Feature5")}
   )
-  observeEvent(input$previous93,
+  observeEvent(input$previous12,
                {updateTabItems(session, "menu", "Feature5results")}
   )
-  observeEvent(input$previous94,
+  observeEvent(input$previous13,
                {updateTabItems(session, "menu", "Feature6")}
   )
-  observeEvent(input$previous10,
+  observeEvent(input$previous14,
                {updateTabItems(session, "menu", "Feature6results")}
   )
-  observeEvent(input$previous11,
+  observeEvent(input$previous15,
                {updateTabItems(session, "menu", "orderfeatures")}
   )
   
