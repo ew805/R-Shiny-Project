@@ -3083,7 +3083,7 @@ server <- function(input, output, session) {
     offering a free trial."
   })
   
-  ##penultimate screen, order choices
+  ##screen 15, order choices
   
   output$orderinfo <- renderUI({
     tagList(
@@ -3105,11 +3105,13 @@ server <- function(input, output, session) {
       need(input$decision6, "Please decide whether to add each feature 6")
     )
     
+    #picks features chosen to introduce
     selected <- labelsrank[unlist(lapply(inputrank, function(id) {
       val <- input[[id]]
       !is.null(val) && val == TRUE
     }))]
     
+    #features in an ordering box
     bucket_list(
       header = "Drag to reorder",
       group_name = "ordering",
@@ -3180,7 +3182,6 @@ server <- function(input, output, session) {
     )
   })
 
-    
     output$order_list <- renderUI({
       req(input$ordered_items)
       
@@ -3195,6 +3196,7 @@ server <- function(input, output, session) {
 
     
     #setting up loading button
+    #once button pressed there is a delay before showing results
   load2 <- reactiveVal("before2")
   
   observeEvent(input$yearbutton, {
@@ -3205,9 +3207,11 @@ server <- function(input, output, session) {
     delay=5)
   })
   
+  #reactive so updates as choices made
   yearlaterdata <- reactive({
     basep <- calcRate() 
     
+    #set users for post test simulaton
     users <- rep(100000, 50)
     
     
@@ -3216,7 +3220,7 @@ server <- function(input, output, session) {
     ordered_labels <- input$ordered_items 
     ordered_ids <- label_to_id[ordered_labels]
     
-    #effects from different orders
+    #effects on rate from different orders
     
     if ("decision1" %in% ordered_ids && "decision2" %in% ordered_ids) {
       if (match("decision2", ordered_ids) < match("decision1", ordered_ids)) {
@@ -3246,7 +3250,7 @@ server <- function(input, output, session) {
     
     dbExecute(conn, "DELETE FROM sim")
     
-    #simulation
+    #post test simulation
     #test
     for (i in c(1:7 * 6)){
       dayta <- day_sim(users[i], 60, 180, i, "implemented_test", 
@@ -3288,6 +3292,7 @@ server <- function(input, output, session) {
       need(input$decision5, "Please decide whether to add each feature 5"),
       need(input$decision6, "Please decide whether to add each feature 6")
     )
+    #use reactive
     result <- yearlaterdata()
     
     w <- 2
@@ -3304,6 +3309,8 @@ server <- function(input, output, session) {
       n[1] <- n[1]*0.9
       x[1] <- x[1]*0.9
     }
+    
+    #calculate how many features said yes to
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
                  input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
@@ -3332,17 +3339,22 @@ server <- function(input, output, session) {
         
       )
   })
-  
-  
-  
+ 
   output$yearresults <- renderUI({
+    #only if question answered
     validate(
       need(input$decision1, "")
     )
+    
+    #calculates how many features said yes to
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
                  input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
+    
+    #sets rate 
     basep <- calcRate()
+    
+    #how the order affects the rate
     label_to_id <- setNames(inputrank, labelsrank)
     ordered_labels <- input$ordered_items 
     ordered_ids <- label_to_id[ordered_labels]
@@ -3359,12 +3371,14 @@ server <- function(input, output, session) {
     if ("decision6" %in% ordered_ids && match("decision6", ordered_ids) == 6) {
       basep <- basep + 0.02}
     
+    #loading screen during delay
     if(load2()=="pressed2"){
       tagList(
         h3("Loading"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #after delay show results
     else if (load2() == "loaded2"){
       tagList(
         p(" You chose to introduce", yesanswers, "features."),
@@ -3380,6 +3394,7 @@ server <- function(input, output, session) {
     }
    })
   feedback <- reactive({
+    #runs if all questions answered
     validate(
     need(input$decision1, ""),
     need(input$decision2, ""),
@@ -3391,11 +3406,14 @@ server <- function(input, output, session) {
     label_to_id <- setNames(inputrank, labelsrank)
     ordered_labels <- input$ordered_items 
     ordered_ids <- label_to_id[ordered_labels]
+    
+    #number of features added
     answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
     
     #overview of impact of order on results displayed
+    #grouped into good and bad impacts
     goodfeedback <- list()
     badfeedback <- list()
     if (load2() == "loaded2"){
@@ -3459,6 +3477,8 @@ server <- function(input, output, session) {
     
     return(list(good = goodfeedback, bad = badfeedback))
   })
+  
+  #good and bad results displayed
     output$goodresult <- renderUI({
       tagList(feedback()$good)
     })
@@ -3467,8 +3487,9 @@ server <- function(input, output, session) {
       tagList(feedback()$bad)
     })
   
-  
+  #bar chart to show subscribers and users a year later
   output$yearbarchart <- renderPlot({
+    #checks all questions answered
     validate(
       need(input$decision1, ""),
       need(input$decision2, ""),
@@ -3477,6 +3498,8 @@ server <- function(input, output, session) {
       need(input$decision5, ""),
       need(input$decision6, "")
     )
+    
+    #uses reactive
       result <- yearlaterdata()
       
       w <- 2
@@ -3494,6 +3517,7 @@ server <- function(input, output, session) {
         x[1] <- x[1]*0.9
       }
       
+      #checks number of features introduced
       answers <- c(input$decision1, input$decision2, input$decision3, input$decision4,
                    input$decision5, input$decision6)
       yesanswers <- sum(answers == TRUE, na.rm = TRUE)
@@ -3510,9 +3534,11 @@ server <- function(input, output, session) {
         Subscribers = c(x[1], x[2])
       )
       
+      #for stacked bar chart calculates those who didn't subscribe
       barchartdf <- barchartdf %>%
         mutate(NonSubscribers = Users - Subscribers)
       
+      #data frame in format for bar chart
       barchartdflong <- barchartdf %>%
         select(Group, Subscribers, NonSubscribers) %>%
         pivot_longer(cols = c(Subscribers, NonSubscribers),
