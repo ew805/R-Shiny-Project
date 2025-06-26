@@ -987,7 +987,7 @@ ui <- dashboardPage(skin = "blue",
                           h2("Status of MonoBingo One Year Later", align = "center", style = "font-weight: bold"),
                          br(),
                           fluidRow(
-                            column(width = 5,
+                            column(width = 4,
                                box(width = 12,
                                 title = "Information",
                                 status = "primary",
@@ -1002,9 +1002,8 @@ ui <- dashboardPage(skin = "blue",
                               uiOutput("order_list")
                             )),
                             
-                            column(width = 7,
+                            column(width = 8,
                                    tabBox(width=12,
-                                          
                                           id = "yearlatertabs",
                                           tabPanel(
                                             title = "Results",
@@ -1039,11 +1038,25 @@ ui <- dashboardPage(skin = "blue",
                                    )
                                )),
                          fluidRow(
-                           column(width=6, 
+                           column(width=4, 
                                   align = "left",
                                   actionButton("previous11", "Previous Page",
                                                style = "margin-top: 20px; padding: 10px 20px;")
                            ),
+                           column(
+                             width = 8,
+                             style = "margin-top: 20px;",
+                             box(width =12,
+                               status = "primary",
+                               solidHeader = TRUE,
+                               
+                               div(
+                                 style = "text-align: center;",
+                                 textOutput("thanksmessage")
+                               )
+                             )
+                           )
+                        
                            
                          ) )
                 
@@ -3606,6 +3619,10 @@ server <- function(input, output, session) {
           scale_fill_manual(values = c("Subscribers" = "pink", "NonSubscribers" = "lightblue")) +
           theme_bw()
       }
+  })
+  
+  output$thanksmessage <- renderText({
+    "Thank you for participating!"
   })
 
 }
