@@ -15,6 +15,7 @@ library(sortable)
 library(googlesheets4)
 source("Rutils.R")
 
+#setting up data for simulation
 conn <- dbConnect(SQLite(), "sims.sqlite")
 dbExecute(conn, "DROP TABLE IF EXISTS simulation")
 
@@ -33,7 +34,7 @@ for (i in c(-364:0)){
 #data for company metrics plots
 #df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
 
-#each feature rate
+#each feature rate of subscriber improvement
 featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18, F = 0.29)
 
 
@@ -1157,6 +1158,7 @@ server <- function(input, output, session) {
   
   #feature decision throughout
   #creates rate used for a year later
+  #if choose to add feature, applies rate for it to formula
   featuredecisions <- reactiveValues(A = FALSE, B = FALSE, C = FALSE, D = FALSE, E = FALSE, F = FALSE)
   
   observeEvent(input$decision1, { featuredecisions$A <- as.logical(input$decision1) })
@@ -1215,6 +1217,7 @@ server <- function(input, output, session) {
  
   
    #pretrial stats
+  #using pretrial simulation
   userlength <- signif(mean(dayta$user_leaves - dayta$user_starts), 3)
   nonsubscriberuserlength <- signif(mean(dayta$user_leaves[is.na(dayta$user_subscribes)] - 
          dayta$user_starts[is.na(dayta$user_subscribes)]),3)
@@ -1224,7 +1227,7 @@ server <- function(input, output, session) {
   subscriptiondays <- signif(mean(dayta$user_subscribes - dayta$user_starts, na.rm = TRUE),3)
   
   output$companymetricssummary <- renderText({
-    "Here is ainformation about MonoBingo. This includes information about
+    "Here is information about MonoBingo. This includes information about
     their subscribers and users currently with some plots to visualise it. Your task
     is to improve these stats."
   })
@@ -1256,11 +1259,12 @@ server <- function(input, output, session) {
       dailychurn$churnrate[i] <- NA
     }
   }
-  
+  #calculates average churn rate
   avgchurn <- signif((mean(dailychurn$churnrate, na.rm = TRUE))*100,3)
   
-  #info displayed company metrics
+  #info displayed company metrics in boxes
   
+  #average user lifespan
   output$cm_users <- renderValueBox({
     valueBox(
       value = paste(userlength, "days"),
@@ -1269,6 +1273,8 @@ server <- function(input, output, session) {
       color = "blue"
     )
   })
+  
+  #average subscription rate
   output$cm_subscribers <- renderValueBox({
     valueBox(
       value = paste(subscriptionrate, "%"),
@@ -1277,6 +1283,8 @@ server <- function(input, output, session) {
       color = "blue"
     )
   })
+  
+  #average time to subscribe
   output$cm_subscribers2 <- renderValueBox({
     valueBox(
       value = paste(subscriptiondays, "days"),
@@ -1285,6 +1293,8 @@ server <- function(input, output, session) {
       color = "blue"
     )
   })
+  
+#average churn rate
   output$cm_cr <- renderValueBox({
     valueBox(
       value = paste(avgchurn, "%"),
@@ -1293,13 +1303,12 @@ server <- function(input, output, session) {
       color = "blue"
     )
   })
-  
-  
-  
-  
-  
+
   ##company metrics plots
- 
+  #using df data defined at the beginnning
+  
+  
+ #plot of users and subscribers
    #output$cmplot1 <- renderPlot({
      #df_wide %>%
       # pivot_longer(
@@ -1318,7 +1327,9 @@ server <- function(input, output, session) {
      #  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
      #  theme_bw()
   # })
-   
+  
+  
+  #plot of conversion rate
   # output$cmplot2 <- renderPlot({
    #  df_wide %>%
     #   mutate(conversion = subscribers / active_users) %>%
@@ -1342,7 +1353,7 @@ server <- function(input, output, session) {
    }
    )
 
-  ##screen 2 text feature 1
+  ##screen 3 text feature 1
   
   output$feature1description <- renderText({ 
     "This feature is reducing the number of hearts per day on the free tier from 5 to 3. 
@@ -1359,7 +1370,7 @@ server <- function(input, output, session) {
      calculator to help you decide. Then go to the next page for results."})
   
   #power result
-  #gives power for inputted sample size
+  #gives power for parameter choices
   
   output$power <- renderText({
     daynumber <- as.numeric(input$dayquestion)
@@ -1374,19 +1385,15 @@ server <- function(input, output, session) {
     
   })
   
-  ## screen 3 feature 1 results
+  ## screen 4 feature 1 results
   #setting up button to reveal results
   
   load <- reactiveVal("before")
-  
-  
-  
+
   observeEvent(input$resultsbutton, {
-    
-    
+   
     load("pressed")
-    
-    
+   
     #5 second delay before revealing
     later(function() {
       
@@ -1394,10 +1401,11 @@ server <- function(input, output, session) {
     },
     delay = 5)
   })
-  
-  
+ 
   output$press <- renderText ({"Press the button below to reveal the results
     of your test."})
+  
+  #data will reload if choices change
   test1data <- reactive({
     #only runs if question answered
     validate(
@@ -1441,33 +1449,40 @@ server <- function(input, output, session) {
   
   #creating data from simulation and choices
   output$resultdata <- renderTable({
+    #only runs if question answered
     validate(
       need(input$dayquestion != "", "Please answer the questions on the previous page.")
     )
+    
+    #using choices from reactive as they update
     result <- test1data()
     
     w <- 2
     week_data <- result[result$week_number == w + 52, ]
     
+    #separating test and control group
     test_row <- week_data[week_data$grouping == "test", ]
     control_row <- week_data[week_data$grouping == "default", ]
     
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #a/b test
     siglevel <- as.numeric(input$sl1)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
     
+    #values for results table
     rate_test <- round((x[1] / n[1]) * 100, 2)
     rate_control <- round((x[2] / n[2]) * 100, 2)
     rate_diff <- round(rate_test - rate_control, 2)
     sub_diff <- x[1] - x[2]
     p_val <- signif(test_result$p.value, 3)
     
+    #reveals after delay from button press
     if (load() == "loaded")
     
-      #table with data
+  #results table with data
     data.frame(
       Test = c("Subscribers", "Users", "Subscription Rate", "p-value"),
       Test_Group = c(x[1], n[1], paste0(rate_test, "%"), "-"),
@@ -1476,20 +1491,23 @@ server <- function(input, output, session) {
       P_Value = c("-", "-", "-", p_val)
     )
   })
-  #screen 3 feature 1 results 
+  #screen 4 feature 1 results 
   # loading image/text
   
   output$results <- renderUI({
+    #runs if question answered
     validate(
       need(input$dayquestion != "", "")
     )
     
+    #during delay before results a loading page appears 
     if(load()=="pressed") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #after loading
     else if (load() == "loaded"){
       #displays choices made
       daynumber <- as.numeric(input$dayquestion)
@@ -1511,18 +1529,19 @@ server <- function(input, output, session) {
     else{NULL}
   })
   
-  #screen 3  feature 1 results CI
+  #screen 4 feature 1 results CI
   
   output$CI <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers <- renderUI({
+    #only runs if question answered
     validate(
       need(input$dayquestion != "", "")
     )
     #data for table
     req(test1data())
-    #using earlier data
+    #using earlier data from reactive
     result <- test1data()
     
     w <- 2
@@ -1544,6 +1563,7 @@ server <- function(input, output, session) {
     
     
     ##display confidence interval result
+    #show after results and if button has been pressed
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton > 0 && input$resultsbutton > 0){
       tagList(
@@ -1553,6 +1573,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #only view confidence interval after viewing results
     else if (input$resultsbutton == 0){
       tagList(
     "Please view results first."
@@ -1561,15 +1582,18 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 3  feature 1 CI graph
+  #Screen 4 feature 1 CI graph
   
   output$ciplot <- renderPlot({
+    #runs only if question answered
     validate(
       need(input$dayquestion != "", "")
     )
+    #shows plot after results viewed and button pressed
     if(input$CIbutton > 0 && input$resultsbutton > 0){
       req(test1data())
       
+      #use reactive
       result <- test1data()
       
       w <- 2
@@ -1617,7 +1641,7 @@ server <- function(input, output, session) {
     }
     
   })
-  #screen 3 decision
+  #screen 4 decision on feature 1
   
   output$decision1 <- renderText({
     "Now you've seen the results, you must decide if you want to 
