@@ -1664,6 +1664,8 @@ server <- function(input, output, session) {
     "You are going to test the effectiveness of this feature. Please choose the test 
     parameters, using the power calculator to help. Then, view the results on the next page."
   })
+  
+  #power calculator using chosen parameters
   output$power2 <- renderText({
   daynumber2 <- as.numeric(input$dayquestion2)
   sample2 <- input$samplesize2 * daynumber2
@@ -1676,8 +1678,9 @@ server <- function(input, output, session) {
          round(result2$power * 100, 2), "%")
   })
   
-  #screen 5 feature 2 results
+  #screen 6 feature 2 results
   
+  #pressing button has delay then shows results
   loadfeature2 <- reactiveVal("beforefeature2")
   
   observeEvent(input$resultsbutton2, {
@@ -1696,7 +1699,10 @@ server <- function(input, output, session) {
     of your test."})
   
   #data using choices and simulation
+  
+  #reactive so results update when choices change
   test2data <- reactive({
+    #only runs if question answered
     validate(
       need(input$dayquestion2 != "", "Please answer the questions on the previous page.")
     )
@@ -1737,9 +1743,12 @@ server <- function(input, output, session) {
   
   #result table data and table
   output$resultdata2 <- renderTable({
+    #only runs if question answered
     validate(
       need(input$dayquestion2 != "", "Please answer the questions on the previous page.")
     )
+    
+    #use reactive
     result <- test2data()
     
     w <- 2
@@ -1751,6 +1760,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #a/b test
     siglevel <- as.numeric(input$sl2)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -1761,6 +1771,7 @@ server <- function(input, output, session) {
     sub_diff <- x[1] - x[2]
     p_val <- signif(test_result$p.value, 3)
     
+    #show once button pressed and after load screen
     if (loadfeature2() == "loadedfeature2")
       
       #result table
@@ -1772,20 +1783,23 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 5 feature 2 results 
+  #screen 6 feature 2 results 
   # loading image/text
   
   output$results2 <- renderUI({
+    #run if question answered
     validate(
       need(input$dayquestion2 != "", "")
     )
     
+    #during delay, loading screen shows
     if(loadfeature2()=="pressedfeature2") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #once loaded results show
     else if (loadfeature2() == "loadedfeature2"){
       daynumber <- as.numeric(input$dayquestion2)
       sample <- input$samplesize2 * daynumber
@@ -1810,18 +1824,20 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 5  feature 2 results CI
+  #screen 6  feature 2 results CI
   
   output$CI2 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers2 <- renderUI({
+    #only runs if question answerd
     validate(
       need(input$dayquestion2 != "", "")
     )
     #data for table
     req(test2data())
     
+    #use reactive
     result <- test2data()
     
     w <- 2
@@ -1833,13 +1849,14 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #finding confidence interval
     siglevel <- as.numeric(input$sl2)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
     ci <- signif(test_result$conf.int * 100, 3)
     
     #displaying the confidence interval
-    
+    #after results viewed and button pressed
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton2 > 0 && input$resultsbutton2 > 0){
       tagList(
@@ -1849,6 +1866,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #view results first
     else if (input$resultsbutton2 == 0){
       tagList(
         "Please view results first."
@@ -1857,15 +1875,18 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 5  feature 2 CI graph
+  #Screen 6  feature 2 CI graph
   
   output$ciplot2 <- renderPlot({
+    #need question to be answered
     validate(
       need(input$dayquestion2 != "", "")
     )
+    
+    #view after results and button pressed
     if(input$CIbutton2 > 0 && input$resultsbutton2 > 0){
       req(test2data())
-      
+      #use reactive
       result <- test2data()
       
       w <- 2
@@ -1913,14 +1934,14 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 5 feature 2 decision
+  #screen 6 feature 2 decision
   
   output$decision2 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 2:
     reducing the wait time for subscription."
   })
   
-  #screen 6 feature 3
+  #screen 7 feature 3
   
   output$feature3des1 <- renderText({
     "This potential feature is increasing the advert frequency for free tier users. Currently,
@@ -1933,6 +1954,8 @@ server <- function(input, output, session) {
     "Test the effectiveness of this feature before you decide whether to introduce it. Choose your
     test parameters using the power calculator. Then view results on the next page."
   })
+  
+   #power calculated using chosen parameters
   output$power3 <- renderText({
     daynumber3 <- as.numeric(input$dayquestion3)
     sample3 <- input$samplesize3 * daynumber3
@@ -1944,9 +1967,9 @@ server <- function(input, output, session) {
     paste0("The estimated power for your sample size is ",
            round(result3$power * 100, 2), "%")
   })
-  #screen 7 feature 3 results
+  #screen 8 feature 3 results
   
-  
+  #pressing button starts delay before showing results
   loadfeature3 <- reactiveVal("beforefeature3")
   
   observeEvent(input$resultsbutton3, {
@@ -1965,7 +1988,10 @@ server <- function(input, output, session) {
   output$press3 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
+  #reactive so updates as choices made
   test3data <- reactive({
+    
+    #only run if question answered
     validate(
       need(input$dayquestion3 != "", "Please answer the questions on the previous page.")
     )
@@ -2003,9 +2029,11 @@ server <- function(input, output, session) {
     
   })
   output$resultdata3 <- renderTable({
+    #only run if question answered
     validate(
       need(input$dayquestion3 != "", "Please answer the questions on the previous page.")
     )
+    #use reactive
     result <- test3data()
     
     w <- 2
@@ -2037,20 +2065,23 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 7 feature 3 results 
+  #screen 8 feature 3 results 
   # loading image/text
   
   output$results3 <- renderUI({
+    #only run if question answered
     validate(
       need(input$dayquestion3 != "", "")
     )
     
+    #loading page during delay
     if(loadfeature3()=="pressedfeature3") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #after delay show results
     else if (loadfeature3() == "loadedfeature3"){
       daynumber <- as.numeric(input$dayquestion3)
       sample <- input$samplesize3 * daynumber
@@ -2075,36 +2106,40 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 7  feature 3 results CI
+  #screen 8  feature 3 results CI
   
   output$CI3 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers3 <- renderUI({
+    #only runs if question answered
     validate(
       need(input$dayquestion3 != "", "")
     )
     #data for table
     req(test3data())
     
+    #use reactive
     result <- test3data()
     
     w <- 2
     week_data <- result[result$week_number == w + 52, ]
     
+    #sort into test and control
     test_row <- week_data[week_data$grouping == "test", ]
     control_row <- week_data[week_data$grouping == "default", ]
     
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #calculate confidence interval
     siglevel <- as.numeric(input$sl3)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
     ci <- signif(test_result$conf.int * 100, 3)
     
     #display confidence interval
-    
+    # display after results and buttons pressed
     ci <- signif(test_result$conf.int * 100, 3)
     if(input$CIbutton3 > 0 && input$resultsbutton3 > 0){
       tagList(
@@ -2114,6 +2149,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #if results button not pressed/results not viewed
     else if (input$resultsbutton3 == 0){
       tagList(
         "Please view results first."
@@ -2122,15 +2158,19 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 7  feature 3 CI graph
+  #Screen 8  feature 3 CI graph
   
   output$ciplot3 <- renderPlot({
+    #only runs if question answered
     validate(
       need(input$dayquestion3 != "", "")
     )
+    
+    #shows when results shown and buttons pressed
     if(input$CIbutton3 > 0 && input$resultsbutton3 > 0){
       req(test3data())
       
+      #use reactive
       result <- test3data()
       
       w <- 2
@@ -2142,6 +2182,7 @@ server <- function(input, output, session) {
       x <- c(test_row$subscribers, control_row$subscribers)
       n <- c(test_row$active_users, control_row$active_users)
       
+      #finding confidence interval
       siglevel <- as.numeric(input$sl3)
       conflevel <- 1 - siglevel
       test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2177,7 +2218,7 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 7 feature 3 decision
+  #screen 8 feature 3 decision
   
   output$decision3 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 3:
@@ -2198,6 +2239,8 @@ server <- function(input, output, session) {
     "Test the effectiveness of this feature before you decide whether to introduce it. Choose your
     test parameters using the power calculator. Then, view results on the next page."
   })
+  
+  #calculate power based on parameter choices
   output$power4 <- renderText({
     daynumber4 <- as.numeric(input$dayquestion4)
     sample4 <- input$samplesize4 * daynumber4
@@ -2209,14 +2252,12 @@ server <- function(input, output, session) {
     paste0("The estimated power for your sample size is ",
            round(result4$power * 100, 2), "%")
   })
-  #screen 9 feature 4 results
+  #screen 10 feature 4 results
   
-  
+  #button press starts delay before showing results
   loadfeature4 <- reactiveVal("beforefeature4")
   
-  
   observeEvent(input$resultsbutton4, {
-    
     
     loadfeature4("pressedfeature4")
     
@@ -2233,7 +2274,9 @@ server <- function(input, output, session) {
   output$press4 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
+  #reactive so updates as choices made
   test4data <- reactive({
+    #only runs if questions answered
     validate(
       need(input$dayquestion4 != "", "Please answer the questions on the previous page.")
     )
@@ -2272,20 +2315,24 @@ server <- function(input, output, session) {
     
   })
   output$resultdata4 <- renderTable({
+    #only runs if question answered
     validate(
       need(input$dayquestion4 != "", "Please answer the questions on the previous page.")
     )
+    #use reactive
     result <- test4data()
     
     w <- 2
     week_data <- result[result$week_number == w + 52, ]
     
+    #group by test and control
     test_row <- week_data[week_data$grouping == "test", ]
     control_row <- week_data[week_data$grouping == "default", ]
     
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #a/b test
     siglevel <- as.numeric(input$sl4)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2296,6 +2343,7 @@ server <- function(input, output, session) {
     sub_diff <- x[1] - x[2]
     p_val <- signif(test_result$p.value, 3)
     
+    #shows after delay
     if (loadfeature4() == "loadedfeature4")
       #results table
       data.frame(
@@ -2306,20 +2354,23 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 9 feature 4 results 
+  #screen 10 feature 4 results 
   # loading image/text
   
   output$results4 <- renderUI({
+    #runs once question answered
     validate(
       need(input$dayquestion4 != "", "")
     )
     
+    #loading screen displayed during delay
     if(loadfeature4()=="pressedfeature4") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #after delay, results displayed
     else if (loadfeature4() == "loadedfeature4"){
       daynumber <- as.numeric(input$dayquestion4)
       sample <- input$samplesize4 * daynumber
@@ -2344,18 +2395,20 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 9  feature 4 results CI
+  #screen 10  feature 4 results CI
   
   output$CI4 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers4 <- renderUI({
+    #only runs if question answered
     validate(
       need(input$dayquestion4 != "", "")
     )
     #data for table
     req(test4data())
     
+    #use reactive
     result <- test4data()
     
     w <- 2
@@ -2367,6 +2420,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #caluclate confidence interval
     siglevel <- as.numeric(input$sl4)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2375,6 +2429,8 @@ server <- function(input, output, session) {
     #display confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
+    
+    #shows when results viewed and buttons pressed
     if(input$CIbutton4 > 0 && input$resultsbutton4 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is",
@@ -2383,6 +2439,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #if results not viewed
     else if (input$resultsbutton4 == 0){
       tagList(
         "Please view results first."
@@ -2391,15 +2448,18 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 9  feature 4 CI graph
+  #Screen 10  feature 4 CI graph
   
   output$ciplot4 <- renderPlot({
+    #only runs if button pressed
     validate(
       need(input$dayquestion4 != "", "")
     )
+    #view results first also
     if(input$CIbutton4 > 0 && input$resultsbutton4 > 0){
       req(test4data())
       
+      #use reactive
       result <- test4data()
       
       w <- 2
@@ -2446,14 +2506,14 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 9 feature 4 decision
+  #screen 10 feature 4 decision
   
   output$decision4 <- renderText({
     "Now you've seen the results for this test you must decide if you want to introduce feature 4:
     streaks for subscribers."
   })
   
-  #screen 10 feature 5
+  #screen 11 feature 5
   
   output$feature5des1 <- renderText({
     "This feature is introducing some levels exclusively for subscribers. 
@@ -2467,6 +2527,8 @@ server <- function(input, output, session) {
     "Test the effectiveness of this feature before you decide whether to introduce it. Choose 
     your test parameters using the power calculator. Then, view results on the next page."
   })
+  
+  #power calculator based on parameters chosen
   output$power5 <- renderText({
     daynumber5 <- as.numeric(input$dayquestion5)
     sample5 <- input$samplesize5 * daynumber5
@@ -2478,12 +2540,12 @@ server <- function(input, output, session) {
     paste0("The estimated power for your sample size is ",
            round(result5$power * 100, 2), "%")
   })
-  #screen 11 feature 5 results
+  #screen 12 feature 5 results
   
+  #pressing button starts delay before showing results
   loadfeature5 <- reactiveVal("beforefeature5")
   
   observeEvent(input$resultsbutton5, {
-    
     
     loadfeature5("pressedfeature5")
     
@@ -2496,11 +2558,11 @@ server <- function(input, output, session) {
     delay = 5)
   })
   
-  
   output$press5 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
   test5data <- reactive({
+    #only runs if question answered
     validate(
       need(input$dayquestion5 != "", "Please answer the questions on the previous page.")
     )
@@ -2539,9 +2601,11 @@ server <- function(input, output, session) {
     
   })
   output$resultdata5 <- renderTable({
+    #only runs if question answered
     validate(
       need(input$dayquestion5 != "", "Please answer the questions on the previous page.")
     )
+    #use reactive
     result <- test5data()
     
     w <- 2
@@ -2553,6 +2617,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #a/b test
     siglevel <- as.numeric(input$sl5)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2563,6 +2628,7 @@ server <- function(input, output, session) {
     sub_diff <- x[1] - x[2]
     p_val <- signif(test_result$p.value, 3)
     
+    #shows after delay
     if (loadfeature5() == "loadedfeature5")
       #results table
       data.frame(
@@ -2573,20 +2639,24 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 11 feature 5 results 
+  #screen 12 feature 5 results 
   # loading image/text
   
   output$results5 <- renderUI({
+    #runs only if question answered
     validate(
       need(input$dayquestion5 != "", "")
     )
     
+    #during delay loading screen displayed
     if(loadfeature5()=="pressedfeature5") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    
+    #after delay results shown
     else if (loadfeature5() == "loadedfeature5"){
       daynumber <- as.numeric(input$dayquestion5)
       sample <- input$samplesize5 * daynumber
@@ -2610,18 +2680,20 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 9  feature 4 results CI
+  #screen 12  feature 5 results CI
   
   output$CI5 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers5 <- renderUI({
+    #only runs if question answered
     validate(
       need(input$dayquestion5 != "", "")
     )
     #data for table
     req(test5data())
     
+    #use reactive
     result <- test5data()
     
     w <- 2
@@ -2633,6 +2705,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #confidence interval calculated
     siglevel <- as.numeric(input$sl5)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2641,6 +2714,7 @@ server <- function(input, output, session) {
     #displaying confidence interval result
     
     ci <- signif(test_result$conf.int * 100, 3)
+    #displayed if results viewed and buttons pressed
     if(input$CIbutton5 > 0 && input$resultsbutton5 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is",
@@ -2649,6 +2723,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #if results not yet viewed
     else if (input$resultsbutton5 == 0){
       tagList(
         "Please view results first."
@@ -2657,15 +2732,18 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 11  feature 5 CI graph
+  #Screen 12  feature 5 CI graph
   
   output$ciplot5 <- renderPlot({
+    #only runs if question answered
     validate(
       need(input$dayquestion5 != "", "")
     )
+    #results must also be viewed
     if(input$CIbutton5 > 0 && input$resultsbutton5 > 0){
       req(test5data())
       
+      #use reactive
       result <- test5data()
       
       w <- 2
@@ -2712,7 +2790,7 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 11 feature 5 decision
+  #screen 12 feature 5 decision
   
   output$decision5 <- renderText({
     "Now you've seen the results for this test you must decide if you want to 
@@ -2720,7 +2798,7 @@ server <- function(input, output, session) {
     subscriber only levels."
   })
   
-  #screen 12 feature 6
+  #screen 13 feature 6
   
   output$feature6des1 <- renderText({
     "This feature is offering a free trial for the subscription. 
@@ -2734,6 +2812,8 @@ server <- function(input, output, session) {
     "Test the effectiveness of this feature before you decide whether to introduce it. Choose 
     your test parameters using the power calculator. Then, view results on the next page."
   })
+  
+  #power calculator based on parameters chosen
   output$power6 <- renderText({
     daynumber6 <- as.numeric(input$dayquestion6)
     sample6 <- input$samplesize6 * daynumber6
@@ -2745,12 +2825,12 @@ server <- function(input, output, session) {
     paste0("The estimated power for your sample size is ",
            round(result6$power * 100, 2), "%")
   })
-  #screen 13 feature 6 results
+  #screen 14 feature 6 results
   
+  #after button press, delay starts before results are shown
   loadfeature6 <- reactiveVal("beforefeature6")
   
   observeEvent(input$resultsbutton6, {
-    
     
     loadfeature6("pressedfeature6")
     
@@ -2767,7 +2847,9 @@ server <- function(input, output, session) {
   output$press6 <- renderText ({"Press the button below to reveal the results
     of your test."})
   
+  #reactive as updates with choices made
   test6data <- reactive({
+    #only runs if question answered
     validate(
       need(input$dayquestion6 != "", "Please answer the questions on the previous page.")
     )
@@ -2806,9 +2888,12 @@ server <- function(input, output, session) {
     
   })
   output$resultdata6 <- renderTable({
+    #only runs if question answered
     validate(
       need(input$dayquestion6 != "", "Please answer the questions on the previous page.")
     )
+    
+    #use reactive
     result <- test6data()
     
     w <- 2
@@ -2820,6 +2905,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #a/b test
     siglevel <- as.numeric(input$sl6)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2840,20 +2926,23 @@ server <- function(input, output, session) {
         P_Value = c("-", "-", "-", p_val)
       )
   })
-  #screen 13 feature 6 results 
+  #screen 14 feature 6 results 
   # loading image/text
   
   output$results6 <- renderUI({
+    #only runs if question answered
     validate(
       need(input$dayquestion6 != "", "")
     )
     
+    #once pressed there is delay displaying loading screen
     if(loadfeature6()=="pressedfeature6") {
       tagList(
         h3("Loading results"),
         tags$img(src = "loading.jpg", height = "200px")
       )
     }
+    #once loaded
     else if (loadfeature6() == "loadedfeature6"){
       daynumber <- as.numeric(input$dayquestion6)
       sample <- input$samplesize6 * daynumber
@@ -2877,18 +2966,20 @@ server <- function(input, output, session) {
     }
   })
   
-  #screen 13  feature 6 results CI
+  #screen 14  feature 6 results CI
   
   output$CI6 <- renderText({"If you would like to see the confidence
     intervals, press the button below."
   })
   output$CInumbers6 <- renderUI({
+    #display if question answered
     validate(
       need(input$dayquestion6 != "", "")
     )
     #data for table
     req(test6data())
     
+    #use reactive
     result <- test6data()
     
     w <- 2
@@ -2900,6 +2991,7 @@ server <- function(input, output, session) {
     x <- c(test_row$subscribers, control_row$subscribers)
     n <- c(test_row$active_users, control_row$active_users)
     
+    #calculate confidence interval
     siglevel <- as.numeric(input$sl6)
     conflevel <- 1 - siglevel
     test_result <- prop.test(x, n, conf.level = conflevel)
@@ -2908,6 +3000,7 @@ server <- function(input, output, session) {
     #displaying confidence interval
     
     ci <- signif(test_result$conf.int * 100, 3)
+    #both results viewed and buttons pressed
     if(input$CIbutton6 > 0 && input$resultsbutton6 > 0){
       tagList(
         "The 95% confidence interval for the percentage difference of rate in your test is",
@@ -2916,6 +3009,7 @@ server <- function(input, output, session) {
         br()
       )
     }
+    #if results not viewed
     else if (input$resultsbutton6 == 0){
       tagList(
         "Please view results first."
@@ -2924,15 +3018,18 @@ server <- function(input, output, session) {
     else {NULL}
     
   })
-  #Screen 13  feature 6 CI graph
+  #Screen 14  feature 6 CI graph
   
   output$ciplot6 <- renderPlot({
+    #only if question answered
     validate(
       need(input$dayquestion6 != "", "")
     )
+    #results must also be viewed
     if(input$CIbutton6 > 0 && input$resultsbutton6 > 0){
       req(test6data())
       
+      #use reactive
       result <- test6data()
       
       w <- 2
@@ -2978,15 +3075,13 @@ server <- function(input, output, session) {
     
   })
   
-  #screen 13 feature 6 decision
+  #screen 14 feature 6 decision
   
   output$decision6 <- renderText({
     "Now you've seen the results for this test you must decide if you want to 
     introduce feature 6:
     offering a free trial."
   })
-  
-  
   
   ##penultimate screen, order choices
   
