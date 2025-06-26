@@ -1391,13 +1391,14 @@ server <- function(input, output, session) {
   load <- reactiveVal("before")
 
   observeEvent(input$resultsbutton, {
-   
+    updateActionButton(session, "resultsbutton", label = "Loading...")
     load("pressed")
    
     #5 second delay before revealing
     later(function() {
       
       load("loaded")
+      updateActionButton(session, "resultsbutton", label = "Loaded!")
     },
     delay = 5)
   })
@@ -1684,11 +1685,11 @@ server <- function(input, output, session) {
   loadfeature2 <- reactiveVal("beforefeature2")
   
   observeEvent(input$resultsbutton2, {
-    
+    updateActionButton(session, "resultsbutton2", label = "Loading...")
     loadfeature2("pressedfeature2")
     
     later(function() {
-      
+      updateActionButton(session, "resultsbutton2", label = "Loaded!")
       loadfeature2("loadedfeature2")
     },
     delay = 5)
@@ -1973,12 +1974,12 @@ server <- function(input, output, session) {
   loadfeature3 <- reactiveVal("beforefeature3")
   
   observeEvent(input$resultsbutton3, {
-    
+    updateActionButton(session, "resultsbutton3", label = "Loading...")
     loadfeature3("pressedfeature3")
     
     # 5 second delay to reveal results
     later(function() {
-      
+      updateActionButton(session, "resultsbutton3", label = "Loaded!")
       loadfeature3("loadedfeature3")
     },
     delay = 5)
@@ -2258,13 +2259,13 @@ server <- function(input, output, session) {
   loadfeature4 <- reactiveVal("beforefeature4")
   
   observeEvent(input$resultsbutton4, {
-    
+    updateActionButton(session, "resultsbutton4", label = "Loading...")
     loadfeature4("pressedfeature4")
     
     #5 second delay before revealing results
     
     later(function() {
-      
+      updateActionButton(session, "resultsbutton4", label = "Loaded!")
       loadfeature4("loadedfeature4")
     },
     delay = 5)
@@ -2546,13 +2547,13 @@ server <- function(input, output, session) {
   loadfeature5 <- reactiveVal("beforefeature5")
   
   observeEvent(input$resultsbutton5, {
-    
+    updateActionButton(session, "resultsbutton5", label = "Loading...")
     loadfeature5("pressedfeature5")
     
     #5 second delay before revealing results
     
     later(function() {
-      
+      updateActionButton(session, "resultsbutton5", label = "Loaded!")
       loadfeature5("loadedfeature5")
     },
     delay = 5)
@@ -2831,13 +2832,13 @@ server <- function(input, output, session) {
   loadfeature6 <- reactiveVal("beforefeature6")
   
   observeEvent(input$resultsbutton6, {
-    
+    updateActionButton(session, "resultsbutton6", label = "Loading...")
     loadfeature6("pressedfeature6")
     
     #5 second delay before results
     
     later(function() {
-      
+      updateActionButton(session, "resultsbutton66", label = "Loaded!")
       loadfeature6("loadedfeature6")
     },
     delay = 5)
