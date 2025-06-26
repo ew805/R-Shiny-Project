@@ -3475,7 +3475,7 @@ server <- function(input, output, session) {
     ordered_ids <- label_to_id[ordered_labels]
     
     #number of features added
-    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5)
+    answers <- c(input$decision1, input$decision2, input$decision3, input$decision4, input$decision5, input$decision6)
     yesanswers <- sum(answers == TRUE, na.rm = TRUE)
     
     
@@ -3615,8 +3615,9 @@ server <- function(input, output, session) {
         ggplot(barchartdflong, aes(x = Group, y = Count, fill = Type)) +
           geom_bar(stat = "identity") +
           labs(title = "Subscribers and Users",
+               subtitle = "Difference between adding selected features and adding no features",
                x = "Type", y = "Count") +
-          scale_fill_manual(values = c("Subscribers" = "pink", "NonSubscribers" = "lightblue")) +
+          scale_fill_manual(values = c("Subscribers" = "lightblue", "NonSubscribers" = "blue3")) +
           theme_bw()
       }
   })
