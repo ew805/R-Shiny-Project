@@ -991,6 +991,7 @@ ui <- dashboardPage(skin = "blue",
                             box(
                             width = 12,
                               title = "Instructions",
+                            align = "center",
                               status = "primary",
                               solidHeader = TRUE,
                               uiOutput("orderinfo"),
@@ -1006,6 +1007,7 @@ ui <- dashboardPage(skin = "blue",
                               width = 12,
                             
                             title = "Order",
+                            align = "center",
                             status = "primary",
                             solidHeader = TRUE,
                             uiOutput("orderedlist")
@@ -1032,6 +1034,7 @@ ui <- dashboardPage(skin = "blue",
                             column(width = 4,
                                box(width = 12,
                                 title = "Information",
+                                align = "center",
                                 status = "primary",
                                 solidHeader = TRUE,
                               textOutput("yearlater"),
@@ -1049,6 +1052,7 @@ ui <- dashboardPage(skin = "blue",
                                           id = "yearlatertabs",
                                           tabPanel(
                                             title = "Results",
+                                            align = "center",
                                             style = "min-height: 400px;",
                                             uiOutput("yearresults"),
                                             br(),
@@ -1056,6 +1060,7 @@ ui <- dashboardPage(skin = "blue",
                                             ),
                                           tabPanel(
                                             title = "Results Summary",
+                                            align = "center",
                                             style = "min-height: 400px;",
                                             fluidRow(
                                               column(6,
@@ -1074,6 +1079,7 @@ ui <- dashboardPage(skin = "blue",
                                           ),
                                           tabPanel(
                                             title = "Results Plot",
+                                            align = "center",
                                             style = "min-height: 400px;",
                                             plotOutput("yearbarchart")
                                           )
