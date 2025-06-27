@@ -32,7 +32,7 @@ for (i in c(-364:0)){
 }
 
 #data for company metrics plots
-#df_wide <- dbGetQuery(conn, daily_query, list(-30, -1))
+df_wide <- dbGetQuery(conn, daily_query, list(-365, -1))
 
 #each feature rate of subscriber improvement
 featurerates <- c(A = 0.33, B = 0.2, C = 0.4, D = 0.25, E = 0.18, F = 0.29)
@@ -1369,40 +1369,40 @@ server <- function(input, output, session) {
   
   
  #plot of users and subscribers
-   #output$cmplot1 <- renderPlot({
-     #df_wide %>%
-      # pivot_longer(
-      #   cols = c(active_users, subscribers),
-      #   names_to = "metric",
-      #   values_to = "count"
-      # ) %>%
-      # mutate(count = coalesce(count, 0)) %>%
-      # mutate(day = as.Date(Sys.Date() + day)) %>%
-      # ggplot(aes(x = day, y = count, col = metric)) + 
-     #  geom_line() +
-     #  theme_bw() + 
-     #  labs(title = "MonoBingo: users and subscribers in last month") +
-      # xlab("Date") + 
-     #  ylab("Number") +
-     #  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
-     #  theme_bw()
-  # })
+   output$cmplot1 <- renderPlot({
+     df_wide %>%
+       pivot_longer(
+         cols = c(active_users, subscribers),
+        names_to = "metric",
+         values_to = "count"
+       ) %>%
+       mutate(count = coalesce(count, 0)) %>%
+       mutate(day = as.Date(Sys.Date() + day)) %>%
+       ggplot(aes(x = day, y = count, col = metric)) + 
+       geom_line() +
+       theme_bw() + 
+       labs(title = "Users and Subscribers") +
+       xlab("Date") + 
+       ylab("Number") +
+       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+       theme_bw()
+   })
   
   
   #plot of conversion rate
-  # output$cmplot2 <- renderPlot({
-   #  df_wide %>%
-    #   mutate(conversion = subscribers / active_users) %>%
-     #  mutate(day = as.Date(Sys.Date() + day)) %>%
-     #  ggplot(aes(x = day, y = conversion)) +
-      # geom_line() +
-      # theme_bw() + 
-      # labs(title = "MonoBingo: Conversion rate") +
-     #  xlab("Date") + 
-     #  ylab("Number") +
-     #  scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
-     #  theme_bw()
-  # })
+   output$cmplot2 <- renderPlot({
+     df_wide %>%
+      mutate(conversion = subscribers / active_users) %>%
+       mutate(day = as.Date(Sys.Date() + day)) %>%
+       ggplot(aes(x = day, y = conversion)) +
+       geom_line() +
+       theme_bw() + 
+       labs(title = "MonoBingo: Conversion rate") +
+       xlab("Date") + 
+       ylab("Number") +
+       scale_y_continuous(labels = function(x) format(x, big.mark = ",", scientific = FALSE)) +
+       theme_bw()
+  })
    
   #churn rate plot
    output$cmplot3 <- renderPlot({
