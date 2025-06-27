@@ -146,11 +146,21 @@ ui <- dashboardPage(skin = "blue",
                                  )),
                           fluidRow(
                             column(width = 4,
-                                   plotOutput("cmplot1")),
-                            column(width = 4,
-                                   plotOutput("cmplot2")),
+                                   box(width=12,
+                                       status = "primary",
+                                       solidHeader = TRUE,
+                                       plotOutput("cmplot1")
+                                   )),
                             column(width = 4,
                                    box(width=12,
+                                       status = "primary",
+                                       solidHeader = TRUE,
+                                       plotOutput("cmplot2")
+                                   )),
+                            column(width = 4,
+                                   box(width=12,
+                                       status = "primary",
+                                       solidHeader = TRUE,
                                        plotOutput("cmplot3")
                                    ))
                           ),
