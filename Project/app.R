@@ -1256,7 +1256,7 @@ server <- function(input, output, session) {
   })
   output$instructions <- renderUI({
     tags$ul(
-      tags$li("Read the company metrics on the next page"),
+      tags$li("Read the company metrics on the next page."),
       tags$li("Work through the features in order."),
       tags$li("Choose your test conditions and then look at the results tab for each."),
       tags$li("On each results tab decide if you want to introduce the feature."),
@@ -3573,7 +3573,7 @@ server <- function(input, output, session) {
       if ("decision4" %in% ordered_ids && "decision5" %in% ordered_ids) {
         if (match("decision4", ordered_ids) < match("decision5", ordered_ids)) {
           goodfeedback <- append(goodfeedback, list(p("Choosing to introduce streaks before 
-          subsciber only levels was
+          subscriber only levels was
             the more effective order for the features.")))
         }
       }
