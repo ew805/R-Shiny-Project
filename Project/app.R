@@ -130,41 +130,36 @@ ui <- dashboardPage(skin = "blue",
                   tabItem(tabName = "companymetrics",
                           h2("MonoBingo Company Metrics", align = "center", style = "font-weight: bold"),
                           br(),
-                          fluidRow(
-                            
-                          column(width = 3,
+                          
+                        fluidRow(
+                          column(width = 4,
                                  valueBoxOutput("cm_users", width = 12),
-                                ),
-                          column(width = 3,
                                  valueBoxOutput("cm_subscribers", width = 12),
                                  valueBoxOutput("cm_subscribers2", width = 12),
-                                ),
-                          column(width = 3,
-                                 valueBoxOutput("cm_subscribers2", width = 12),
-                                 ),
-                          column(width = 3,
-                                 valueBoxOutput("cm_cr", width = 12)
-                                 )),
-                          fluidRow(
-                            column(width = 4,
-                                   box(width=12,
-                                       status = "primary",
-                                       solidHeader = TRUE,
-                                       plotOutput("cmplot1")
-                                   )),
-                            column(width = 4,
-                                   box(width=12,
-                                       status = "primary",
-                                       solidHeader = TRUE,
-                                       plotOutput("cmplot2")
-                                   )),
-                            column(width = 4,
-                                   box(width=12,
-                                       status = "primary",
-                                       solidHeader = TRUE,
-                                       plotOutput("cmplot3")
-                                   ))
-                          ),
+                                 valueBoxOutput("cm_cr", width = 12)),
+                          column(width = 8,
+                                 tabBox(width = 12,
+                                   id = "companymetricstabs",
+                                   tabPanel(
+                                     title = "Users and Subscribers",
+                                     align = "center",
+                                     style = "min-height: 400px;",
+                                     plotOutput("cmplot1")
+                                   ),
+                                   tabPanel(
+                                     title = "Conversion Rate",
+                                     align = "center",
+                                     style = "min-height: 400px;",
+                                     plotOutput("cmplot2")
+                                   ),
+                                   tabPanel(
+                                     title = "Churn Rate",
+                                     align = "center",
+                                     style = "min-height: 400px;",
+                                     plotOutput("cmplot3")
+                                   )
+                                 ))
+                        ),
                           fluidRow(
                             column(width=6, 
                                    align = "left",
